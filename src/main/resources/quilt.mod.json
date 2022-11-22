@@ -1,0 +1,58 @@
+{
+    "schema_version": 1,
+    "quilt_loader": {
+        "group": "coffee.cypher",
+        "id": "hexbound",
+        "version": "${version}",
+        "metadata": {
+            "name": "Hexbound",
+            "description": "Addon for Hexcasting",
+            "contributors": {
+                "Cypher121": "Owner"
+            },
+            "contact": {
+                "homepage": "https://github.com/Cypher121/hexbound",
+                "issues": "https://github.com/Cypher121/hexbound/issues",
+                "sources": "https://github.com/Cypher121/hexbound"
+            },
+            "icon": "assets/kettle/icon.png"
+        },
+        "intermediate_mappings": "net.fabricmc:intermediary",
+        "entrypoints": {
+            "init": {
+                "value": "coffee.cypher.hexbound.init.Hexbound",
+                "adapter": "kotlin"
+            },
+            "client_init": {
+                "value": "coffee.cypher.hexbound.init.Hexbound",
+                "adapter": "kotlin"
+            },
+            "cardinal-components": {
+                "value": "coffee.cypher.hexbound.component.EntityComponents",
+                "adapter": "kotlin"
+            }
+        },
+        "depends": [
+            {
+                "id": "quilt_loader",
+                "versions": ">=0.17.0-"
+            },
+            {
+                "id": "quilted_fabric_api",
+                "versions": ">=1.0.0-"
+            },
+            {
+                "id": "minecraft",
+                "versions": ">=1.19"
+            },
+            {
+                "id": "hexcasting",
+                "versions": "0.10.x"
+            }
+        ]
+    },
+    "cardinal-components": [
+        "hexbound:memorized_colorizers"
+    ],
+    "mixin": "hexbound.mixins.json"
+}
