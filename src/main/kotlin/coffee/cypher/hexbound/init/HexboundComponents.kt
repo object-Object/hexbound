@@ -1,7 +1,7 @@
-package coffee.cypher.hexbound.component
+package coffee.cypher.hexbound.init
 
 import at.petrak.hexcasting.api.misc.FrozenColorizer
-import coffee.cypher.hexbound.init.Hexbound
+import coffee.cypher.hexbound.feature.colorizerstorage.component.MemorizedColorizersPlayerComponent
 import dev.onyxstudios.cca.api.v3.component.ComponentKey
 import dev.onyxstudios.cca.api.v3.component.ComponentRegistryV3
 import dev.onyxstudios.cca.api.v3.entity.EntityComponentFactoryRegistry
@@ -9,7 +9,7 @@ import dev.onyxstudios.cca.api.v3.entity.EntityComponentInitializer
 import dev.onyxstudios.cca.api.v3.entity.RespawnCopyStrategy
 import net.minecraft.server.network.ServerPlayerEntity
 
-object EntityComponents : EntityComponentInitializer {
+object HexboundComponents : EntityComponentInitializer {
     val MEMORIZED_COLORIZERS: ComponentKey<MemorizedColorizersPlayerComponent> =
         ComponentRegistryV3.INSTANCE.getOrCreate(
             Hexbound.id("memorized_colorizers"),
@@ -26,4 +26,4 @@ object EntityComponents : EntityComponentInitializer {
 }
 
 val ServerPlayerEntity.memorizedColorizers: MutableMap<String, FrozenColorizer>
-    get() = EntityComponents.MEMORIZED_COLORIZERS[this].colorizers
+    get() = HexboundComponents.MEMORIZED_COLORIZERS[this].colorizers

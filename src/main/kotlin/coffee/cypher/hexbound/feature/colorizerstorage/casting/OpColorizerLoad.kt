@@ -1,13 +1,14 @@
-package coffee.cypher.hexbound.operator.colorizer
+package coffee.cypher.hexbound.feature.colorizerstorage.casting
 
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.math.HexPattern
-import coffee.cypher.hexbound.component.memorizedColorizers
+import at.petrak.hexcasting.fabric.cc.HexCardinalComponents
+import coffee.cypher.hexbound.init.memorizedColorizers
 import coffee.cypher.hexbound.util.nonBlankSignature
 
-object OpColorizerDelete : SpellAction {
+object OpColorizerLoad : SpellAction {
     override val argc = 1
 
     override fun execute(
@@ -22,14 +23,15 @@ object OpColorizerDelete : SpellAction {
 
         return Triple(
             Spell(pattern),
-            0,
+            1,
             emptyList()
         )
     }
 
     private data class Spell(val key: HexPattern) : RenderedSpell {
         override fun cast(ctx: CastingContext) {
-            ctx.caster.memorizedColorizers.remove(key.nonBlankSignature)
+            HexCardinalComponents.FAVORED_COLORIZER[ctx.caster].colorizer =
+                ctx.caster.memorizedColorizers.getValue(key.nonBlankSignature)
         }
     }
 }

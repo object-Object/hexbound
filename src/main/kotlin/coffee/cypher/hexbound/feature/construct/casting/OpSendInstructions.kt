@@ -3,7 +3,8 @@ package coffee.cypher.hexbound.feature.construct.casting
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
-import coffee.cypher.hexbound.feature.construct.entity.SpiderConstructEntity
+import coffee.cypher.hexbound.feature.construct.entity.AbstractConstructEntity
+import coffee.cypher.hexbound.util.getConstruct
 
 object OpSendInstructions : SpellAction {
     override val argc = 2
@@ -12,7 +13,7 @@ object OpSendInstructions : SpellAction {
         args: List<Iota>,
         ctx: CastingContext
     ): Triple<RenderedSpell, Int, List<ParticleSpray>> {
-        val construct = args.getEntity(0, argc) as SpiderConstructEntity //TODO
+        val construct = args.getConstruct(0, argc)
         val instructions = args.getList(1, argc)
 
         ctx.assertEntityInRange(construct)
@@ -25,7 +26,7 @@ object OpSendInstructions : SpellAction {
     }
 
     private class Spell(
-        val constructEntity: SpiderConstructEntity,
+        val constructEntity: AbstractConstructEntity<*>,
         val instructions: List<Iota>
     ) : RenderedSpell {
         override fun cast(ctx: CastingContext) {

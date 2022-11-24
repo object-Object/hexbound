@@ -11,7 +11,7 @@ import coffee.cypher.hexbound.feature.construct.command.MoveTo
 import coffee.cypher.hexbound.feature.construct.command.PickUp
 import coffee.cypher.hexbound.feature.construct.entity.AbstractConstructEntity
 import coffee.cypher.hexbound.feature.construct.entity.SpiderConstructEntity
-import coffee.cypher.hexbound.mixinaccessor.construct
+import coffee.cypher.hexbound.util.mixinaccessor.construct
 
 abstract class OpGiveCommand<T : AbstractConstructEntity<*>> : ConstMediaAction {
     override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {

@@ -28,7 +28,7 @@
                 "adapter": "kotlin"
             },
             "cardinal-components": {
-                "value": "coffee.cypher.hexbound.component.EntityComponents",
+                "value": "coffee.cypher.hexbound.init.HexboundComponents",
                 "adapter": "kotlin"
             }
         },

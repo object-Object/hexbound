@@ -1,4 +1,4 @@
-package coffee.cypher.hexbound.operator.colorizer
+package coffee.cypher.hexbound.feature.colorizerstorage.casting
 
 import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.spell.*
@@ -6,7 +6,7 @@ import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.math.HexPattern
 import at.petrak.hexcasting.fabric.cc.HexCardinalComponents
-import coffee.cypher.hexbound.component.memorizedColorizers
+import coffee.cypher.hexbound.init.memorizedColorizers
 import coffee.cypher.hexbound.util.nonBlankSignature
 
 object OpColorizerSave : SpellAction {

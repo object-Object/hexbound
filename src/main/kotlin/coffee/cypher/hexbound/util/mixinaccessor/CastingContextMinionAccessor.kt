@@ -1,4 +1,4 @@
-package coffee.cypher.hexbound.mixinaccessor
+package coffee.cypher.hexbound.util.mixinaccessor
 
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import coffee.cypher.hexbound.feature.construct.entity.AbstractConstructEntity

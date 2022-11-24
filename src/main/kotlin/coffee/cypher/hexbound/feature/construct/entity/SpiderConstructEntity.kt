@@ -1,5 +1,6 @@
 package coffee.cypher.hexbound.feature.construct.entity
 
+import coffee.cypher.hexbound.util.redirectSpiderLang
 import dev.cafeteria.fakeplayerapi.server.FakeServerPlayer
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.EquipmentSlot
@@ -10,6 +11,7 @@ import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.world.ServerWorld
+import net.minecraft.text.Text
 import net.minecraft.util.Hand
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
@@ -36,23 +38,13 @@ class SpiderConstructEntity(
     private val animationController = AnimationController(this, "animation_controller", 0f) { event ->
         when {
             event.isMoving -> {
-                event.controller.setAnimation(
-                    AnimationBuilder().addAnimation(
-                        "animation.construct.walk",
-                        EDefaultLoopTypes.LOOP
-                    )
-                )
+                event.controller.setAnimation(WALK_ANIMATION)
 
                 PlayState.CONTINUE
             }
 
             event.animatable.canDance() -> {
-                event.controller.setAnimation(
-                    AnimationBuilder().addAnimation(
-                        "animation.construct.dance",
-                        EDefaultLoopTypes.LOOP
-                    )
-                )
+                event.controller.setAnimation(DANCE_ANIMATION)
 
                 PlayState.CONTINUE
             }
@@ -122,6 +114,10 @@ class SpiderConstructEntity(
         return dist != null && dist <= 64 && command == null
     }
 
+    override fun getDefaultName(): Text {
+        return redirectSpiderLang(super.getDefaultName())
+    }
+
     override fun registerControllers(data: AnimationData) {
         data.addAnimationController(animationController)
     }
@@ -144,7 +140,18 @@ class SpiderConstructEntity(
 
     companion object {
         fun createAttributes(): DefaultAttributeContainer.Builder {
-            return createMobAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 10.0).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 1.0)
+            return createMobAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 10.0)
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 1.0)
         }
+
+        private val DANCE_ANIMATION = AnimationBuilder().addAnimation(
+            "dance",
+            EDefaultLoopTypes.LOOP
+        )
+
+        private val WALK_ANIMATION = AnimationBuilder().addAnimation(
+            "walk",
+            EDefaultLoopTypes.LOOP
+        )
     }
 }

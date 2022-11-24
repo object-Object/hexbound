@@ -2,7 +2,7 @@ package coffee.cypher.hexbound.mixins;
 
 import at.petrak.hexcasting.api.spell.casting.CastingContext;
 import coffee.cypher.hexbound.feature.construct.entity.AbstractConstructEntity;
-import coffee.cypher.hexbound.mixinaccessor.CastingContextMinionAccessor;
+import coffee.cypher.hexbound.util.mixinaccessor.CastingContextMinionAccessor;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 

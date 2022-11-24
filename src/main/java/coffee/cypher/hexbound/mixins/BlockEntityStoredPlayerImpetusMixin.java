@@ -3,7 +3,7 @@ package coffee.cypher.hexbound.mixins;
 import at.petrak.hexcasting.api.block.circle.BlockEntityAbstractImpetus;
 import at.petrak.hexcasting.common.blocks.entity.BlockEntityStoredPlayerImpetus;
 import coffee.cypher.hexbound.util.FakePlayerFactory;
-import coffee.cypher.hexbound.mixinaccessor.ImpetusFakePlayerAccessor;
+import coffee.cypher.hexbound.util.mixinaccessor.ImpetusFakePlayerAccessor;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.mojang.authlib.GameProfile;
 import com.mojang.datafixers.util.Pair;

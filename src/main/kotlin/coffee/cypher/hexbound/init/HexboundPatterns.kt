@@ -7,9 +7,9 @@ import coffee.cypher.hexbound.init.Hexbound.id
 import coffee.cypher.hexbound.operator.OpGetHeldItem
 import coffee.cypher.hexbound.operator.OpMergePatterns
 import coffee.cypher.hexbound.operator.OpRotatePattern
-import coffee.cypher.hexbound.operator.colorizer.OpColorizerDelete
-import coffee.cypher.hexbound.operator.colorizer.OpColorizerLoad
-import coffee.cypher.hexbound.operator.colorizer.OpColorizerSave
+import coffee.cypher.hexbound.feature.colorizerstorage.casting.OpColorizerDelete
+import coffee.cypher.hexbound.feature.colorizerstorage.casting.OpColorizerLoad
+import coffee.cypher.hexbound.feature.colorizerstorage.casting.OpColorizerSave
 import coffee.cypher.hexbound.operator.great.OpFakeImprint
 import coffee.cypher.hexbound.feature.construct.casting.OpGiveCommandDropOff
 import coffee.cypher.hexbound.feature.construct.casting.OpGiveCommandMoveTo

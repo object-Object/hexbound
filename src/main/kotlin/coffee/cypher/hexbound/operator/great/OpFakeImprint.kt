@@ -6,7 +6,7 @@ import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.mishaps.MishapBadBlock
 import at.petrak.hexcasting.common.blocks.entity.BlockEntityStoredPlayerImpetus
-import coffee.cypher.hexbound.mixinaccessor.useFakeFallback
+import coffee.cypher.hexbound.util.mixinaccessor.useFakeFallback
 import net.minecraft.util.math.BlockPos
 
 object OpFakeImprint : SpellAction {

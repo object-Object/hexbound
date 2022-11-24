@@ -7,7 +7,7 @@ import at.petrak.hexcasting.api.spell.iota.Iota
 import coffee.cypher.hexbound.feature.construct.command.ConstructCommand
 import coffee.cypher.hexbound.init.CommonRegistries
 import coffee.cypher.hexbound.init.Hexbound
-import coffee.cypher.hexbound.mixinaccessor.construct
+import coffee.cypher.hexbound.util.mixinaccessor.construct
 import coffee.cypher.hexbound.util.FakePlayerFactory
 import com.mojang.serialization.Codec
 import dev.cafeteria.fakeplayerapi.server.FakeServerPlayer
