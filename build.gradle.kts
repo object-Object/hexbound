@@ -14,6 +14,7 @@ plugins {
     alias(libs.plugins.quilt.loom)
     alias(libs.plugins.dokka)
     alias(libs.plugins.nexus)
+    alias(libs.plugins.serialization)
 }
 
 base {
@@ -94,7 +95,9 @@ dependencies {
     modImplementation(libs.bundles.kotlin)
 
     modImplementation(libs.bundles.qsl)
-    modImplementation(libs.bundles.hexcasting)
+    modImplementation(libs.bundles.hexcasting) {
+        exclude(module = "fabric-language-kotlin")
+    }
     modImplementation(libs.cca)
 
     modImplementation(libs.fake.player)

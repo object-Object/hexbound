@@ -1,21 +1,20 @@
 package coffee.cypher.hexbound.feature.construct.entity
 
-import coffee.cypher.hexbound.init.Hexbound
 import dev.cafeteria.fakeplayerapi.server.FakeServerPlayer
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.EquipmentSlot
-import net.minecraft.entity.ItemEntity
-import net.minecraft.entity.ai.goal.Goal
 import net.minecraft.entity.attribute.DefaultAttributeContainer
 import net.minecraft.entity.attribute.EntityAttributes
+import net.minecraft.entity.effect.StatusEffect
+import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Hand
-import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
+import org.quiltmc.qsl.entity.effect.api.StatusEffectRemovalReason
+import org.quiltmc.qsl.entity.effect.api.StatusEffectUtils
 import software.bernie.geckolib3.core.IAnimatable
 import software.bernie.geckolib3.core.PlayState
 import software.bernie.geckolib3.core.builder.AnimationBuilder
@@ -28,7 +27,7 @@ import software.bernie.geckolib3.util.GeckoLibUtil
 class SpiderConstructEntity(
     entityType: EntityType<SpiderConstructEntity>,
     world: World
-) : AbstractConstructEntity(entityType, world), IAnimatable {
+) : AbstractConstructEntity<SpiderConstructEntity>(entityType, world), IAnimatable {
     var heldStack: ItemStack = ItemStack.EMPTY
 
     private var songSource: BlockPos? = null
@@ -74,6 +73,35 @@ class SpiderConstructEntity(
         }
     }
 
+    //TODO QSL error, remove below 3 methods when patched
+    override fun removeStatusEffect(type: StatusEffect, reason: StatusEffectRemovalReason): Boolean {
+        return false
+    }
+
+    override fun clearStatusEffects(reason: StatusEffectRemovalReason): Int {
+        if (world.isClient) {
+            return 0
+        }
+
+        var removed = 0
+        val it = activeStatusEffects.values.iterator()
+        while (it.hasNext()) {
+            val effect = it.next()
+            if (StatusEffectUtils.shouldRemove(this, effect, reason)) {
+                it.remove()
+                this.onStatusEffectRemoved(effect, reason)
+                removed++
+            }
+        }
+
+        return removed
+    }
+
+    override fun onStatusEffectRemoved(effect: StatusEffectInstance, reason: StatusEffectRemovalReason) {
+    }
+
+    //up to here
+
     override fun getEquippedStack(slot: EquipmentSlot): ItemStack {
         return when (slot) {
             EquipmentSlot.MAINHAND -> heldStack
@@ -117,117 +145,6 @@ class SpiderConstructEntity(
     companion object {
         fun createAttributes(): DefaultAttributeContainer.Builder {
             return createMobAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 10.0).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 1.0)
-        }
-    }
-
-    //TODO clean this the hell up
-    abstract class Command {
-        abstract val goal: Goal
-        abstract val id: Identifier
-        abstract fun serialize(): NbtCompound
-
-        companion object {
-            val COMMAND_READERS = mutableMapOf(
-                Hexbound.id("pick_up") to { constructEntity: SpiderConstructEntity, nbt: NbtCompound, world: ServerWorld ->
-                    if (nbt.containsUuid("target")) {
-                        val target = world.getEntity(nbt.getUuid("target")) as? ItemEntity
-
-                        target?.let { PickUp(target, constructEntity) }
-                    } else {
-                        null
-                    }
-                },
-                Hexbound.id("drop_off") to { constructEntity, _, _ ->
-                    DropOff(constructEntity)
-                },
-                Hexbound.id("move_to") to { constructEntity, nbt, _ ->
-                    if (nbt.contains("x") && nbt.contains("y") && nbt.contains("z")) {
-                        MoveTo(Vec3d(nbt.getDouble("x"), nbt.getDouble("y"), nbt.getDouble("z")), constructEntity)
-                    } else {
-                        null
-                    }
-                }
-            )
-        }
-
-        class PickUp(val target: ItemEntity, constructEntity: SpiderConstructEntity) : Command() {
-            override val goal = object : Goal() {
-                override fun canStart(): Boolean {
-                    return !target.cannotPickup() &&
-                           target.isAlive &&
-                           constructEntity.pos.distanceTo(target.pos) < 2 &&
-                           constructEntity.heldStack.isEmpty
-                }
-
-                override fun tick() {
-                    constructEntity.heldStack = target.stack
-                    target.discard()
-                }
-            }
-
-            override val id = Hexbound.id("pick_up")
-
-            override fun serialize(): NbtCompound {
-                return NbtCompound().apply {
-                    putUuid("target", target.uuid)
-                }
-            }
-        }
-
-        class DropOff(constructEntity: SpiderConstructEntity) : Command() {
-            override val goal = object : Goal() {
-                override fun canStart(): Boolean {
-                    return !constructEntity.heldStack.isEmpty
-                }
-
-                override fun tick() {
-                    constructEntity.world.spawnEntity(
-                        ItemEntity(
-                            constructEntity.world,
-                            constructEntity.x,
-                            constructEntity.y,
-                            constructEntity.z,
-                            constructEntity.heldStack,
-                            0.0,
-                            0.0,
-                            0.0
-                        )
-                    )
-                    constructEntity.heldStack = ItemStack.EMPTY
-                }
-            }
-
-            override val id = Hexbound.id("drop_off")
-
-            override fun serialize(): NbtCompound {
-                return NbtCompound()
-            }
-        }
-
-        class MoveTo(val pos: Vec3d, constructEntity: SpiderConstructEntity) : Command() {
-            override val goal = object : Goal() {
-                override fun canStart(): Boolean {
-                    return constructEntity.pos.distanceTo(pos) < 32
-                }
-
-                override fun shouldContinue(): Boolean {
-                    return constructEntity.pos.distanceTo(pos) > 1.5
-                }
-
-                override fun start() {
-                    constructEntity.navigation.startMovingTo(pos.x, pos.y, pos.z, 0.25)
-                }
-            }
-
-            override val id = Hexbound.id("move_to")
-
-            override fun serialize(): NbtCompound {
-                return NbtCompound().apply {
-                    putDouble("x", pos.x)
-                    putDouble("y", pos.y)
-                    putDouble("z", pos.z)
-                }
-            }
         }
     }
 }

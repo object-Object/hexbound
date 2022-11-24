@@ -15,7 +15,7 @@
                 "issues": "https://github.com/Cypher121/hexbound/issues",
                 "sources": "https://github.com/Cypher121/hexbound"
             },
-            "icon": "assets/kettle/icon.png"
+            "icon": "assets/hexbound/icon.png"
         },
         "intermediate_mappings": "net.fabricmc:intermediary",
         "entrypoints": {
@@ -24,7 +24,7 @@
                 "adapter": "kotlin"
             },
             "client_init": {
-                "value": "coffee.cypher.hexbound.init.Hexbound",
+                "value": "coffee.cypher.hexbound.init.HexboundClient",
                 "adapter": "kotlin"
             },
             "cardinal-components": {

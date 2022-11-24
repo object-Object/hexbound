@@ -4,25 +4,30 @@ import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.casting.CastingHarness
 import at.petrak.hexcasting.api.spell.iota.EntityIota
 import at.petrak.hexcasting.api.spell.iota.Iota
+import coffee.cypher.hexbound.feature.construct.command.ConstructCommand
+import coffee.cypher.hexbound.init.CommonRegistries
 import coffee.cypher.hexbound.init.Hexbound
 import coffee.cypher.hexbound.mixinaccessor.construct
 import coffee.cypher.hexbound.util.FakePlayerFactory
+import com.mojang.serialization.Codec
 import dev.cafeteria.fakeplayerapi.server.FakeServerPlayer
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.mob.PathAwareEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.nbt.NbtOps
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Arm
 import net.minecraft.util.Hand
 import net.minecraft.util.Identifier
 import net.minecraft.world.World
+import kotlin.jvm.optionals.getOrNull
 
-abstract class AbstractConstructEntity(
+abstract class AbstractConstructEntity<T : AbstractConstructEntity<T>>(
     entityType: EntityType<out PathAwareEntity>,
     world: World
 ) : PathAwareEntity(entityType, world) {
-    var command: SpiderConstructEntity.Command? = null
+    var command: ConstructCommand<AbstractConstructEntity<T>, *>? = null
     var instructionSet: List<Iota>? = null
 
     private fun evaluateInstructions(instructionSet: List<Iota>) {
@@ -42,11 +47,9 @@ abstract class AbstractConstructEntity(
         val info = harness.executeIotas(instructionSet, serverWorld)
     }
 
-    fun executeCommand(command: SpiderConstructEntity.Command) {
-        this.command?.let { goalSelector.remove(it.goal) }
-
+    fun executeCommand(command: ConstructCommand<AbstractConstructEntity<T>, *>, world: ServerWorld) {
         this.command = command
-        goalSelector.add(1, command.goal)
+        goalSelector.add(1, command.createGoal(this, world))
     }
 
     protected open fun prepareFakePlayer(world: ServerWorld): FakeServerPlayer {
@@ -77,12 +80,36 @@ abstract class AbstractConstructEntity(
 
         if (world is ServerWorld) {
             command?.let {
-                nbt.putString("command_id", it.id.toString())
-                nbt.put("command_data", it.serialize())
+                nbt.put("command", encodeCommand(it))
             }
         }
     }
 
+    private fun <C : ConstructCommand<*, *>> encodeCommand(command: C) : NbtCompound {
+        val compound = NbtCompound()
+
+        val type = CommonRegistries.CONSTRUCT_COMMANDS.getId(command.type)
+        compound.putString(
+            "type",
+            type.toString()
+        )
+
+        if (CommonRegistries.CONSTRUCT_COMMANDS.get(type) != command.type) {
+            Hexbound.LOGGER.warn("Construct command type for $command was not registered")
+            compound.put("data", NbtCompound())
+            return compound
+        }
+
+        @Suppress("UNCHECKED_CAST")
+        compound.put(
+            "data",
+            (command.type.codec as Codec<C>).encodeStart(NbtOps.INSTANCE, command).result().get()
+        )
+
+        return compound
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
     override fun readCustomDataFromNbt(nbt: NbtCompound) {
         super.readCustomDataFromNbt(nbt)
 
@@ -90,10 +117,18 @@ abstract class AbstractConstructEntity(
 
         val serverWorld = world as? ServerWorld ?: return
 
-        if (nbt.contains("command_id")) {
-            val commandId = Identifier.tryParse(nbt.getString("command_id")) ?: return
-            val reader = SpiderConstructEntity.Command.COMMAND_READERS[commandId] ?: return
-            command = TODO()
+        if (nbt.contains("command")) {
+            val commandNbt = nbt.getCompound("command")
+            val typeId = Identifier.tryParse(commandNbt.getString("type"))
+            val type = CommonRegistries.CONSTRUCT_COMMANDS.get(typeId)
+            val result = type.codec.decode(NbtOps.INSTANCE, commandNbt.get("data"))
+
+            @Suppress("UNCHECKED_CAST")
+            val newCommand = result.result().getOrNull()?.first as ConstructCommand<AbstractConstructEntity<T>, *>?
+
+            if (newCommand != null) {
+                executeCommand(newCommand, serverWorld)
+            }
         }
     }
 }

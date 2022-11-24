@@ -3,10 +3,10 @@
 minecraft = "1.19.2"
 
 quilt_mappings = "1.19.2+build.21"
-quilt_loader = "0.18.1-beta.16"
-qsl = "3.0.0-beta.21"
-quilt-fapi = "4.0.0-beta.20+0.66.0"
-qkl = "0.1.5+kt.1.7.20+flk.1.8.5"
+quilt_loader = "0.17.6"
+qsl = "3.0.0-beta.21+1.19.2"
+quilt-fapi = "4.0.0-beta.20+0.66.0-1.19.2"
+qkl = "0.1.7+kt.1.7.20+flk.1.8.5"
 
 kotlin = "1.7.20"
 
@@ -47,3 +47,4 @@ quilt_loom = { id = "org.quiltmc.loom", version = "1.+" }
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin" }
 nexus = { id = "io.github.gradle-nexus.publish-plugin", version = "1.1.0" }
+serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
