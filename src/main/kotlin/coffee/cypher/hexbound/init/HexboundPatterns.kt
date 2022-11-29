@@ -4,17 +4,17 @@ import at.petrak.hexcasting.api.PatternRegistry
 import at.petrak.hexcasting.api.spell.math.HexDir
 import at.petrak.hexcasting.api.spell.math.HexPattern
 import coffee.cypher.hexbound.init.Hexbound.id
-import coffee.cypher.hexbound.operator.OpGetHeldItem
-import coffee.cypher.hexbound.operator.OpMergePatterns
-import coffee.cypher.hexbound.operator.OpRotatePattern
-import coffee.cypher.hexbound.feature.colorizerstorage.casting.OpColorizerDelete
-import coffee.cypher.hexbound.feature.colorizerstorage.casting.OpColorizerLoad
-import coffee.cypher.hexbound.feature.colorizerstorage.casting.OpColorizerSave
+import coffee.cypher.hexbound.feature.item_patterns.action.OpGetHeldItem
+import coffee.cypher.hexbound.feature.pattern_editing.action.OpMergePatterns
+import coffee.cypher.hexbound.feature.pattern_editing.action.OpRotatePattern
+import coffee.cypher.hexbound.feature.colorizer_storage.action.OpColorizerDelete
+import coffee.cypher.hexbound.feature.colorizer_storage.action.OpColorizerLoad
+import coffee.cypher.hexbound.feature.colorizer_storage.action.OpColorizerSave
 import coffee.cypher.hexbound.operator.great.OpFakeImprint
-import coffee.cypher.hexbound.feature.construct.casting.OpGiveCommandDropOff
-import coffee.cypher.hexbound.feature.construct.casting.OpGiveCommandMoveTo
-import coffee.cypher.hexbound.feature.construct.casting.OpGiveCommandPickUp
-import coffee.cypher.hexbound.feature.construct.casting.OpSendInstructions
+import coffee.cypher.hexbound.feature.construct.action.OpGiveCommandDropOff
+import coffee.cypher.hexbound.feature.construct.action.OpGiveCommandMoveTo
+import coffee.cypher.hexbound.feature.construct.action.OpGiveCommandPickUp
+import coffee.cypher.hexbound.feature.construct.action.OpSendInstructions
 import net.minecraft.util.Hand
 
 object HexboundPatterns {

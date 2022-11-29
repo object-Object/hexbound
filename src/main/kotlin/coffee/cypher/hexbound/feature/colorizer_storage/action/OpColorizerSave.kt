@@ -1,4 +1,4 @@
-package coffee.cypher.hexbound.feature.colorizerstorage.casting
+package coffee.cypher.hexbound.feature.colorizer_storage.action
 
 import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.spell.*
@@ -6,6 +6,8 @@ import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.math.HexPattern
 import at.petrak.hexcasting.fabric.cc.HexCardinalComponents
+import coffee.cypher.hexbound.feature.colorizer_storage.mishap.MishapColorizerNotSet
+import coffee.cypher.hexbound.feature.colorizer_storage.mishap.MishapTooManyColorizers
 import coffee.cypher.hexbound.init.memorizedColorizers
 import coffee.cypher.hexbound.util.nonBlankSignature
 
@@ -20,10 +22,13 @@ object OpColorizerSave : SpellAction {
 
         val currentColorizer = HexCardinalComponents.FAVORED_COLORIZER[ctx.caster].colorizer
 
+        if (ctx.caster.memorizedColorizers.size >= 64 && pattern.nonBlankSignature !in ctx.caster.memorizedColorizers) {
+            throw MishapTooManyColorizers()
+        }
+
         @Suppress("ControlFlowWithEmptyBody")
         if (currentColorizer == FrozenColorizer.DEFAULT.get()) {
-            //TODO error?
-            /* no-op */
+            throw MishapColorizerNotSet()
         }
 
         return Triple(

@@ -48,6 +48,10 @@
             {
                 "id": "hexcasting",
                 "versions": "0.10.x"
+            },
+            {
+                "id": "kettle",
+                "versions": ">=2.2.1"
             }
         ]
     },

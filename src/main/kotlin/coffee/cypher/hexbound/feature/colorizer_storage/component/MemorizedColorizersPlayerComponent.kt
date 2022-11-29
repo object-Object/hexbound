@@ -1,4 +1,4 @@
-package coffee.cypher.hexbound.feature.colorizerstorage.component
+package coffee.cypher.hexbound.feature.colorizer_storage.component
 
 import at.petrak.hexcasting.api.misc.FrozenColorizer
 import dev.onyxstudios.cca.api.v3.component.ComponentV3

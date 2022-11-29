@@ -1,7 +1,7 @@
 package coffee.cypher.hexbound.init
 
 import at.petrak.hexcasting.api.misc.FrozenColorizer
-import coffee.cypher.hexbound.feature.colorizerstorage.component.MemorizedColorizersPlayerComponent
+import coffee.cypher.hexbound.feature.colorizer_storage.component.MemorizedColorizersPlayerComponent
 import dev.onyxstudios.cca.api.v3.component.ComponentKey
 import dev.onyxstudios.cca.api.v3.component.ComponentRegistryV3
 import dev.onyxstudios.cca.api.v3.entity.EntityComponentFactoryRegistry

@@ -10,7 +10,8 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Hand
 import java.util.*
 
-//TODO don't cache players maybe idk
+// TODO don't cache players maybe idk
+// also functions to ID if player is from this factory
 object FakePlayerFactory {
     val FAKE_PLAYER_BUILDER_ID = Hexbound.id("fake_player")
 

@@ -1,5 +1,6 @@
 package coffee.cypher.hexbound.init
 
+import coffee.cypher.hexbound.interop.InteropManager
 import net.minecraft.util.Identifier
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -28,6 +29,7 @@ object Hexbound : ModInitializer {
 
         initCommonRegistries()
         HexboundPatterns.register()
+        InteropManager.init()
 
         if (QuiltLoader.isDevelopmentEnvironment()) {
             enableDebugFeatures()
@@ -36,7 +38,7 @@ object Hexbound : ModInitializer {
 
     private fun enableDebugFeatures() {
         registerEvents {
-            onCommandRegistration { buildContext, environment ->
+            onCommandRegistration { _, _ ->
                 register("getConstructCommands") {
                     execute {
                         sendFeedback(buildText {

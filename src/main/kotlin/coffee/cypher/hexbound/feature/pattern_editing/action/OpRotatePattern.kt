@@ -1,4 +1,4 @@
-package coffee.cypher.hexbound.operator
+package coffee.cypher.hexbound.feature.pattern_editing.action
 
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext

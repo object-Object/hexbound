@@ -1,0 +1,62 @@
+{
+    hexcasting: {
+        mishap: {
+            no_construct:"%s can only be executed by a Construct",
+            invalid_value: {
+                "entity.construct": {
+                    generic: "a Construct",
+                    spider: "a Spider Construct",
+                    blaze: "a Blaze Construct"
+                }
+            },
+            colorizer: {
+                missing_key: 'Pattern "%s" does not match a saved pigment',
+                absent: "No pigment is present to be saved",
+                storage_full: "Too many pigments have already been stored"
+            },
+        },
+        iota: {
+            "hexbound:item": "Item",
+            "hexbound:item_stack": "Item Stack"
+        }
+    },
+    hexbound: {
+        "stack.number_prefix_format": "%dx ",
+        construct: {
+            status: {
+                executing: "Executing command: %s",
+                error: "Execution failed: %s",
+                idle: "Waiting for instructions",
+                bound_player: "Bound to %s",
+                bound_pattern: 'Inscribed with pattern "%s"'
+            },
+            command: {
+                no_op: "not doing anything",
+                move_to: "moving to <%.1f, %.1f, %.1f>",
+                drop_off: "dropping an item",
+                pick_up: "picking up %s",
+                unknown_item: "an unknown item"
+            },
+            exception: {
+                component_missing: {
+                    "item": "%s cannot carry items"
+                },
+                bad_target: {
+                    pos_too_far: "<%.1f, %.1f, %.1f> is too far",
+                    target_expired: "%s is no longer available",
+                    does_not_exist: {
+                        item: "target item does not exist"
+                    },
+                    not_an_item: "%s is not an item"
+                },
+                no_item: "construct isn't holding an item"
+            }
+        }
+    },
+    entity: {
+        hexbound: {
+            spider_construct: "Spider Construct",
+            robot_construct: "Robot Construct"
+        }
+    }
+}

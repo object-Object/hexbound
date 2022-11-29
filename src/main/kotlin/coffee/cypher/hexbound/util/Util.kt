@@ -28,21 +28,32 @@ inline fun <reified T : Entity> List<Iota>.getEntityOfType(errorStub: String, in
     throw MishapInvalidIota.of(x, if (argc == 0) index else argc - (index + 1), errorStub)
 }
 
-fun List<Iota>.getConstruct(index: Int, argc: Int = 0): AbstractConstructEntity<*> =
+fun List<Iota>.getConstruct(index: Int, argc: Int = 0): AbstractConstructEntity =
     getEntityOfType("entity.construct.generic", index, argc)
 
 fun List<Iota>.getSpiderConstruct(index: Int, argc: Int = 0): SpiderConstructEntity =
-    getEntityOfType(redirectSpiderLang("entity.construct.spider"), index, argc)
+    getEntityOfType("entity.construct.spider", index, argc)
 
-fun redirectSpiderLang(original: String): String {
-    return if (HexboundConfig.replaceSpiderConstruct)
+
+/*
+ * TODO
+ *   these functions are here to replace the Spider Construct name references
+ *   with Robot Construct, but at the moment are not used much. Replacing all
+ *   references is surprisingly hard, so for now it's just gonna be a model thing
+ */
+fun redirectSpiderLang(original: String, entity: SpiderConstructEntity? = null): String {
+    return if (entity?.isAltModelEnabled == true || HexboundConfig.replaceSpiderConstruct)
         original.replace("construct.spider", "construct.robot")
             .replace("spider_construct", "robot_construct")
     else
         original
 }
 
-fun redirectSpiderLang(original: Text): Text {
+fun redirectSpiderLang(original: Text, entity: SpiderConstructEntity? = null): Text {
+    if (entity?.isAltModelEnabled != true && !HexboundConfig.replaceSpiderConstruct) {
+        return original
+    }
+
     val component = original.asComponent()
 
     val newComponent = if (component is TranslatableComponent)

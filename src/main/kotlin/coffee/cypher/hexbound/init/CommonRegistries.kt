@@ -1,20 +1,21 @@
 package coffee.cypher.hexbound.init
 
+import at.petrak.hexcasting.api.spell.iota.IotaType
+import at.petrak.hexcasting.common.lib.hex.HexIotaTypes
 import coffee.cypher.hexbound.feature.construct.command.*
 import coffee.cypher.hexbound.feature.construct.entity.SpiderConstructEntity
+import coffee.cypher.hexbound.feature.item_patterns.iota.ItemIota
+import coffee.cypher.hexbound.feature.item_patterns.iota.ItemStackIota
 import com.mojang.serialization.Codec
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
-import net.minecraft.entity.EntityDimensions
 import net.minecraft.entity.EntityType
-import net.minecraft.entity.SpawnGroup
 import net.minecraft.util.math.Vec3d
 import net.minecraft.util.registry.DefaultedRegistry
 import net.minecraft.util.registry.Registry
 import org.quiltmc.qkl.library.registry.RegistryAction
 import org.quiltmc.qkl.library.registry.provide
 import org.quiltmc.qkl.library.serialization.CodecFactory
-import org.quiltmc.qsl.entity.api.QuiltEntityTypeBuilder
-import java.util.UUID
+import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.jvm.isAccessible
@@ -23,6 +24,7 @@ fun initCommonRegistries() {
     CommonRegistries.init()
     EntityTypes.init()
     ConstructCommandTypes.init()
+    IotaTypes.init()
 }
 
 object CommonRegistries {
@@ -64,13 +66,17 @@ abstract class Initializer<T>(
 
 object EntityTypes : Initializer<EntityType<*>>(Registry.ENTITY_TYPE) {
     val SPIDER_CONSTRUCT: EntityType<SpiderConstructEntity> by registry.provide("spider_construct") {
-        QuiltEntityTypeBuilder
-            .createMob<SpiderConstructEntity>()
-            .spawnGroup(SpawnGroup.MISC)
-            .entityFactory(::SpiderConstructEntity)
-            .setDimensions(EntityDimensions.fixed(1.25f, 0.75f))
-            .defaultAttributes(SpiderConstructEntity.createAttributes())
-            .build()
+        SpiderConstructEntity.createType()
+    }
+}
+
+object IotaTypes : Initializer<IotaType<*>>(HexIotaTypes.REGISTRY) {
+    val ITEM_STACK by registry.provide("item_stack") {
+        ItemStackIota.Type
+    }
+
+    val ITEM by registry.provide("item") {
+        ItemIota.Type
     }
 }
 
@@ -81,7 +87,8 @@ object ConstructCommandTypes : Initializer<ConstructCommand.Type<*>>(CommonRegis
             unnamed(Codec.STRING.xmap(UUID::fromString, UUID::toString))
         }
     }
-    private inline fun <reified T : ConstructCommand<*, T>> provideType(id: String): Lazy<ConstructCommand.Type<T>> {
+
+    private inline fun <reified T : ConstructCommand<T>> provideType(id: String): Lazy<ConstructCommand.Type<T>> {
         return registry.provide(id) {
             ConstructCommand.Type(codecFactory.create())
         }

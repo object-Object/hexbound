@@ -1,29 +1,35 @@
 package coffee.cypher.hexbound.feature.construct.command
 
+import coffee.cypher.hexbound.feature.construct.command.execution.ConstructCommandContext
 import coffee.cypher.hexbound.feature.construct.entity.AbstractConstructEntity
 import coffee.cypher.hexbound.init.ConstructCommandTypes
+import coffee.cypher.kettle.scheduler.TaskContext
 import com.mojang.serialization.Codec
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import net.minecraft.entity.ai.goal.Goal
 import net.minecraft.server.world.ServerWorld
+import net.minecraft.text.Text
 
-interface ConstructCommand<in T : AbstractConstructEntity<*>, C : ConstructCommand<T, C>> {
-    val type: Type<C>
+interface ConstructCommand<C : ConstructCommand<C>> {
+    fun getType(): Type<C>
 
-    fun createGoal(construct: T, serverWorld: ServerWorld): Goal?
+    fun display(world: ServerWorld): Text
 
-    data class Type<C : ConstructCommand<*, C>>(
+    suspend fun TaskContext<out ConstructCommandContext>.execute()
+
+    data class Type<C : ConstructCommand<C>>(
         val codec: Codec<C>
     )
 }
 
 @Serializable
-class NoOpCommand : ConstructCommand<AbstractConstructEntity<*>, NoOpCommand> {
-    @Transient
-    override val type = ConstructCommandTypes.NO_OP
+class NoOpCommand : ConstructCommand<NoOpCommand> {
+    override fun getType() = ConstructCommandTypes.NO_OP
 
-    override fun createGoal(construct: AbstractConstructEntity<*>, serverWorld: ServerWorld): Goal? {
-        return null
+    override fun display(world: ServerWorld): Text {
+        return Text.translatable("hexbound.construct.command.no_op")
+    }
+
+    override suspend fun TaskContext<out ConstructCommandContext>.execute() {
     }
 }

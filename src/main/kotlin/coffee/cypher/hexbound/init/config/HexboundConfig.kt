@@ -7,8 +7,8 @@ object HexboundConfig {
 
     val CONFIG = buildConfig(Hexbound.id("config")) {
         section("client") {
-            value("enable_alternate_construct") {
-                comment("Replaces model and display name for Spider Construct with more neutral ones")
+            value("force_alternate_construct") {
+                comment("Force Spider Construct to always use the alternative Robot model")
 
                 defaultValue = false
                 bind(::replaceSpiderConstruct)

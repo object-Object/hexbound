@@ -1,10 +1,11 @@
-package coffee.cypher.hexbound.feature.colorizerstorage.casting
+package coffee.cypher.hexbound.feature.colorizer_storage.action
 
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.math.HexPattern
 import at.petrak.hexcasting.fabric.cc.HexCardinalComponents
+import coffee.cypher.hexbound.feature.colorizer_storage.mishap.MishapMissingColorizerKey
 import coffee.cypher.hexbound.init.memorizedColorizers
 import coffee.cypher.hexbound.util.nonBlankSignature
 
@@ -18,7 +19,7 @@ object OpColorizerLoad : SpellAction {
         val pattern = args.getPattern(0, 1)
 
         if (pattern.nonBlankSignature !in ctx.caster.memorizedColorizers) {
-            throw IllegalArgumentException() // TODO mishap!
+            throw MishapMissingColorizerKey(pattern) // TODO mishap!
         }
 
         return Triple(

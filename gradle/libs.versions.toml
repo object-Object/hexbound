@@ -4,8 +4,8 @@ minecraft = "1.19.2"
 
 quilt_mappings = "1.19.2+build.21"
 quilt_loader = "0.17.6"
-qsl = "3.0.0-beta.21+1.19.2"
-quilt-fapi = "4.0.0-beta.20+0.66.0-1.19.2"
+qsl = "3.0.0-beta.22+1.19.2"
+quilt-fapi = "4.0.0-beta.22+0.67.1-1.19.2"
 qkl = "0.1.7+kt.1.7.20+flk.1.8.5"
 
 kotlin = "1.7.20"
@@ -14,9 +14,12 @@ paucal = "0.5.0"
 hexcasting = "0.10.1"
 cca = "5.0.2"
 
+hexal = "Sxp0YzND"
+
 fake-player = "0.5.0"
 mixin-extras = "0.1.0"
 geckolib = "3.1.37"
+kettle = "2.2.1+1.19.2"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
@@ -30,12 +33,14 @@ qkl = { module = "org.quiltmc.quilt-kotlin-libraries:quilt-kotlin-libraries", ve
 
 hexcasting = { module = "at.petra-k.hexcasting:hexcasting-fabric-1.19.2", version.ref = "hexcasting" }
 paucal = { module = "at.petra-k.paucal:paucal-fabric-1.19.2", version.ref = "paucal" }
-
 cca = { module = "dev.onyxstudios.cardinal-components-api:cardinal-components-api", version.ref = "cca" }
+
+hexal = { module = "maven.modrinth:hexal", version.ref = "hexal" }
 
 fake-player = { module = "dev.cafeteria:fake-player-api", version.ref = "fake-player" }
 mixin-extras = { module = "com.github.LlamaLad7:MixinExtras", version.ref = "mixin-extras" }
 geckolib = { module = "software.bernie.geckolib:geckolib-quilt-1.19", version.ref = "geckolib" }
+kettle = { module = "coffee.cypher.kettle:kettle", version.ref = "kettle" }
 
 [bundles]
 kotlin = ["qkl"]

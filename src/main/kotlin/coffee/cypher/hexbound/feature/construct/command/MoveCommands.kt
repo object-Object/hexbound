@@ -1,35 +1,40 @@
 package coffee.cypher.hexbound.feature.construct.command
 
+import coffee.cypher.hexbound.feature.construct.command.execution.ConstructCommandContext
 import coffee.cypher.hexbound.feature.construct.entity.AbstractConstructEntity
+import coffee.cypher.hexbound.feature.construct.command.exception.BadTargetConstructCommandException
 import coffee.cypher.hexbound.init.ConstructCommandTypes
+import coffee.cypher.kettle.scheduler.TaskContext
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import net.minecraft.entity.ai.goal.Goal
 import net.minecraft.server.world.ServerWorld
+import net.minecraft.text.Text
 import net.minecraft.util.math.Vec3d
 
 @Serializable
 class MoveTo(
     @Contextual val targetPos: Vec3d
-) : ConstructCommand<AbstractConstructEntity<*>, MoveTo> {
-    @Transient
-    override val type = ConstructCommandTypes.MOVE_TO
+) : ConstructCommand<MoveTo> {
+    override fun getType() = ConstructCommandTypes.MOVE_TO
 
-    override fun createGoal(construct: AbstractConstructEntity<*>, serverWorld: ServerWorld): Goal {
-        return object : Goal() {
-            override fun canStart(): Boolean {
-                return construct.pos.distanceTo(targetPos) < 32
+    override suspend fun TaskContext<out ConstructCommandContext>.execute() {
+        withContext {
+            maintain {
+                if (construct.pos.distanceTo(targetPos) > 32) {
+                    throw BadTargetConstructCommandException("pos_too_far", targetPos.x, targetPos.y, targetPos.z)
+                }
             }
 
-            override fun shouldContinue(): Boolean {
-                return construct.pos.distanceTo(targetPos) > 1.5
-            }
+            construct.navigation.startMovingTo(targetPos.x, targetPos.y, targetPos.z, 1.0)
 
-            override fun start() {
-                construct.navigation.startMovingTo(targetPos.x, targetPos.y, targetPos.z, 0.25)
+            waitUntil {
+                !construct.isNavigating
             }
         }
     }
 
+    override fun display(world: ServerWorld): Text {
+        return Text.translatable("hexbound.construct.command.move_to", targetPos.x, targetPos.y, targetPos.z)
+    }
 }

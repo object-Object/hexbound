@@ -55,7 +55,6 @@ repositories {
         name = "JitPack"
     }
 
-
     maven("https://maven.cafeteria.dev/releases") {
         content {
             includeGroup("dev.cafeteria")
@@ -99,6 +98,7 @@ dependencies {
         exclude(module = "fabric-language-kotlin")
     }
     modImplementation(libs.cca)
+    modImplementation(libs.kettle)
 
     modImplementation(libs.fake.player)
     include(libs.fake.player)
@@ -107,6 +107,8 @@ dependencies {
     annotationProcessor(libs.mixin.extras)
 
     modImplementation(libs.geckolib)
+
+    modCompileOnly(libs.hexal)
 }
 
 val javaVersion = JavaVersion.VERSION_17
@@ -137,9 +139,9 @@ tasks {
             expand(mapOf("version" to version))
         }
 
-        filesMatching("**/*.flatten.json") {
+        filesMatching("**/*.flatten.json5") {
             filter(FlatteningJsonFilter::class.java)
-            path = path.replace("\\.flatten\\.json$".toRegex(), ".json")
+            path = path.replace("\\.flatten\\.json5$".toRegex(), ".json")
         }
     }
 

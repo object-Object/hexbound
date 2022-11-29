@@ -1,4 +1,4 @@
-package coffee.cypher.hexbound.feature.construct.casting
+package coffee.cypher.hexbound.feature.construct.action
 
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
@@ -26,7 +26,7 @@ object OpSendInstructions : SpellAction {
     }
 
     private class Spell(
-        val constructEntity: AbstractConstructEntity<*>,
+        val constructEntity: AbstractConstructEntity,
         val instructions: List<Iota>
     ) : RenderedSpell {
         override fun cast(ctx: CastingContext) {
