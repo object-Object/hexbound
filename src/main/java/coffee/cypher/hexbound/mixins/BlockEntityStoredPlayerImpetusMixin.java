@@ -2,7 +2,7 @@ package coffee.cypher.hexbound.mixins;
 
 import at.petrak.hexcasting.api.block.circle.BlockEntityAbstractImpetus;
 import at.petrak.hexcasting.common.blocks.entity.BlockEntityStoredPlayerImpetus;
-import coffee.cypher.hexbound.util.FakePlayerFactory;
+import coffee.cypher.hexbound.util.fake.ImpetusFakePlayer;
 import coffee.cypher.hexbound.util.mixinaccessor.ImpetusFakePlayerAccessor;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.mojang.authlib.GameProfile;
@@ -49,11 +49,7 @@ abstract class BlockEntityStoredPlayerImpetusMixin extends BlockEntityAbstractIm
     @Override
     public void setHexbound$useFakeFallback(boolean value) {
         if (value && world instanceof ServerWorld serverWorld) {
-            hexbound$fakeFallback = FakePlayerFactory.INSTANCE.getFakePlayerForImpetus(
-                storedPlayer,
-                storedPlayerProfile,
-                serverWorld
-            );
+            hexbound$fakeFallback = new ImpetusFakePlayer(serverWorld, (BlockEntityStoredPlayerImpetus) (Object) this);
         } else {
             hexbound$fakeFallback = null;
         }
@@ -78,7 +74,7 @@ abstract class BlockEntityStoredPlayerImpetusMixin extends BlockEntityAbstractIm
     @ModifyReturnValue(method = "getPlayer", at = @At("RETURN"))
     private PlayerEntity hexbound$fallbackToFakePlayer(PlayerEntity original) {
         if (original == null && world instanceof ServerWorld serverWorld) {
-            return FakePlayerFactory.INSTANCE.getFakePlayerForImpetus(storedPlayer, storedPlayerProfile, serverWorld);
+            return new ImpetusFakePlayer(serverWorld, (BlockEntityStoredPlayerImpetus) (Object) this);
         }
 
         return original;

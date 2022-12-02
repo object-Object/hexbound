@@ -13,7 +13,7 @@ import coffee.cypher.hexbound.feature.construct.command.execution.ConstructComma
 import coffee.cypher.hexbound.feature.construct.entity.component.ConstructComponentKey
 import coffee.cypher.hexbound.init.CommonRegistries
 import coffee.cypher.hexbound.init.Hexbound
-import coffee.cypher.hexbound.util.FakePlayerFactory
+import coffee.cypher.hexbound.util.fake.ConstructFakePlayer
 import coffee.cypher.hexbound.util.mixinaccessor.construct
 import coffee.cypher.hexbound.util.provideDelegate
 import com.mojang.serialization.Codec
@@ -50,10 +50,12 @@ abstract class AbstractConstructEntity(
 
     private val components = mutableMapOf<ConstructComponentKey<*>, Any>()
 
+    @Suppress("LeakingThis")
     protected val fakePlayer = if (world.isClient)
         null
     else
-        FakePlayerFactory.getFakePlayerForConstruct(world as ServerWorld)
+        ConstructFakePlayer(world as ServerWorld, this)
+
     protected var command: Pair<ConstructCommand<*>, List<Iota>>? = null
     protected var harness: CastingHarness? = null
     protected var error: Text? = null

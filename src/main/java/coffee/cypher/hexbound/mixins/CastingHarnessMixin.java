@@ -6,6 +6,7 @@ import at.petrak.hexcasting.api.spell.casting.CastingHarness;
 import at.petrak.hexcasting.api.spell.mishaps.Mishap;
 import at.petrak.hexcasting.api.spell.mishaps.MishapDisallowedSpell;
 import coffee.cypher.hexbound.init.config.HexboundConfig;
+import coffee.cypher.hexbound.util.fake.HexboundFakePlayer;
 import coffee.cypher.hexbound.util.mixinaccessor.CastingContextConstructAccessorKt;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -34,8 +35,10 @@ abstract class CastingHarnessMixin {
         Operation<Boolean> op
     ) throws Mishap {
         if (
-            CastingContextConstructAccessorKt.getConstruct(ctx) != null &&
-                HexboundConfig.INSTANCE.isActionForbiddenForConstruct(id)
+            (
+                CastingContextConstructAccessorKt.getConstruct(ctx) != null ||
+                    ctx.getCaster() instanceof HexboundFakePlayer
+            ) && HexboundConfig.INSTANCE.isActionForbiddenForConstruct(id)
         ) {
             throw new MishapDisallowedSpell("disallowed_construct");
         }

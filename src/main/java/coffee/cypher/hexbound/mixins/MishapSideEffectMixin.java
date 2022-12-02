@@ -2,6 +2,7 @@ package coffee.cypher.hexbound.mixins;
 
 import at.petrak.hexcasting.api.spell.casting.CastingHarness;
 import at.petrak.hexcasting.api.spell.casting.sideeffects.OperatorSideEffect;
+import coffee.cypher.hexbound.util.fake.ConstructFakePlayer;
 import coffee.cypher.hexbound.util.mixinaccessor.CastingContextConstructAccessorKt;
 import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -21,6 +22,10 @@ abstract class MishapSideEffectMixin {
     )
     private boolean hexbound$sendMishapToConstruct(ServerPlayerEntity player, Text text, CastingHarness harness) {
         var construct = CastingContextConstructAccessorKt.getConstruct(harness.getCtx());
+
+        if (construct == null && player instanceof ConstructFakePlayer fake) {
+            construct = fake.getConstruct();
+        }
 
         if (construct != null) {
             construct.setLastError(text);
