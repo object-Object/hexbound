@@ -14,25 +14,49 @@
                 absent: "No pigment is present to be saved",
                 storage_full: "Too many pigments have already been stored"
             },
+            disallowed_construct: "%s is not allowed for Constructs"
         },
         iota: {
             "hexbound:item": "Item",
             "hexbound:item_stack": "Item Stack"
+        },
+        spell: {
+            "hexbound:rotate_pattern": "Revolving Distillation",
+            "hexbound:merge_patterns": "Painter's Distillation",
+
+            "hexbound:construct_get_self": "Automaton's Reflection",
+
+            "hexbound:give_command_pick_up": "Command: Pick Up Item",
+            "hexbound:give_command_drop_off": "Command: Drop Item",
+            "hexbound:give_command_move_to": "Command: Move To Position",
+            "hexbound:send_instructions": "Send Instructions",
+            "hexbound:broadcast_instructions": "Broadcast Instructions",
+
+            "hexbound:get_main_hand": "Duelist's Purification",
+            "hexbound:get_off_hand": "Shieldbearer's Purification",
+            "hexbound:get_inventory": {
+                "stacks": "Hoarder's Distillation",
+                "items": "Collector's Distillation"
+            },
         }
     },
     hexbound: {
-        "stack.number_prefix_format": "%dx ",
+        vector_format: "(%s, %s, %s)",
+        stack: {
+            number_prefix_format: "%dx ",
+            empty: "Empty Stack"
+        },
         construct: {
             status: {
-                executing: "Executing command: %s",
-                error: "Execution failed: %s",
+                executing: "Executing command: ",
+                error: "Execution failed: ",
                 idle: "Waiting for instructions",
                 bound_player: "Bound to %s",
                 bound_pattern: 'Inscribed with pattern "%s"'
             },
             command: {
                 no_op: "not doing anything",
-                move_to: "moving to <%.1f, %.1f, %.1f>",
+                move_to: "moving to %s",
                 drop_off: "dropping an item",
                 pick_up: "picking up %s",
                 unknown_item: "an unknown item"
@@ -42,7 +66,7 @@
                     "item": "%s cannot carry items"
                 },
                 bad_target: {
-                    pos_too_far: "<%.1f, %.1f, %.1f> is too far",
+                    pos_too_far: " is too far",
                     target_expired: "%s is no longer available",
                     does_not_exist: {
                         item: "target item does not exist"
@@ -51,7 +75,8 @@
                 },
                 no_item: "construct isn't holding an item"
             }
-        }
+        },
+        "impetus.fake_enabled": "Contains a Figment"
     },
     entity: {
         hexbound: {

@@ -50,7 +50,7 @@ class ItemIota private constructor(val item: Item) : Iota(Type, item) {
         }
 
         override fun color(): Int {
-            return 0xFF_FF_AA_00u.toInt()
+            return 0xFFFFAA00u.toInt()
         }
     }
 

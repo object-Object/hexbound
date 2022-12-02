@@ -2,7 +2,6 @@ package coffee.cypher.hexbound.feature.construct.entity
 
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.casting.CastingHarness
-import at.petrak.hexcasting.api.spell.iota.EntityIota
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.utils.downcast
 import at.petrak.hexcasting.common.lib.HexItems
@@ -16,9 +15,12 @@ import coffee.cypher.hexbound.init.CommonRegistries
 import coffee.cypher.hexbound.init.Hexbound
 import coffee.cypher.hexbound.util.FakePlayerFactory
 import coffee.cypher.hexbound.util.mixinaccessor.construct
+import coffee.cypher.hexbound.util.provideDelegate
 import com.mojang.serialization.Codec
-import dev.cafeteria.fakeplayerapi.server.FakeServerPlayer
 import net.minecraft.entity.EntityType
+import net.minecraft.entity.data.DataTracker
+import net.minecraft.entity.data.TrackedData
+import net.minecraft.entity.data.TrackedDataHandlerRegistry
 import net.minecraft.entity.mob.PathAwareEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
@@ -33,47 +35,50 @@ import net.minecraft.util.Arm
 import net.minecraft.util.Hand
 import net.minecraft.util.Identifier
 import net.minecraft.world.World
+import org.quiltmc.qkl.library.nbt.set
+import org.quiltmc.qkl.library.text.*
 import kotlin.jvm.optionals.getOrNull
 
-//TODO fuck generics, use component composition
 abstract class AbstractConstructEntity(
     entityType: EntityType<out PathAwareEntity>,
     world: World
 ) : PathAwareEntity(entityType, world) {
     var instructionSet: List<Iota>? = null
 
+    internal var hexalLinkable: Any? = null
+    internal var hexalLinks by HEXAL_LINKS
+
     private val components = mutableMapOf<ConstructComponentKey<*>, Any>()
 
+    protected val fakePlayer = if (world.isClient)
+        null
+    else
+        FakePlayerFactory.getFakePlayerForConstruct(world as ServerWorld)
     protected var command: Pair<ConstructCommand<*>, List<Iota>>? = null
     protected var harness: CastingHarness? = null
     protected var error: Text? = null
 
     private lateinit var _executor: ConstructCommandExecutor
 
-    private fun getOrCreateHarness(world: ServerWorld): CastingHarness {
-        return if (harness == null) {
-            val castingContext = createCastingContext(world)
-
-            castingContext.construct = this
-
-            val newHarness = CastingHarness(castingContext)
-            newHarness.stack += EntityIota(this)
-
-            harness = newHarness
-
-            newHarness
-        } else {
-            harness!!
+    private fun getOrCreateHarness(): CastingHarness {
+        if (harness == null) {
+            harness = CastingHarness(createCastingContext())
         }
+
+        return harness!!
     }
 
-    private fun createCastingContext(world: ServerWorld): CastingContext {
-        return CastingContext(
-            prepareFakePlayer(world), //TODO update fake players properly, store one per construct, update it in tick or before each execution?
+    private fun createCastingContext(): CastingContext {
+        val castingContext = CastingContext(
+            fakePlayer!!,
             Hand.OFF_HAND,
             CastingContext.CastSource.PACKAGED_HEX,
             null
         )
+
+        castingContext.construct = this
+
+        return castingContext
     }
 
     private fun getOrCreateExecutor(world: ServerWorld): ConstructCommandExecutor {
@@ -99,12 +104,12 @@ abstract class AbstractConstructEntity(
         }
 
         setLastError(commandException.errorText)
-        command = null
-        harness = null
     }
 
     fun setLastError(error: Text) {
         this.error = error
+        command = null
+        harness = null
     }
 
     private fun evaluateInstructions(instructionSet: List<Iota>) {
@@ -112,7 +117,7 @@ abstract class AbstractConstructEntity(
 
         error = null
 
-        val info = getOrCreateHarness(serverWorld).executeIotas(instructionSet, serverWorld)
+        val info = getOrCreateHarness().executeIotas(instructionSet, serverWorld)
 
         if (!info.resolutionType.success) {
             getOrCreateExecutor(serverWorld).cancelCommand()
@@ -132,16 +137,12 @@ abstract class AbstractConstructEntity(
         getOrCreateExecutor(world).startCommand(command)
     }
 
-    protected open fun prepareFakePlayer(world: ServerWorld): FakeServerPlayer {
-        val fakePlayer = FakePlayerFactory.getFakePlayerForConstruct(world)
-        fakePlayer.setPos(x, y, z)
-
-        return fakePlayer
-    }
-
     override fun tick() {
         super.tick()
+        fakePlayer?.setPos(x, y, z)
+
         if (instructionSet != null) {
+            harness = null
             evaluateInstructions(instructionSet!!)
             instructionSet = null
         }
@@ -163,11 +164,21 @@ abstract class AbstractConstructEntity(
         if (!player.isSneaking && player.getStackInHand(hand).isOf(HexItems.SCRYING_LENS)) {
             if (!world.isClient) {
                 val text = when {
-                    error != null -> Text.translatable("hexbound.construct.status.error", error!!)
-                    command != null -> Text.translatable(
-                        "hexbound.construct.status.executing",
-                        command?.first?.display(world as ServerWorld)
-                    )
+                    error != null -> buildText {
+                        color(Color(0xFFA500)) {
+                            translatable("hexbound.construct.status.error")
+                        }
+
+                        text(error!!)
+                    }
+
+                    command != null -> buildText {
+                        color(Color.GREEN) {
+                            translatable("hexbound.construct.status.executing")
+                        }
+
+                        text(command!!.first.display(world as ServerWorld))
+                    }
 
                     else -> Text.translatable("hexbound.construct.status.idle")
                 }
@@ -185,6 +196,18 @@ abstract class AbstractConstructEntity(
         return true
     }
 
+    override fun cannotDespawn(): Boolean {
+        return true
+    }
+
+    override fun initDataTracker() {
+        super.initDataTracker()
+
+        val compound = NbtCompound()
+        compound["render_links"] = NbtList()
+        dataTracker.startTracking(HEXAL_LINKS, compound)
+    }
+
     override fun getArmorItems(): Iterable<ItemStack> {
         return mutableListOf()
     }
@@ -196,13 +219,15 @@ abstract class AbstractConstructEntity(
     override fun writeCustomDataToNbt(nbt: NbtCompound) {
         super.writeCustomDataToNbt(nbt)
 
+        nbt["hexal_links"] = hexalLinks
+
         if (world is ServerWorld) {
             command?.let {
-                nbt.put("command", encodeCommand(it))
+                nbt["command"] = encodeCommand(it)
             }
 
             harness?.let {
-                nbt.put("harness", it.serializeToNBT())
+                nbt["harness"] = it.serializeToNBT()
             }
         }
     }
@@ -212,10 +237,7 @@ abstract class AbstractConstructEntity(
         val compound = NbtCompound()
 
         val type = CommonRegistries.CONSTRUCT_COMMANDS.getId(command.getType())
-        compound.putString(
-            "type",
-            type.toString()
-        )
+        compound["type"] = type.toString()
 
         val callbackList = NbtList()
 
@@ -223,19 +245,16 @@ abstract class AbstractConstructEntity(
             callbackList.add(HexIotaTypes.serialize(it))
         }
 
-        compound.put("on_complete", callbackList)
+        compound["on_complete"] = callbackList
 
         if (CommonRegistries.CONSTRUCT_COMMANDS.get(type) != command.getType()) {
             Hexbound.LOGGER.warn("Construct command type for $command was not registered")
-            compound.put("data", NbtCompound())
+            compound["data"] = NbtCompound()
             return compound
         }
 
         @Suppress("UNCHECKED_CAST")
-        compound.put(
-            "data",
-            (command.getType().codec as Codec<C>).encodeStart(NbtOps.INSTANCE, command).result().get()
-        )
+        compound["data"] = (command.getType().codec as Codec<C>).encodeStart(NbtOps.INSTANCE, command).result().get()
 
         return compound
     }
@@ -244,8 +263,9 @@ abstract class AbstractConstructEntity(
     override fun readCustomDataFromNbt(nbt: NbtCompound) {
         super.readCustomDataFromNbt(nbt)
 
-        command = null
+        hexalLinks = nbt.getCompound("hexal_links")
 
+        command = null
         val serverWorld = world as? ServerWorld ?: return
 
         if (nbt.contains("command")) {
@@ -257,7 +277,6 @@ abstract class AbstractConstructEntity(
                 HexIotaTypes.deserialize(it.downcast(NbtCompound.TYPE), serverWorld)
             }
 
-            @Suppress("UNCHECKED_CAST")
             val newCommand = result.result().getOrNull()?.first
 
             if (newCommand != null) {
@@ -266,7 +285,16 @@ abstract class AbstractConstructEntity(
         }
 
         if (nbt.contains("harness")) {
-            harness = CastingHarness.fromNBT(nbt.getCompound("harness"), createCastingContext(serverWorld))
+            harness = CastingHarness.fromNBT(nbt.getCompound("harness"), createCastingContext())
         }
+    }
+
+    companion object {
+        val HEXAL_LINKS: TrackedData<NbtCompound> = DataTracker.registerData(
+            AbstractConstructEntity::class.java,
+            TrackedDataHandlerRegistry.TAG_COMPOUND
+        )
+
+        val EXTRA_TICK_HANDLERS = mutableListOf<(AbstractConstructEntity) -> Unit>()
     }
 }

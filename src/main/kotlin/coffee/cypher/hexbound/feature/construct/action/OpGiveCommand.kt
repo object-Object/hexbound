@@ -41,7 +41,7 @@ abstract class OpGiveCommand : ConstMediaAction {
     }
 
     protected fun <T : Any> AbstractConstructEntity.requireComponent(key: ConstructComponentKey<T>): T {
-        return getComponent(key) ?: throw MishapMissingConstructComponent(key)
+        return getComponent(key) ?: throw MishapMissingConstructComponent(this, key)
     }
 
     protected abstract fun getCommand(

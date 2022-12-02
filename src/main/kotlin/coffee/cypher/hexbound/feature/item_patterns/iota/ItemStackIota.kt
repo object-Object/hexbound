@@ -9,9 +9,7 @@ import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
-import org.quiltmc.qkl.library.text.buildText
-import org.quiltmc.qkl.library.text.text
-import org.quiltmc.qkl.library.text.translatable
+import org.quiltmc.qkl.library.text.*
 
 class ItemStackIota(val itemStack: ItemStack) : Iota(Type, itemStack) {
     override fun isTruthy(): Boolean {
@@ -43,14 +41,20 @@ class ItemStackIota(val itemStack: ItemStack) : Iota(Type, itemStack) {
             val stack = ItemStack.fromNbt(compound.getCompound("stack"))
 
             return buildText {
-                translatable("hexbound.stack.number_prefix_format", stack.count)
-
-                text(stack.name)
+                color(Color(0x1E90FF)) {
+                    if (stack.isEmpty) {
+                        translatable("hexbound.stack.empty")
+                    } else {
+                        //TODO QKL pls
+                        text(Text.translatable("hexbound.stack.number_prefix_format", stack.count))
+                        text(stack.name)
+                    }
+                }
             }
         }
 
         override fun color(): Int {
-            return 0xAA00BB
+            return 0xFF1E90FFu.toInt()
         }
 
     }

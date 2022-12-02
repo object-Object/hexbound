@@ -5,6 +5,7 @@ import org.quiltmc.config.api.Config
 import org.quiltmc.config.api.Constraint
 import org.quiltmc.config.api.annotations.Comment
 import org.quiltmc.config.api.values.TrackedValue
+import org.quiltmc.config.api.values.ValueList
 import org.quiltmc.loader.api.config.QuiltConfig
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
@@ -29,7 +30,7 @@ fun <T : Any> configField(): ConfigDelegate<T> {
 
 class SectionBuilder {
     val sections: MutableMap<String, SectionBuilder> = mutableMapOf()
-    val values: MutableList<ValueBuilder<*>> = mutableListOf()
+    val values: MutableList<AbstractValueBuilder<*>> = mutableListOf()
 
     fun buildAsSection(builder: Config.SectionBuilder) {
         sections.forEach {
@@ -52,16 +53,16 @@ class SectionBuilder {
     }
 }
 
-class ValueBuilder<T : Any>(val key: String) {
+abstract class AbstractValueBuilder<T : Any>(val key: String) {
     val bindings: MutableList<ConfigDelegate<T>> = mutableListOf()
     val constraints: MutableList<Constraint<T>> = mutableListOf()
 
     val comments: MutableList<String> = mutableListOf()
 
-    lateinit var defaultValue: T
+    abstract fun createValue(): T
 
     fun build(): TrackedValue<T> {
-        val tracked = TrackedValue.create(defaultValue, key) { builder ->
+        val tracked = TrackedValue.create(createValue(), key) { builder ->
             constraints.forEach { constraint ->
                 builder.constraint(constraint)
             }
@@ -79,6 +80,36 @@ class ValueBuilder<T : Any>(val key: String) {
     }
 }
 
+class SingleValueBuilder<T : Any>(key: String) : AbstractValueBuilder<T>(key) {
+    private lateinit var defaultValue: T
+
+    fun defaultValue(value: T) {
+        defaultValue = value
+    }
+
+    override fun createValue(): T {
+        return defaultValue
+    }
+}
+
+class ListValueBuilder<T : Any>(key: String) : AbstractValueBuilder<List<T>>(key) {
+    private lateinit var defaultValue: Array<out T>
+
+    private lateinit var fallbackValue: T
+
+    fun defaultValue(vararg value: T) {
+        defaultValue = value
+    }
+
+    fun fallbackValue(value: T) {
+        fallbackValue = value
+    }
+
+    override fun createValue(): List<T> {
+        return ValueList.create(fallbackValue, *defaultValue)
+    }
+}
+
 fun buildConfig(id: Identifier, action: SectionBuilder.() -> Unit): Config {
     return QuiltConfig.create(id.namespace, id.path, Config.Creator {
         SectionBuilder().apply(action).buildAsConfig(it)
@@ -89,19 +120,23 @@ fun SectionBuilder.section(name: String, action: SectionBuilder.() -> Unit) {
     sections[name] = SectionBuilder().apply(action)
 }
 
-fun <T : Any> SectionBuilder.value(key: String, action: ValueBuilder<T>.() -> Unit) {
-    values += ValueBuilder<T>(key).apply(action)
+fun <T : Any> SectionBuilder.value(key: String, action: SingleValueBuilder<T>.() -> Unit) {
+    values += SingleValueBuilder<T>(key).apply(action)
 }
 
-fun <T : Any> ValueBuilder<T>.comment(comment: String) {
+fun <T : Any> SectionBuilder.listValue(key: String, action: ListValueBuilder<T>.() -> Unit) {
+    values += ListValueBuilder<T>(key).apply(action)
+}
+
+fun <T : Any> AbstractValueBuilder<T>.comment(comment: String) {
     comments += comment
 }
 
-fun ValueBuilder<Int>.allowedRange(intRange: IntRange) {
+fun AbstractValueBuilder<Int>.allowedRange(intRange: IntRange) {
     constraints += Constraint.range(intRange.first, intRange.last)
 }
 
-fun <T : Any> ValueBuilder<T>.bind(property: KProperty0<T>) {
+fun <T : Any> AbstractValueBuilder<T>.bind(property: KProperty0<T>) {
     val delegate = property.also { it.isAccessible = true }.getDelegate()
 
     if (delegate !is ConfigDelegate<*>) {

@@ -1,16 +1,16 @@
 package coffee.cypher.hexbound.feature.construct.command
 
-import coffee.cypher.hexbound.feature.construct.command.execution.ConstructCommandContext
-import coffee.cypher.hexbound.feature.construct.entity.AbstractConstructEntity
 import coffee.cypher.hexbound.feature.construct.command.exception.BadTargetConstructCommandException
+import coffee.cypher.hexbound.feature.construct.command.execution.ConstructCommandContext
 import coffee.cypher.hexbound.init.ConstructCommandTypes
 import coffee.cypher.kettle.scheduler.TaskContext
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
 import net.minecraft.util.math.Vec3d
+import org.quiltmc.qkl.library.text.*
+import java.text.DecimalFormat
 
 @Serializable
 class MoveTo(
@@ -22,7 +22,23 @@ class MoveTo(
         withContext {
             maintain {
                 if (construct.pos.distanceTo(targetPos) > 32) {
-                    throw BadTargetConstructCommandException("pos_too_far", targetPos.x, targetPos.y, targetPos.z)
+                    throw BadTargetConstructCommandException(
+                        buildText {
+                            color(Color.RED) {
+                                //TODO QKLLLLLLL
+                                text(
+                                    Text.translatable(
+                                        "hexbound.vector_format",
+                                        DECIMAL_FORMAT.format(targetPos.x),
+                                        DECIMAL_FORMAT.format(targetPos.y),
+                                        DECIMAL_FORMAT.format(targetPos.z)
+                                    )
+                                )
+                            }
+
+                            translatable("hexbound.construct.exception.bad_target.pos_too_far")
+                        }
+                    )
                 }
             }
 
@@ -35,6 +51,24 @@ class MoveTo(
     }
 
     override fun display(world: ServerWorld): Text {
-        return Text.translatable("hexbound.construct.command.move_to", targetPos.x, targetPos.y, targetPos.z)
+        return buildText {
+            translatable("hexbound.construct.command.move_to")
+
+            color(Color.RED) {
+                //TODO QKLLLLLLL
+                text(
+                    Text.translatable(
+                        "hexbound.vector_format",
+                        DECIMAL_FORMAT.format(targetPos.x),
+                        DECIMAL_FORMAT.format(targetPos.y),
+                        DECIMAL_FORMAT.format(targetPos.z)
+                    )
+                )
+            }
+        }
+    }
+
+    companion object {
+        val DECIMAL_FORMAT = DecimalFormat("#0.#")
     }
 }

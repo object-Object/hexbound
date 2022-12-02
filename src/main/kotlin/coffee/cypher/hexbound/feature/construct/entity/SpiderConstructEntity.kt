@@ -3,7 +3,6 @@ package coffee.cypher.hexbound.feature.construct.entity
 import coffee.cypher.hexbound.feature.construct.entity.component.ItemHolderComponent
 import coffee.cypher.hexbound.util.provideDelegate
 import coffee.cypher.hexbound.util.redirectSpiderLang
-import dev.cafeteria.fakeplayerapi.server.FakeServerPlayer
 import net.minecraft.entity.EntityDimensions
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.EquipmentSlot
@@ -17,12 +16,12 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
 import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
+import org.quiltmc.qkl.library.nbt.set
 import org.quiltmc.qsl.entity.api.QuiltEntityTypeBuilder
 import software.bernie.geckolib3.core.IAnimatable
 import software.bernie.geckolib3.core.PlayState
@@ -89,10 +88,9 @@ class SpiderConstructEntity(
         return super.interactMob(player, hand)
     }
 
-    override fun prepareFakePlayer(world: ServerWorld): FakeServerPlayer {
-        return super.prepareFakePlayer(world).also {
-            it.setStackInHand(Hand.MAIN_HAND, heldStack)
-        }
+    override fun tick() {
+        super.tick()
+        fakePlayer?.setStackInHand(Hand.MAIN_HAND, heldStack)
     }
 
     override fun equipStack(slot: EquipmentSlot, stack: ItemStack) {
@@ -136,8 +134,8 @@ class SpiderConstructEntity(
     override fun writeCustomDataToNbt(nbt: NbtCompound) {
         super.writeCustomDataToNbt(nbt)
 
-        nbt.put("held_stack", heldStack.writeNbt(NbtCompound()))
-        nbt.putBoolean("alt_model", isAltModelEnabled)
+        nbt["held_stack"] = heldStack.writeNbt(NbtCompound())
+        nbt["alt_model"] = isAltModelEnabled
     }
 
     override fun readCustomDataFromNbt(nbt: NbtCompound) {

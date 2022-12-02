@@ -36,8 +36,7 @@ fun List<Iota>.getSpiderConstruct(index: Int, argc: Int = 0): SpiderConstructEnt
 
 
 /*
- * TODO
- *   these functions are here to replace the Spider Construct name references
+ *   These functions are here to replace the Spider Construct name references
  *   with Robot Construct, but at the moment are not used much. Replacing all
  *   references is surprisingly hard, so for now it's just gonna be a model thing
  */

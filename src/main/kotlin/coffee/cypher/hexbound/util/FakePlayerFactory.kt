@@ -15,30 +15,31 @@ import java.util.*
 object FakePlayerFactory {
     val FAKE_PLAYER_BUILDER_ID = Hexbound.id("fake_player")
 
-    private val playerMap = WeakHashMap<ServerWorld, MutableMap<UUID, FakeServerPlayer>>()
     private val constructUuid = UUID(-5169284172464829411L, -8829751243538922937L)
     private val constructProfile = GameProfile(constructUuid, "Minion")
 
-    fun getFakePlayerForImpetus(basePlayerUuid: UUID, basePlayerProfile: GameProfile, serverWorld: ServerWorld): FakeServerPlayer {
-        return playerMap.getOrPut(serverWorld, ::mutableMapOf).getOrPut(basePlayerUuid) {
-            val enlightenmentAdvancement = serverWorld.server.advancementLoader.get(HexAPI.modLoc("enlightenment"))
 
-            val newPlayer = createFakePlayer(basePlayerProfile, serverWorld)
+    //TODO mixin to fakeserverplayer, add base player UUID reference so it can be used for construct filtering!
+    fun getFakePlayerForImpetus(
+        basePlayerUuid: UUID,
+        basePlayerProfile: GameProfile,
+        serverWorld: ServerWorld
+    ): FakeServerPlayer {
+        val newPlayer = createFakePlayer(basePlayerProfile, serverWorld)
+        newPlayer.setPos(0.0, -200.0, 0.0)
 
-            newPlayer.setPos(0.0, -200.0, 0.0)
-            val progress = newPlayer.advancementTracker.getProgress(enlightenmentAdvancement)
-            progress.unobtainedCriteria.forEach {
-                progress.obtain(it)
-            }
-
-            newPlayer
+        val enlightenmentAdvancement = serverWorld.server.advancementLoader.get(HexAPI.modLoc("enlightenment"))
+        //TODO this does nothing, mixin to enlightenment checks instead
+        val progress = newPlayer.advancementTracker.getProgress(enlightenmentAdvancement)
+        progress.unobtainedCriteria.forEach {
+            progress.obtain(it)
         }
+
+        return newPlayer
     }
 
     fun getFakePlayerForConstruct(serverWorld: ServerWorld): FakeServerPlayer {
-        return playerMap.getOrPut(serverWorld, ::mutableMapOf).getOrPut(constructUuid) {
-            createFakePlayer(constructProfile, serverWorld)
-        }
+        return createFakePlayer(constructProfile, serverWorld)
     }
 
     private fun createFakePlayer(profile: GameProfile, serverWorld: ServerWorld): FakeServerPlayer {

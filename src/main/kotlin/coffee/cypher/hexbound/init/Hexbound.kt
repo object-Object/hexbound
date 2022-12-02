@@ -1,5 +1,6 @@
 package coffee.cypher.hexbound.init
 
+import coffee.cypher.hexbound.init.config.HexboundConfig
 import coffee.cypher.hexbound.interop.InteropManager
 import net.minecraft.util.Identifier
 import org.apache.logging.log4j.LogManager
@@ -26,6 +27,8 @@ object Hexbound : ModInitializer {
     override fun onInitialize(mod: ModContainer) {
         MOD_ID = mod.metadata().id()
         LOGGER = LogManager.getLogger(MOD_ID)
+
+        HexboundConfig.init()
 
         initCommonRegistries()
         HexboundPatterns.register()

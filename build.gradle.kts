@@ -109,9 +109,18 @@ dependencies {
     modImplementation(libs.geckolib)
 
     modCompileOnly(libs.hexal)
+    modLocalRuntime(libs.hexal)
 }
 
 val javaVersion = JavaVersion.VERSION_17
+
+loom {
+    runs {
+        named("client") {
+            vmArgs("-Dmixin.debug.export=true")
+        }
+    }
+}
 
 java {
     toolchain {

@@ -7,6 +7,7 @@ import coffee.cypher.hexbound.util.mixinaccessor.ImpetusFakePlayerAccessor;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.mojang.authlib.GameProfile;
 import com.mojang.datafixers.util.Pair;
+import dev.cafeteria.fakeplayerapi.server.FakeServerPlayer;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,6 +18,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -36,16 +38,25 @@ abstract class BlockEntityStoredPlayerImpetusMixin extends BlockEntityAbstractIm
     private GameProfile storedPlayerProfile;
 
     @Unique
-    private boolean hexbound$useFakeFallback = false;
+    @Nullable
+    private FakeServerPlayer hexbound$fakeFallback = null;
 
     @Override
     public boolean getHexbound$useFakeFallback() {
-        return hexbound$useFakeFallback;
+        return hexbound$fakeFallback != null;
     }
 
     @Override
     public void setHexbound$useFakeFallback(boolean value) {
-        hexbound$useFakeFallback = value;
+        if (value && world instanceof ServerWorld serverWorld) {
+            hexbound$fakeFallback = FakePlayerFactory.INSTANCE.getFakePlayerForImpetus(
+                storedPlayer,
+                storedPlayerProfile,
+                serverWorld
+            );
+        } else {
+            hexbound$fakeFallback = null;
+        }
     }
 
     public BlockEntityStoredPlayerImpetusMixin(BlockEntityType<?> pType, BlockPos pWorldPosition, BlockState pBlockState) {
@@ -54,13 +65,13 @@ abstract class BlockEntityStoredPlayerImpetusMixin extends BlockEntityAbstractIm
 
     @Inject(method = "saveModData", at = @At("RETURN"))
     private void hexbound$saveData(NbtCompound tag, CallbackInfo ci) {
-        tag.putBoolean("hexbound:useFakeFallback", hexbound$useFakeFallback);
+        tag.putBoolean("hexbound:useFakeFallback", getHexbound$useFakeFallback());
     }
 
     @Inject(method = "loadModData", at = @At("RETURN"))
     private void hexbound$loadData(NbtCompound tag, CallbackInfo ci) {
         if (tag.contains("hexbound:useFakeFallback")) {
-            hexbound$useFakeFallback = tag.getBoolean("hexbound:useFakeFallback");
+            setHexbound$useFakeFallback(tag.getBoolean("hexbound:useFakeFallback"));
         }
     }
 
@@ -75,7 +86,7 @@ abstract class BlockEntityStoredPlayerImpetusMixin extends BlockEntityAbstractIm
 
     @Inject(method = "applyScryingLensOverlay", at = @At("RETURN"))
     private void hexbound$appendFakeFallbackStatus(List<Pair<ItemStack, Text>> lines, BlockState state, BlockPos pos, PlayerEntity observer, World world, Direction hitFace, CallbackInfo ci) {
-        if (hexbound$useFakeFallback) {
+        if (getHexbound$useFakeFallback()) {
             lines.add(new Pair<>(ItemStack.EMPTY, Text.translatable("hexbound.impetus.fake_enabled")));
         }
     }

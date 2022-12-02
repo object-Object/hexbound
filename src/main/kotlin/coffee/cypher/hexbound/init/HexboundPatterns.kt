@@ -10,16 +10,14 @@ import coffee.cypher.hexbound.feature.pattern_editing.action.OpRotatePattern
 import coffee.cypher.hexbound.feature.colorizer_storage.action.OpColorizerDelete
 import coffee.cypher.hexbound.feature.colorizer_storage.action.OpColorizerLoad
 import coffee.cypher.hexbound.feature.colorizer_storage.action.OpColorizerSave
+import coffee.cypher.hexbound.feature.construct.action.*
 import coffee.cypher.hexbound.operator.great.OpFakeImprint
-import coffee.cypher.hexbound.feature.construct.action.OpGiveCommandDropOff
-import coffee.cypher.hexbound.feature.construct.action.OpGiveCommandMoveTo
-import coffee.cypher.hexbound.feature.construct.action.OpGiveCommandPickUp
-import coffee.cypher.hexbound.feature.construct.action.OpSendInstructions
+import coffee.cypher.hexbound.feature.item_patterns.action.OpGetInventoryContents
 import net.minecraft.util.Hand
 
 object HexboundPatterns {
     fun register() {
-        registerHandAccess()
+        registerItemPatterns()
         registerPatternManipulation()
         registerMemorizedColorizers()
 
@@ -32,7 +30,7 @@ object HexboundPatterns {
         )
     }
 
-    private fun registerHandAccess() {
+    private fun registerItemPatterns() {
         PatternRegistry.mapPattern(
             HexPattern.fromAngles("adeq", HexDir.EAST),
             id("get_main_hand"),
@@ -43,6 +41,24 @@ object HexboundPatterns {
             HexPattern.fromAngles("qeda", HexDir.EAST),
             id("get_off_hand"),
             OpGetHeldItem(Hand.OFF_HAND)
+        )
+
+        PatternRegistry.mapPattern(
+            HexPattern.fromAngles("aqwed", HexDir.NORTH_EAST),
+            id("get_inventory_stacks"),
+            OpGetInventoryContents(returnStacks = true)
+        )
+
+        PatternRegistry.mapPattern(
+            HexPattern.fromAngles("aqwed", HexDir.NORTH_EAST),
+            id("get_inventory.stacks"),
+            OpGetInventoryContents(returnStacks = true)
+        )
+
+        PatternRegistry.mapPattern(
+            HexPattern.fromAngles("dewqa", HexDir.NORTH_EAST),
+            id("get_inventory.items"),
+            OpGetInventoryContents(returnStacks = false)
         )
     }
 
@@ -82,27 +98,51 @@ object HexboundPatterns {
 
     private fun registerMinionPatterns() {
         PatternRegistry.mapPattern(
-            HexPattern.fromAngles("wwed", HexDir.NORTH_EAST),
+            HexPattern.fromAngles("qaawedee", HexDir.EAST),
+            id("construct_get_self"),
+            OpConstructGetSelf
+        )
+
+        PatternRegistry.mapPattern(
+            HexPattern.fromAngles("eddeawaw", HexDir.EAST),
             id("give_command_pick_up"),
             OpGiveCommandPickUp
         )
 
         PatternRegistry.mapPattern(
-            HexPattern.fromAngles("wwedw", HexDir.NORTH_EAST),
+            HexPattern.fromAngles("qaaqdwdw", HexDir.EAST),
             id("give_command_drop_off"),
             OpGiveCommandDropOff
         )
 
         PatternRegistry.mapPattern(
-            HexPattern.fromAngles("wwedww", HexDir.NORTH_EAST),
+            HexPattern.fromAngles("qaaqwdaqqqa", HexDir.EAST),
             id("give_command_move_to"),
             OpGiveCommandMoveTo
         )
 
         PatternRegistry.mapPattern(
-            HexPattern.fromAngles("wwedwww", HexDir.NORTH_EAST),
+            HexPattern.fromAngles("qaaqqedwed", HexDir.EAST),
+            id("give_command_harvest"),
+            OpGiveCommandMoveTo //TODO harvest
+        )
+
+        PatternRegistry.mapPattern(
+            HexPattern.fromAngles("qaaqdee", HexDir.EAST),
+            id("give_command_use"),
+            OpGiveCommandMoveTo //TODO use
+        )
+
+        PatternRegistry.mapPattern(
+            HexPattern.fromAngles("qaaq", HexDir.EAST),
             id("send_instructions"),
             OpSendInstructions
+        )
+
+        PatternRegistry.mapPattern(
+            HexPattern.fromAngles("qqaaqqqqwq", HexDir.SOUTH_EAST),
+            id("broadcast_instructions"),
+            OpSendInstructions //TODO broadcast
         )
     }
 }
