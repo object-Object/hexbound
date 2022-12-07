@@ -1,4 +1,4 @@
-package coffee.cypher.hexbound.mixins;
+package coffee.cypher.hexbound.mixins.bugfix;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;

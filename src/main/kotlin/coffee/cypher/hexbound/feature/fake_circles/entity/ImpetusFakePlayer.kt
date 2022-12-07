@@ -1,11 +1,12 @@
-package coffee.cypher.hexbound.util.fake
+package coffee.cypher.hexbound.feature.fake_circles.entity
 
 import at.petrak.hexcasting.common.blocks.entity.BlockEntityStoredPlayerImpetus
 import coffee.cypher.hexbound.init.Hexbound
+import coffee.cypher.hexbound.util.HexboundFakePlayer
 import com.mojang.authlib.GameProfile
 import dev.cafeteria.fakeplayerapi.server.FakePlayerBuilder
 import net.minecraft.server.world.ServerWorld
-import java.util.UUID
+import java.util.*
 
 class ImpetusFakePlayer(
     world: ServerWorld,

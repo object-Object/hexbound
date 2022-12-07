@@ -4,15 +4,14 @@ import at.petrak.hexcasting.api.PatternRegistry
 import at.petrak.hexcasting.api.spell.math.HexDir
 import at.petrak.hexcasting.api.spell.math.HexPattern
 import coffee.cypher.hexbound.init.Hexbound.id
-import coffee.cypher.hexbound.feature.item_patterns.action.OpGetHeldItem
 import coffee.cypher.hexbound.feature.pattern_editing.action.OpMergePatterns
 import coffee.cypher.hexbound.feature.pattern_editing.action.OpRotatePattern
 import coffee.cypher.hexbound.feature.colorizer_storage.action.OpColorizerDelete
 import coffee.cypher.hexbound.feature.colorizer_storage.action.OpColorizerLoad
 import coffee.cypher.hexbound.feature.colorizer_storage.action.OpColorizerSave
 import coffee.cypher.hexbound.feature.construct.action.*
-import coffee.cypher.hexbound.operator.great.OpFakeImprint
-import coffee.cypher.hexbound.feature.item_patterns.action.OpGetInventoryContents
+import coffee.cypher.hexbound.feature.fake_circles.action.OpSetImpetusFakePlayer
+import coffee.cypher.hexbound.feature.item_patterns.action.*
 import net.minecraft.util.Hand
 
 object HexboundPatterns {
@@ -24,9 +23,10 @@ object HexboundPatterns {
         registerMinionPatterns()
 
         PatternRegistry.mapPattern(
-            HexPattern.fromAngles("qqaq", HexDir.EAST),
+            HexPattern.fromAngles("qaqdaqwqaeedewd", HexDir.NORTH_EAST),
             id("set_fake_impetus_player"),
-            OpFakeImprint
+            OpSetImpetusFakePlayer,
+            true
         )
     }
 
@@ -45,20 +45,32 @@ object HexboundPatterns {
 
         PatternRegistry.mapPattern(
             HexPattern.fromAngles("aqwed", HexDir.NORTH_EAST),
-            id("get_inventory_stacks"),
-            OpGetInventoryContents(returnStacks = true)
-        )
-
-        PatternRegistry.mapPattern(
-            HexPattern.fromAngles("aqwed", HexDir.NORTH_EAST),
-            id("get_inventory.stacks"),
+            id("get_inventory/stacks"),
             OpGetInventoryContents(returnStacks = true)
         )
 
         PatternRegistry.mapPattern(
             HexPattern.fromAngles("dewqa", HexDir.NORTH_EAST),
-            id("get_inventory.items"),
+            id("get_inventory/items"),
             OpGetInventoryContents(returnStacks = false)
+        )
+
+        PatternRegistry.mapPattern(
+            HexPattern.fromAngles("wqaqwaq", HexDir.EAST),
+            id("get_entity_item"),
+            OpGetEntityItem
+        )
+
+        PatternRegistry.mapPattern(
+            HexPattern.fromAngles("dedqaa", HexDir.WEST),
+            id("get_stack_prop/item"),
+            OpGetStackItem
+        )
+
+        PatternRegistry.mapPattern(
+            HexPattern.fromAngles("dedqaq", HexDir.WEST),
+            id("get_stack_prop/size"),
+            OpGetStackSize
         )
     }
 
@@ -105,32 +117,32 @@ object HexboundPatterns {
 
         PatternRegistry.mapPattern(
             HexPattern.fromAngles("eddeawaw", HexDir.EAST),
-            id("give_command_pick_up"),
+            id("give_command/pick_up"),
             OpGiveCommandPickUp
         )
 
         PatternRegistry.mapPattern(
             HexPattern.fromAngles("qaaqdwdw", HexDir.EAST),
-            id("give_command_drop_off"),
+            id("give_command/drop_off"),
             OpGiveCommandDropOff
         )
 
         PatternRegistry.mapPattern(
             HexPattern.fromAngles("qaaqwdaqqqa", HexDir.EAST),
-            id("give_command_move_to"),
+            id("give_command/move_to"),
             OpGiveCommandMoveTo
         )
 
         PatternRegistry.mapPattern(
             HexPattern.fromAngles("qaaqqedwed", HexDir.EAST),
-            id("give_command_harvest"),
-            OpGiveCommandMoveTo //TODO harvest
+            id("give_command/harvest"),
+            OpGiveCommandHarvest
         )
 
         PatternRegistry.mapPattern(
             HexPattern.fromAngles("qaaqdee", HexDir.EAST),
-            id("give_command_use"),
-            OpGiveCommandMoveTo //TODO use
+            id("give_command/use/block"),
+            OpGiveCommandUseOnBlock
         )
 
         PatternRegistry.mapPattern(
@@ -142,7 +154,19 @@ object HexboundPatterns {
         PatternRegistry.mapPattern(
             HexPattern.fromAngles("qqaaqqqqwq", HexDir.SOUTH_EAST),
             id("broadcast_instructions"),
-            OpSendInstructions //TODO broadcast
+            OpBroadcastInstructions
+        )
+
+        PatternRegistry.mapPattern(
+            HexPattern.fromAngles("wqaawddewdwewewewewew", HexDir.EAST),
+            id("bind_construct"),
+            OpBindConstruct
+        )
+
+        PatternRegistry.mapPattern(
+            HexPattern.fromAngles("wqwqwwqwqwqwwaeqaqdwdqaqe", HexDir.SOUTH_WEST),
+            id("create_construct/spider"),
+            OpCreateSpiderConstruct
         )
     }
 }

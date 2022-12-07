@@ -5,6 +5,9 @@ import net.minecraft.util.Identifier
 
 object HexboundConfig {
     val replaceSpiderConstruct: Boolean by configField()
+    val spiderBatteryChargeRequired: Int by configField()
+    val broadcasterParticleAmount: Int by configField()
+
     private val constructActionDenyList: List<String> by configField()
 
     private val constructActionDenyCache = mutableMapOf<Identifier, Boolean>()
@@ -37,6 +40,26 @@ object HexboundConfig {
                 bind(::replaceSpiderConstruct)
 
                 defaultValue(false)
+            }
+
+            value("broadcaster_particle_amount") {
+                comment("How many particles an activated Construct Broadcaster fires off")
+                bind(::broadcasterParticleAmount)
+
+                defaultValue(16)
+
+                allowedRange(0..200)
+            }
+        }
+
+        section("misc") {
+            value("spider_battery_charge") {
+                comment("Changes the required media charge for a Spider Construct Battery to fully charge (in amethyst dust units)")
+                bind(::spiderBatteryChargeRequired)
+
+                defaultValue(50)
+
+                allowedRange(1..Int.MAX_VALUE)
             }
         }
 

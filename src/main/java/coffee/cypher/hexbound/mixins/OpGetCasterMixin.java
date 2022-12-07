@@ -4,7 +4,7 @@ import at.petrak.hexcasting.api.spell.iota.EntityIota;
 import at.petrak.hexcasting.api.spell.iota.Iota;
 import at.petrak.hexcasting.api.spell.iota.NullIota;
 import at.petrak.hexcasting.common.casting.operators.selectors.OpGetCaster;
-import coffee.cypher.hexbound.util.fake.HexboundFakePlayer;
+import coffee.cypher.hexbound.util.HexboundFakePlayer;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

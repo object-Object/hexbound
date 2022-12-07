@@ -13,10 +13,19 @@ object JsonUtil {
 
         this.flatMap { (k, v) ->
             val newValue = v.flatten()
+            val newPrefix = if (k.isEmpty() || k.last() in ":_-/")
+                k
+            else
+                "$k."
 
             if (newValue is JsonObject)
                 newValue.entries.map { (key, value) ->
-                    "$k.$key" to value
+                    val newKey = if (key.isEmpty()) {
+                        k
+                    } else {
+                        "$newPrefix$key"
+                    }
+                    newKey to value
                 }
             else
                 listOf(k to newValue)

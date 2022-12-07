@@ -1,15 +1,13 @@
 package coffee.cypher.hexbound.feature.construct.command
 
 import coffee.cypher.hexbound.feature.construct.command.execution.ConstructCommandContext
-import coffee.cypher.hexbound.feature.construct.entity.SpiderConstructEntity
 import coffee.cypher.hexbound.feature.construct.command.exception.BadTargetConstructCommandException
 import coffee.cypher.hexbound.feature.construct.command.exception.ConstructCommandException
 import coffee.cypher.hexbound.feature.construct.entity.component.ItemHolderComponent
-import coffee.cypher.hexbound.init.ConstructCommandTypes
+import coffee.cypher.hexbound.init.HexboundData
 import coffee.cypher.kettle.scheduler.TaskContext
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 import net.minecraft.entity.ItemEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.server.world.ServerWorld
@@ -20,7 +18,7 @@ import java.util.*
 class PickUp(
     @Contextual val targetUuid: UUID
 ) : ConstructCommand<PickUp> {
-    override fun getType() = ConstructCommandTypes.PICK_UP
+    override fun getType() = HexboundData.ConstructCommandTypes.PICK_UP
 
     override suspend fun TaskContext<out ConstructCommandContext>.execute() {
         withContext {
@@ -51,7 +49,7 @@ class PickUp(
 
 @Serializable
 class DropOff : ConstructCommand<DropOff> {
-    override fun getType() = ConstructCommandTypes.DROP_OFF
+    override fun getType() = HexboundData.ConstructCommandTypes.DROP_OFF
 
     override suspend fun TaskContext<out ConstructCommandContext>.execute() {
         withContext {

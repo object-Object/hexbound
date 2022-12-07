@@ -1,5 +1,6 @@
 package coffee.cypher.hexbound.feature.construct.entity
 
+import coffee.cypher.hexbound.feature.construct.entity.component.InteractionComponent
 import coffee.cypher.hexbound.feature.construct.entity.component.ItemHolderComponent
 import coffee.cypher.hexbound.util.provideDelegate
 import coffee.cypher.hexbound.util.redirectSpiderLang
@@ -16,6 +17,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
 import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
@@ -35,7 +37,7 @@ import software.bernie.geckolib3.util.GeckoLibUtil
 class SpiderConstructEntity(
     entityType: EntityType<SpiderConstructEntity>,
     world: World
-) : AbstractConstructEntity(entityType, world), IAnimatable, ItemHolderComponent {
+) : AbstractConstructEntity(entityType, world), IAnimatable, ItemHolderComponent, InteractionComponent {
     override var heldStack by HELD_STACK
     var isAltModelEnabled by ALT_MODEL_ENABLED
 
@@ -44,6 +46,8 @@ class SpiderConstructEntity(
 
     init {
         registerComponent(ItemHolderComponent, this)
+        registerComponent(InteractionComponent, this)
+        handDropChances[0] = Float.MAX_VALUE
     }
 
     private val animationController = AnimationController(this, "animation_controller", 0f) { event ->
@@ -91,6 +95,10 @@ class SpiderConstructEntity(
     override fun tick() {
         super.tick()
         fakePlayer?.setStackInHand(Hand.MAIN_HAND, heldStack)
+    }
+
+    override fun getInteractionPlayer(world: ServerWorld): ServerPlayerEntity {
+        return fakePlayer!!
     }
 
     override fun equipStack(slot: EquipmentSlot, stack: ItemStack) {

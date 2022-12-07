@@ -1,22 +1,20 @@
 package coffee.cypher.hexbound.feature.construct.action
 
-import at.petrak.hexcasting.api.spell.ConstMediaAction
+import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.evaluatable
-import at.petrak.hexcasting.api.spell.getItemEntity
-import at.petrak.hexcasting.api.spell.getVec3
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.iota.PatternIota
-import coffee.cypher.hexbound.feature.construct.command.ConstructCommand
-import coffee.cypher.hexbound.feature.construct.command.DropOff
-import coffee.cypher.hexbound.feature.construct.command.MoveTo
-import coffee.cypher.hexbound.feature.construct.command.PickUp
+import coffee.cypher.hexbound.feature.construct.command.*
 import coffee.cypher.hexbound.feature.construct.entity.AbstractConstructEntity
 import coffee.cypher.hexbound.feature.construct.entity.component.ConstructComponentKey
+import coffee.cypher.hexbound.feature.construct.entity.component.InteractionComponent
 import coffee.cypher.hexbound.feature.construct.entity.component.ItemHolderComponent
 import coffee.cypher.hexbound.feature.construct.mishap.MishapMissingConstructComponent
 import coffee.cypher.hexbound.feature.construct.mishap.MishapNoConstruct
 import coffee.cypher.hexbound.util.mixinaccessor.construct
+import net.minecraft.util.math.Direction
+import net.minecraft.util.math.Vec3d
+import org.quiltmc.qkl.library.math.minus
 
 abstract class OpGiveCommand : ConstMediaAction {
     override val argc: Int
@@ -91,5 +89,44 @@ object OpGiveCommandMoveTo : OpGiveCommand() {
         val pos = args.getVec3(0, argc)
 
         return MoveTo(pos)
+    }
+}
+
+object OpGiveCommandHarvest : OpGiveCommand() {
+    override val baseArgc = 1
+
+    override fun getCommand(
+        args: List<Iota>,
+        ctx: CastingContext,
+        constructEntity: AbstractConstructEntity
+    ): ConstructCommand<*> {
+        val pos = args.getBlockPos(0, argc)
+
+        constructEntity.requireComponent(InteractionComponent)
+
+        return Harvest(pos)
+    }
+}
+
+object OpGiveCommandUseOnBlock : OpGiveCommand() {
+    override val baseArgc = 2
+
+    override fun getCommand(
+        args: List<Iota>,
+        ctx: CastingContext,
+        constructEntity: AbstractConstructEntity
+    ): ConstructCommand<*> {
+        val pos = args.getBlockPos(0, argc)
+        val side = args.getVec3(1, argc)
+
+        val sideVec = if (side == Vec3d.ZERO) {
+            constructEntity.pos - Vec3d.ofCenter(pos)
+        } else {
+            side
+        }
+
+        constructEntity.requireComponent(InteractionComponent)
+
+        return UseItemOnBlock(pos, Direction.getFacing(sideVec.x, sideVec.y, sideVec.z))
     }
 }

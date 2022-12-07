@@ -17,6 +17,5 @@ class MishapTooManyColorizers : Mishap() {
     }
 
     override fun execute(ctx: CastingContext, errorCtx: Context, stack: MutableList<Iota>) {
-        TODO("Not yet implemented")
     }
 }

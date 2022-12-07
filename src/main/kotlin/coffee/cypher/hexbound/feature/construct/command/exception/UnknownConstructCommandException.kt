@@ -5,6 +5,6 @@ import org.quiltmc.qkl.library.text.translatable
 
 class UnknownConstructCommandException(val original: Throwable) : ConstructCommandException(
     buildText {
-        translatable("hexbound.construct.exception.unknown_error", original.printStackTrace())
+        translatable("hexbound.construct.exception.unknown_error", original.toString())
     }
 )

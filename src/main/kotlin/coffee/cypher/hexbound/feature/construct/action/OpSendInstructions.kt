@@ -4,6 +4,7 @@ import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
 import coffee.cypher.hexbound.feature.construct.entity.AbstractConstructEntity
+import coffee.cypher.hexbound.feature.construct.mishap.MishapConstructForbidden
 import coffee.cypher.hexbound.util.getConstruct
 
 object OpSendInstructions : SpellAction {
@@ -18,6 +19,10 @@ object OpSendInstructions : SpellAction {
 
         ctx.assertEntityInRange(construct)
 
+        if (!construct.isPlayerAllowed(ctx.caster)) {
+            throw MishapConstructForbidden(construct)
+        }
+
         return Triple(
             Spell(construct, instructions.toList()),
             0,
@@ -30,7 +35,7 @@ object OpSendInstructions : SpellAction {
         val instructions: List<Iota>
     ) : RenderedSpell {
         override fun cast(ctx: CastingContext) {
-            constructEntity.instructionSet = instructions
+            constructEntity.acceptInstructions(instructions, ctx.caster, false, null)
         }
     }
 }

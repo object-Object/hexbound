@@ -1,0 +1,19 @@
+{
+    "variants": {
+        "facing=east": {
+            "model": "hexbound:block/construct_broadcaster",
+            "y": 90
+        },
+        "facing=north": {
+            "model": "hexbound:block/construct_broadcaster"
+        },
+        "facing=south": {
+            "model": "hexbound:block/construct_broadcaster",
+            "y": 180
+        },
+        "facing=west": {
+            "model": "hexbound:block/construct_broadcaster",
+            "y": 270
+        }
+    }
+}

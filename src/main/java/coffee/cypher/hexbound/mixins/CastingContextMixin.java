@@ -2,7 +2,7 @@ package coffee.cypher.hexbound.mixins;
 
 import at.petrak.hexcasting.api.spell.casting.CastingContext;
 import coffee.cypher.hexbound.feature.construct.entity.AbstractConstructEntity;
-import coffee.cypher.hexbound.util.fake.ImpetusFakePlayer;
+import coffee.cypher.hexbound.feature.fake_circles.entity.ImpetusFakePlayer;
 import coffee.cypher.hexbound.util.mixinaccessor.CastingContextConstructAccessor;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.server.network.ServerPlayerEntity;

@@ -4,5 +4,5 @@ import coffee.cypher.hexbound.feature.construct.rendering.SpiderConstructRendere
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry
 
 fun initClientRegistries() {
-    EntityRendererRegistry.register(EntityTypes.SPIDER_CONSTRUCT, ::SpiderConstructRenderer)
+    EntityRendererRegistry.register(HexboundData.EntityTypes.SPIDER_CONSTRUCT, ::SpiderConstructRenderer)
 }

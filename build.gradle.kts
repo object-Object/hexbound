@@ -71,15 +71,6 @@ repositories {
             includeGroup("maven.modrinth")
         }
     }
-
-    exclusiveContent {
-        forRepository {
-            mavenLocal()
-        }
-        filter {
-            includeGroup("org.quiltmc.quilt-kotlin-libraries")
-        }
-    }
 }
 
 dependencies {
@@ -105,11 +96,12 @@ dependencies {
 
     modImplementation(libs.mixin.extras)
     annotationProcessor(libs.mixin.extras)
+    include(libs.mixin.extras)
 
     modImplementation(libs.geckolib)
 
     modCompileOnly(libs.hexal)
-    modLocalRuntime(libs.hexal)
+    //modLocalRuntime(libs.hexal)
 }
 
 val javaVersion = JavaVersion.VERSION_17

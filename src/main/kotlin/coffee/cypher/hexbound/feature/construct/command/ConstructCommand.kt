@@ -1,12 +1,10 @@
 package coffee.cypher.hexbound.feature.construct.command
 
 import coffee.cypher.hexbound.feature.construct.command.execution.ConstructCommandContext
-import coffee.cypher.hexbound.feature.construct.entity.AbstractConstructEntity
-import coffee.cypher.hexbound.init.ConstructCommandTypes
+import coffee.cypher.hexbound.init.HexboundData
 import coffee.cypher.kettle.scheduler.TaskContext
 import com.mojang.serialization.Codec
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
 
@@ -24,7 +22,7 @@ interface ConstructCommand<C : ConstructCommand<C>> {
 
 @Serializable
 class NoOpCommand : ConstructCommand<NoOpCommand> {
-    override fun getType() = ConstructCommandTypes.NO_OP
+    override fun getType() = HexboundData.ConstructCommandTypes.NO_OP
 
     override fun display(world: ServerWorld): Text {
         return Text.translatable("hexbound.construct.command.no_op")

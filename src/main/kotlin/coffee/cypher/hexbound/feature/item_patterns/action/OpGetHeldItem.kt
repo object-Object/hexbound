@@ -24,6 +24,6 @@ class OpGetHeldItem(private val hand: Hand) : ConstMediaAction {
             else -> throw MishapBadEntity.of(holder, "item.read.any")
         }
 
-        return listOf(ItemStackIota(stack.copy()))
+        return listOf(ItemStackIota.createFiltered(stack.copy()))
     }
 }

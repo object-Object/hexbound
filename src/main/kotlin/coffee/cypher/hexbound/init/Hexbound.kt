@@ -1,20 +1,26 @@
 package coffee.cypher.hexbound.init
 
+import at.petrak.hexcasting.api.item.HexHolderItem
+import at.petrak.hexcasting.api.spell.iota.ListIota
+import at.petrak.hexcasting.common.lib.HexItems
 import coffee.cypher.hexbound.init.config.HexboundConfig
 import coffee.cypher.hexbound.interop.InteropManager
+import net.minecraft.util.Hand
 import net.minecraft.util.Identifier
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
 import org.quiltmc.loader.api.ModContainer
 import org.quiltmc.loader.api.QuiltLoader
 import org.quiltmc.qkl.library.brigadier.execute
 import org.quiltmc.qkl.library.brigadier.register
+import org.quiltmc.qkl.library.brigadier.util.player
 import org.quiltmc.qkl.library.brigadier.util.sendFeedback
+import org.quiltmc.qkl.library.brigadier.util.world
 import org.quiltmc.qkl.library.commands.onCommandRegistration
 import org.quiltmc.qkl.library.registerEvents
 import org.quiltmc.qkl.library.text.buildText
 import org.quiltmc.qkl.library.text.literal
 import org.quiltmc.qsl.base.api.entrypoint.ModInitializer
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 object Hexbound : ModInitializer {
     lateinit var MOD_ID: String
@@ -26,11 +32,11 @@ object Hexbound : ModInitializer {
 
     override fun onInitialize(mod: ModContainer) {
         MOD_ID = mod.metadata().id()
-        LOGGER = LogManager.getLogger(MOD_ID)
+        LOGGER = LoggerFactory.getLogger(MOD_ID)
 
         HexboundConfig.init()
 
-        initCommonRegistries()
+        HexboundData.init()
         HexboundPatterns.register()
         InteropManager.init()
 
@@ -42,13 +48,23 @@ object Hexbound : ModInitializer {
     private fun enableDebugFeatures() {
         registerEvents {
             onCommandRegistration { _, _ ->
-                register("getConstructCommands") {
+                register("hexbound:getConstructCommands") {
                     execute {
                         sendFeedback(buildText {
-                            CommonRegistries.CONSTRUCT_COMMANDS.ids.forEach {
-                                literal("[$it -> ${CommonRegistries.CONSTRUCT_COMMANDS.get(it)}]\n")
+                            HexboundData.Registries.CONSTRUCT_COMMANDS.ids.forEach {
+                                literal("[$it -> ${HexboundData.Registries.CONSTRUCT_COMMANDS.get(it)}]\n")
                             }
                         })
+                    }
+                }
+
+                register("hexbound:uncraft") {
+                    execute {
+                        val stack = player!!.getStackInHand(Hand.MAIN_HAND)
+
+                        @Suppress("OverrideOnly")
+                        val hex = (stack.item as HexHolderItem).getHex(stack, world)!!
+                        player!!.setStackInHand(Hand.MAIN_HAND, HexItems.FOCUS.defaultStack.also { HexItems.FOCUS.writeDatum(it, ListIota(hex))})
                     }
                 }
             }

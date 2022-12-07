@@ -49,7 +49,12 @@ class ConstructCommandExecutor(
 
             scheduler.tick({ context })
         } catch (e: Throwable) {
-            onError(e)
+            val realError = if (e is TaskExecutionException) {
+                e.cause ?: e
+            } else {
+                e
+            }
+            onError(realError)
         }
 
         if (currentTask?.state is Task.State.Stopped) {

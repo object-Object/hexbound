@@ -39,7 +39,7 @@ class OpGetInventoryContents(val returnStacks: Boolean) : ConstMediaAction {
 
         val items = slots.asIterable().map {
             if (returnStacks) {
-                ItemStackIota(it.copy())
+                ItemStackIota.createFiltered(it.copy())
             } else {
                 ItemIota.CONVERTER.fromItem(it.item)
             }

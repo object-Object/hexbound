@@ -1,12 +1,24 @@
 {
     hexcasting: {
         mishap: {
-            no_construct:"%s can only be executed by a Construct",
+            no_construct: "%s can only be executed by a Construct",
+            construct_forbidden: "%s takes orders only from %s",
+            bad_block: {
+                stored_impetus: "a Cleric Impetus bound to someone present",
+                construct_broadcaster: "a Construct Broadcaster"
+            },
             invalid_value: {
                 "entity.construct": {
                     generic: "a Construct",
                     spider: "a Spider Construct",
                     blaze: "a Blaze Construct"
+                },
+                item_stack: "an Item Stack",
+                bindable: "a player, pattern, or Null",
+                spider_component: {
+                    "": "a Spider Construct Core or a fully charged Spider Construct Battery",
+                    "core": "a Spider Construct Core",
+                    "battery": "a fully charged Spider Construct Battery"
                 }
             },
             colorizer: {
@@ -14,51 +26,72 @@
                 absent: "No pigment is present to be saved",
                 storage_full: "Too many pigments have already been stored"
             },
-            disallowed_construct: "%s is not allowed for Constructs"
+            disallowed_construct: "%s is not allowed for Constructs",
+            target_not_enlightened: "%s is not enlightened enough"
         },
-        iota: {
-            "hexbound:item": "Item",
-            "hexbound:item_stack": "Item Stack"
+        "iota.hexbound:": {
+            item: "Item",
+            item_stack: "Item Stack"
         },
-        spell: {
-            "hexbound:rotate_pattern": "Revolving Distillation",
-            "hexbound:merge_patterns": "Painter's Distillation",
-
-            "hexbound:construct_get_self": "Automaton's Reflection",
-
-            "hexbound:give_command_pick_up": "Command: Pick Up Item",
-            "hexbound:give_command_drop_off": "Command: Drop Item",
-            "hexbound:give_command_move_to": "Command: Move To Position",
-            "hexbound:send_instructions": "Send Instructions",
-            "hexbound:broadcast_instructions": "Broadcast Instructions",
-
-            "hexbound:get_main_hand": "Duelist's Purification",
-            "hexbound:get_off_hand": "Shieldbearer's Purification",
-            "hexbound:get_inventory": {
-                "stacks": "Hoarder's Distillation",
-                "items": "Collector's Distillation"
+        "spell.hexbound:": {
+            set_fake_impetus_player: "Bind Figment",
+            rotate_pattern: "Revolving Distillation",
+            merge_patterns: "Painter's Distillation",
+            construct_get_self: "Automaton's Reflection",
+            "give_command/": {
+                pick_up: "Command: Pick Up Item",
+                drop_off: "Command: Drop Item",
+                move_to: "Command: Move To Position",
+                "harvest": "Command: Harvest",
+                "use/": {
+                    block: "Command: Use On Block"
+                }
             },
+            bind_construct: "Artificer's Gambit",
+            send_instructions: "Send Instructions",
+            broadcast_instructions: "Broadcast Instructions",
+            get_main_hand: "Duelist's Purification",
+            get_off_hand: "Shieldbearer's Purification",
+            "get_inventory/": {
+                stacks: "Hoarder's Distillation",
+                items: "Collector's Distillation"
+            },
+            get_entity_item: "Sweeper's Purification",
+            "get_stack_prop/": {
+                "size": "Treasurer's Purification",
+                "item": "Logistician's Purification"
+            }
         }
     },
     hexbound: {
         vector_format: "(%s, %s, %s)",
         stack: {
-            number_prefix_format: "%dx ",
+            format: "%dx %s",
             empty: "Empty Stack"
+        },
+        side: {
+            north: "north",
+            south: "south",
+            west: "west",
+            east: "east",
+            up: "top",
+            down: "bottom"
         },
         construct: {
             status: {
-                executing: "Executing command: ",
-                error: "Execution failed: ",
+                executing: "Executing command: %s",
+                error: "Execution failed: %s",
                 idle: "Waiting for instructions",
                 bound_player: "Bound to %s",
-                bound_pattern: 'Inscribed with pattern "%s"'
+                bound_pattern: "Inscribed with pattern %s"
             },
             command: {
                 no_op: "not doing anything",
                 move_to: "moving to %s",
                 drop_off: "dropping an item",
                 pick_up: "picking up %s",
+                harvest: "harvesting crops at %s",
+                use_on_block: "using an item on %2$s of the block at %1$s",
                 unknown_item: "an unknown item"
             },
             exception: {
@@ -66,14 +99,18 @@
                     "item": "%s cannot carry items"
                 },
                 bad_target: {
-                    pos_too_far: " is too far",
+                    pos_too_far: "%s is too far",
+                    no_path_found: "could not find a path to %s",
                     target_expired: "%s is no longer available",
                     does_not_exist: {
                         item: "target item does not exist"
                     },
-                    not_an_item: "%s is not an item"
+                    not_an_item: "%s is not an item",
+                    forbidden: "Construct is not allowed to edit %s",
+                    not_harvestable: "Block at %s is not harvestable"
                 },
-                no_item: "construct isn't holding an item"
+                no_item: "construct isn't holding an item",
+                unknown_error: "Unknown exception has occurred (this is likely a bug!): %s"
             }
         },
         "impetus.fake_enabled": "Contains a Figment"
@@ -83,5 +120,17 @@
             spider_construct: "Spider Construct",
             robot_construct: "Robot Construct"
         }
-    }
+    },
+    "item.hexbound": {
+        spider_construct_core: "Spider Construct Core",
+        spider_construct_battery: {
+            "": "Spider Construct Battery",
+            "charge": "%d%% charged (%s/%s)",
+            "full_charge": "Fully charged"
+        },
+    },
+    "block.hexbound": {
+        construct_broadcaster: "Construct Broadcaster"
+    },
+    "itemGroup.hexbound.hexbound_group": "Hexbound"
 }

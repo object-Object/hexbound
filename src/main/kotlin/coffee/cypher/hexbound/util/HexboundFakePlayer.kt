@@ -1,4 +1,4 @@
-package coffee.cypher.hexbound.util.fake
+package coffee.cypher.hexbound.util
 
 import com.mojang.authlib.GameProfile
 import dev.cafeteria.fakeplayerapi.server.FakePlayerBuilder

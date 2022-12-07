@@ -19,7 +19,7 @@ object OpColorizerLoad : SpellAction {
         val pattern = args.getPattern(0, 1)
 
         if (pattern.nonBlankSignature !in ctx.caster.memorizedColorizers) {
-            throw MishapMissingColorizerKey(pattern) // TODO mishap!
+            throw MishapMissingColorizerKey(pattern)
         }
 
         return Triple(
