@@ -252,11 +252,20 @@ tasks {
         doFirst {
             project.buildDir.resolve("docgen").mkdirsOrThrow()
 
+            val kotlinSources = sourceSets.main.get().kotlin.srcDirs.map {
+                it.toRelativeString(project.rootDir).replace(File.separatorChar, '/')
+            }
+
+            val javaSources = sourceSets.main.get().java.srcDirs.map {
+                it.toRelativeString(project.rootDir).replace(File.separatorChar, '/')
+            }
+
             with(JsonBuilder()) {
                 call(
                     mapOf(
-                        "lang_path" to "lang/",
-                        "pattern_path" to "patterns.json"
+                        "langPath" to "lang/",
+                        "patternPath" to "patterns.json",
+                        "sourceRoots" to (kotlinSources + javaSources).distinct()
                     )
                 )
 
