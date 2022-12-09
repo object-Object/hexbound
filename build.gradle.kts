@@ -5,6 +5,7 @@ import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.incremental.mkdirsOrThrow
 import java.net.URL
 
 @Suppress("DSL_SCOPE_VIOLATION")
@@ -248,15 +249,19 @@ tasks {
     val docgen by registering {
         dependsOn(patternDocgen, copyTranslations)
 
-        with(JsonBuilder()) {
-            call(
-                mapOf(
-                    "lang_path" to "lang/",
-                    "pattern_path" to "patterns.json"
-                )
-            )
+        doFirst {
+            project.buildDir.resolve("docgen").mkdirsOrThrow()
 
-            project.buildDir.resolve("docgen/docs.json").writeText(toPrettyString())
+            with(JsonBuilder()) {
+                call(
+                    mapOf(
+                        "lang_path" to "lang/",
+                        "pattern_path" to "patterns.json"
+                    )
+                )
+
+                project.buildDir.resolve("docgen/docs.json").writeText(toPrettyString())
+            }
         }
     }
 }
