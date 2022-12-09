@@ -1,7 +1,8 @@
 {
     "core": {
         "name": "hexbound",
-        "version": "1.0.0+1.19.2"
+        "version": "1.0.0+1.19.2",
+        "repository": "https://github.com/Cypher121/hexbound/"
     },
     "platforms": {
         "modrinth": {

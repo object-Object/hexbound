@@ -265,7 +265,8 @@ tasks {
                     mapOf(
                         "langPath" to "lang/",
                         "patternPath" to "patterns.json",
-                        "sourceRoots" to (kotlinSources + javaSources).distinct()
+                        "sourceRoots" to (kotlinSources + javaSources).distinct(),
+                        "repositoryRoot" to (modProps.getValue("core") as Map<String, Any>).getValue("repository")
                     )
                 )
 
@@ -314,14 +315,14 @@ publishing {
             from(components["java"])
 
             pom {
-                name.set("Hex-Magia")
-                description.set("HexCasting addon")
-                url.set("https://www.modrinth.com/mod/hex-magia")
+                name.set("Hexbound")
+                description.set("Hexcasting addon")
+                url.set("https://www.modrinth.com/mod/hexbound")
 
                 scm {
-                    connection.set("scm:git:git://github.com/Cypher121/hex-magia.git")
-                    developerConnection.set("scm:git:ssh://github.com/Cypher121/hex-magia.git")
-                    url.set("https://github.com/Cypher121/hex-magia/")
+                    connection.set("scm:git:git://github.com/Cypher121/hexbound.git")
+                    developerConnection.set("scm:git:ssh://github.com/Cypher121/hexbound.git")
+                    url.set((modProps.getValue("core") as Map<String, Any>).getValue("version") as String)
                 }
 
                 licenses {
