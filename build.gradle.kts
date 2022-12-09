@@ -225,10 +225,36 @@ tasks {
     val patternDocgen by registering(JavaExec::class) {
         dependsOn(classes)
 
-        args(project.buildDir.resolve("docgen/patterns.json"))
+        val outFile = project.buildDir.resolve("docgen/patterns.json")
+
+        args(outFile)
 
         mainClass.set("coffee.cypher.hexbound.docgen.Docgen")
         classpath = sourceSets.main.get().runtimeClasspath
+
+        doLast {
+            val patterns = JsonSlurper().parseText(outFile.readText()) as List<Any>
+
+            val processed = patterns.map {
+                val pattern = it as Map<String, Any>
+                val path = pattern["pathToSource"] as String
+
+                val prefixDir = sourceSets.main.get().allSource.srcDirs
+                    .firstOrNull { dir -> File(dir, path).exists() }
+
+                val newPattern = pattern.toMutableMap()
+                newPattern["pathToSource"] = File(prefixDir, path)
+                    .toRelativeString(project.rootDir)
+                    .replace(File.separatorChar, '/')
+
+                newPattern
+            }
+
+            with(JsonBuilder()) {
+                call(processed)
+                outFile.writeText(toPrettyString())
+            }
+        }
     }
 
     val copyTranslations by registering(Copy::class) {
@@ -252,20 +278,11 @@ tasks {
         doFirst {
             project.buildDir.resolve("docgen").mkdirsOrThrow()
 
-            val kotlinSources = sourceSets.main.get().kotlin.srcDirs.map {
-                it.toRelativeString(project.rootDir).replace(File.separatorChar, '/')
-            }
-
-            val javaSources = sourceSets.main.get().java.srcDirs.map {
-                it.toRelativeString(project.rootDir).replace(File.separatorChar, '/')
-            }
-
             with(JsonBuilder()) {
                 call(
                     mapOf(
-                        "langPath" to "lang/",
+                        "langPath" to "lang",
                         "patternPath" to "patterns.json",
-                        "sourceRoots" to (kotlinSources + javaSources).distinct(),
                         "repositoryRoot" to (modProps.getValue("core") as Map<String, Any>).getValue("repository")
                     )
                 )
