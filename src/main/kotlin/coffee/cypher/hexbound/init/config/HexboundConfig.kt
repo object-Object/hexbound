@@ -7,6 +7,7 @@ object HexboundConfig {
     val replaceSpiderConstruct: Boolean by configField()
     val spiderBatteryChargeRequired: Int by configField()
     val broadcasterParticleAmount: Int by configField()
+    val constructPathfindingAttempts: Int by configField()
 
     private val constructActionDenyList: List<String> by configField()
 
@@ -61,6 +62,16 @@ object HexboundConfig {
 
                 allowedRange(1..Int.MAX_VALUE)
             }
+
+            value("construct_pathfinding_attempts") {
+                comment("If a construct fails to get reasonably close to the target, it can try pathfinding to it again.")
+                comment("Increasing this value will make constructs reaching their target more consistent, but can lead to trying to reach unreachable targets for too long, or cause lag.")
+                bind(::constructPathfindingAttempts)
+
+                defaultValue(3)
+
+                allowedRange(1..10)
+            }
         }
 
         section("execution") {
@@ -73,8 +84,8 @@ object HexboundConfig {
                 fallbackValue("")
 
                 defaultValue(
-                    "hexbound:send_instructions",
-                    "hexbound:*_colorizer",
+                    "hexbound:instructions/*",
+                    "hexbound:colorizer/*",
                     "hexcasting:explode*",
                     "hexcasting:add_motion",
                     "hexcasting:blink",

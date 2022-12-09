@@ -1,5 +1,6 @@
 package coffee.cypher.hexbound.feature.construct.entity
 
+import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.casting.CastingHarness
 import at.petrak.hexcasting.api.spell.iota.Iota
@@ -34,14 +35,12 @@ import net.minecraft.nbt.NbtList
 import net.minecraft.nbt.NbtOps
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
-import net.minecraft.util.ActionResult
-import net.minecraft.util.Arm
-import net.minecraft.util.Hand
-import net.minecraft.util.Identifier
+import net.minecraft.util.*
 import net.minecraft.world.World
 import org.quiltmc.qkl.library.nbt.set
 import org.quiltmc.qkl.library.text.*
 import java.util.*
+import kotlin.Pair
 import kotlin.jvm.optionals.getOrNull
 
 abstract class AbstractConstructEntity(
@@ -71,7 +70,13 @@ abstract class AbstractConstructEntity(
 
     private fun getOrCreateHarness(): CastingHarness {
         if (harness == null) {
-            harness = CastingHarness(createCastingContext())
+            harness = CastingHarness(
+                createCastingContext(),
+                FrozenColorizer(
+                    ItemStack(HexItems.DYE_COLORIZERS[DyeColor.PURPLE]!!),
+                    Util.NIL_UUID
+                )
+            )
         }
 
         return harness!!
@@ -182,6 +187,7 @@ abstract class AbstractConstructEntity(
 
     override fun tick() {
         super.tick()
+        fakePlayer?.resetToValidState()
         fakePlayer?.setPos(x, y, z)
 
         if (instructionSet != null) {

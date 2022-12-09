@@ -11,4 +11,9 @@ abstract class HexboundFakePlayer(
     server: MinecraftServer,
     world: ServerWorld,
     profile: GameProfile
-) : FakeServerPlayer(builder, server, world, profile)
+) : FakeServerPlayer(builder, server, world, profile) {
+    fun resetToValidState() {
+        unsetRemoved()
+        health = maxHealth
+    }
+}

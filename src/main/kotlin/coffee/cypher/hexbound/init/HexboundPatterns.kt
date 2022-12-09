@@ -10,6 +10,10 @@ import coffee.cypher.hexbound.feature.colorizer_storage.action.OpColorizerDelete
 import coffee.cypher.hexbound.feature.colorizer_storage.action.OpColorizerLoad
 import coffee.cypher.hexbound.feature.colorizer_storage.action.OpColorizerSave
 import coffee.cypher.hexbound.feature.construct.action.*
+import coffee.cypher.hexbound.feature.construct.action.command.*
+import coffee.cypher.hexbound.feature.construct.action.crafting.OpCreateSpiderConstruct
+import coffee.cypher.hexbound.feature.construct.action.instruction.OpBroadcastInstructions
+import coffee.cypher.hexbound.feature.construct.action.instruction.OpSendInstructions
 import coffee.cypher.hexbound.feature.fake_circles.action.OpSetImpetusFakePlayer
 import coffee.cypher.hexbound.feature.item_patterns.action.*
 import net.minecraft.util.Hand
@@ -91,19 +95,19 @@ object HexboundPatterns {
     private fun registerMemorizedColorizers() {
         PatternRegistry.mapPattern(
             HexPattern.fromAngles("wqwawqqawddwqwede", HexDir.NORTH_EAST),
-            id("save_colorizer"),
+            id("colorizer/save"),
             OpColorizerSave
         )
 
         PatternRegistry.mapPattern(
             HexPattern.fromAngles("wqwawqqawddwqeqaq", HexDir.NORTH_EAST),
-            id("load_colorizer"),
+            id("colorizer/load"),
             OpColorizerLoad
         )
 
         PatternRegistry.mapPattern(
             HexPattern.fromAngles("wqwawqqawddwqwdd", HexDir.NORTH_EAST),
-            id("delete_colorizer"),
+            id("colorizer/delete"),
             OpColorizerDelete
         )
     }
@@ -147,13 +151,13 @@ object HexboundPatterns {
 
         PatternRegistry.mapPattern(
             HexPattern.fromAngles("qaaq", HexDir.EAST),
-            id("send_instructions"),
+            id("instructions/send"),
             OpSendInstructions
         )
 
         PatternRegistry.mapPattern(
             HexPattern.fromAngles("qqaaqqqqwq", HexDir.SOUTH_EAST),
-            id("broadcast_instructions"),
+            id("instructions/broadcast"),
             OpBroadcastInstructions
         )
 

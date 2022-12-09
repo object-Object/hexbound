@@ -11,6 +11,7 @@ import coffee.cypher.hexbound.feature.item_patterns.iota.ItemStackIota
 import coffee.cypher.hexbound.init.config.HexboundConfig
 import coffee.cypher.hexbound.mixins.accessor.MutableTextAccessor
 import net.minecraft.entity.Entity
+import net.minecraft.entity.passive.AllayEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
 import net.minecraft.text.component.TranslatableComponent
@@ -43,6 +44,9 @@ fun List<Iota>.getConstruct(index: Int, argc: Int = 0): AbstractConstructEntity 
 
 fun List<Iota>.getSpiderConstruct(index: Int, argc: Int = 0): SpiderConstructEntity =
     getEntityOfType("entity.construct.spider", index, argc)
+
+fun List<Iota>.getAllay(index: Int, argc: Int = 0): AllayEntity =
+    getEntityOfType("entity.allay", index, argc)
 
 fun List<Iota>.getItemStack(index: Int, argc: Int = 0): ItemStack {
     val x = this.getOrElse(index) { throw MishapNotEnoughArgs(index + 1, this.size) }

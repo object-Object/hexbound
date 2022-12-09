@@ -179,8 +179,8 @@ class UseItemOnBlock(
 fun ConstructCommandContext.prepareToInteract(player: ServerPlayerEntity, target: BlockPos) {
     val targetCenter = Vec3d.ofCenter(target)
 
-    if (construct.pos.squaredDistanceTo(targetCenter) > 4) {
-        throw BadTargetConstructCommandException(target, "pos_too_far")
+    if (construct.pos.squaredDistanceTo(targetCenter) > 6.25) {
+        throw BadTargetConstructCommandException(target, "too_far")
     }
 
     if (!world.canPlayerModifyAt(player, target)) {

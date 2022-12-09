@@ -18,6 +18,7 @@ import net.minecraft.item.Items
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
+import net.minecraft.sound.SoundEvents
 import net.minecraft.text.Text
 import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
@@ -84,6 +85,8 @@ class SpiderConstructEntity(
                 if (!serverPlayer.interactionManager.gameMode.isBlockBreakingRestricted) {
                     isAltModelEnabled = item == Items.IRON_BLOCK
                 }
+            } else {
+                player.playSound(SoundEvents.ITEM_ARMOR_EQUIP_GENERIC)
             }
 
             return ActionResult.SUCCESS

@@ -38,6 +38,25 @@ object JsonUtil {
         this
     }
 
+    fun JsonElement.removeIndents(): JsonElement = when (this) {
+        is JsonPrimitive -> {
+            val value = this.value
+
+            if (value is String) {
+                JsonPrimitive(value.replace(Regex("\\|\\s+"), ""))
+            } else {
+                this
+            }
+        }
+        is JsonArray -> {
+            mapTo(JsonArray()) { it.removeIndents() }
+        }
+        is JsonObject -> {
+            this.entries.map { it.key to it.value.removeIndents() }.associateTo(JsonObject()) { it }
+        }
+        else -> this
+    }
+
     fun JsonElement.asStandardType(): Any? = when (this) {
         is JsonObject -> this.mapValues { (_, v) -> v.asStandardType() }
         is JsonArray -> this.map { it.asStandardType() }

@@ -1,4 +1,4 @@
-package coffee.cypher.hexbound.feature.construct.action
+package coffee.cypher.hexbound.feature.construct.action.command
 
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext

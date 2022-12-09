@@ -87,6 +87,7 @@ dependencies {
     modImplementation(libs.bundles.qsl)
     modImplementation(libs.bundles.hexcasting) {
         exclude(module = "fabric-language-kotlin")
+        exclude(module = "phosphor")
     }
     modImplementation(libs.cca)
     modImplementation(libs.kettle)

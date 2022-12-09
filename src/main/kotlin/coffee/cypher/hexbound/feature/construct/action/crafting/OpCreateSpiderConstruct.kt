@@ -1,4 +1,4 @@
-package coffee.cypher.hexbound.feature.construct.action
+package coffee.cypher.hexbound.feature.construct.action.crafting
 
 import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.spell.ParticleSpray
@@ -11,60 +11,47 @@ import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
 import coffee.cypher.hexbound.feature.construct.item.SpiderConstructBatteryItem
 import coffee.cypher.hexbound.init.Hexbound
 import coffee.cypher.hexbound.init.HexboundData
-import coffee.cypher.hexbound.init.HexboundData.Items.SPIDER_CONSTRUCT_BATTERY
 import coffee.cypher.hexbound.init.HexboundData.Items.SPIDER_CONSTRUCT_CORE
+import coffee.cypher.hexbound.util.getAllay
 import net.minecraft.command.argument.EntityAnchorArgumentType
 import net.minecraft.entity.ItemEntity
+import net.minecraft.entity.passive.AllayEntity
+import org.quiltmc.qkl.library.math.component1
+import org.quiltmc.qkl.library.math.component2
+import org.quiltmc.qkl.library.math.component3
 
 object OpCreateSpiderConstruct : SpellAction {
-    override val argc = 2
+    override val argc = 3
 
     override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
-        val stack1 = args.getItemEntity(0, argc)
-        val stack2 = args.getItemEntity(1, argc)
+        val allay = args.getAllay(0, argc)
+        val coreStack = args.getItemEntity(1, argc)
+        val batteryStack = args.getItemEntity(2, argc)
 
-        ctx.assertEntityInRange(stack1)
-        ctx.assertEntityInRange(stack2)
+        ctx.assertEntityInRange(allay)
+        ctx.assertEntityInRange(coreStack)
+        ctx.assertEntityInRange(batteryStack)
 
-        //doubt that happens, but let's cover all bases
-        if (stack1.stack.isEmpty) {
-            throw MishapInvalidIota.of(args[0], 1, "spider_component")
+        if (coreStack.stack.isEmpty || !coreStack.stack.isOf(SPIDER_CONSTRUCT_CORE)) {
+            throw MishapInvalidIota.of(args[1], 1, "spider_component.core")
         }
 
-        if (stack2.stack.isEmpty) {
-            throw MishapInvalidIota.of(args[0], 1, "spider_component")
-        }
-
-        val (coreStack, batteryStack) = when {
-            stack1.stack.isOf(SPIDER_CONSTRUCT_CORE) && stack2.stack.isOf(SPIDER_CONSTRUCT_BATTERY) -> stack1 to stack2
-            stack1.stack.isOf(SPIDER_CONSTRUCT_BATTERY) && stack2.stack.isOf(SPIDER_CONSTRUCT_CORE) -> stack2 to stack1
-            stack1.stack.isOf(SPIDER_CONSTRUCT_CORE) -> throw MishapInvalidIota.of(
-                args[1],
-                0,
-                "spider_component.battery"
-            )
-
-            stack1.stack.isOf(SPIDER_CONSTRUCT_BATTERY) -> throw MishapInvalidIota.of(
-                args[1],
-                0,
-                "spider_component.core"
-            )
-
-            else -> throw MishapInvalidIota.of(args[0], 1, "spider_component")
-        }
-
-        if (!SpiderConstructBatteryItem.isFullyCharged(batteryStack.stack)) {
-            throw MishapInvalidIota.of(args[1], 0, "spider_component.battery")
+        if (
+            batteryStack.stack.isEmpty ||
+            !batteryStack.stack.isOf(SPIDER_CONSTRUCT_CORE) ||
+            !SpiderConstructBatteryItem.isFullyCharged(batteryStack.stack)
+        ) {
+            throw MishapInvalidIota.of(args[2], 0, "spider_component.battery")
         }
 
         return Triple(
-            Spell(coreStack, batteryStack),
+            Spell(allay, coreStack, batteryStack),
             5 * MediaConstants.CRYSTAL_UNIT,
             listOf(ParticleSpray.cloud(coreStack.pos, 1.0))
         )
     }
 
-    private class Spell(val coreStack: ItemEntity, val batteryStack: ItemEntity) : RenderedSpell {
+    private class Spell(val allay: AllayEntity, val coreStack: ItemEntity, val batteryStack: ItemEntity) : RenderedSpell {
         override fun cast(ctx: CastingContext) {
             coreStack.stack.decrement(1)
             if (coreStack.stack.isEmpty) {
@@ -75,6 +62,10 @@ object OpCreateSpiderConstruct : SpellAction {
             if (batteryStack.stack.isEmpty) {
                 coreStack.kill()
             }
+
+            val (x, y, z) = allay.pos
+
+            allay.discard()
 
             val construct = HexboundData.EntityTypes.SPIDER_CONSTRUCT.create(ctx.world)
 
@@ -89,7 +80,7 @@ object OpCreateSpiderConstruct : SpellAction {
                 return
             }
 
-            construct.setPosition(coreStack.x, coreStack.y + 0.25, coreStack.z)
+            construct.setPosition(x, y + 0.25, z)
             construct.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, ctx.caster.pos)
             ctx.world.spawnEntity(construct)
         }

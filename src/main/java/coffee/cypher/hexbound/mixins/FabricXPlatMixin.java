@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(FabricXplatImpl.class)
-public class FabricXPlatMixin {
+abstract class FabricXPlatMixin {
     @ModifyReturnValue(
         method = "getColorizer",
         at = @At("RETURN")

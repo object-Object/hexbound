@@ -7,7 +7,6 @@ import coffee.cypher.hexbound.feature.fake_circles.entity.ImpetusFakePlayer;
 import coffee.cypher.hexbound.util.mixinaccessor.StoredPlayerImpetusAccessor;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.mojang.datafixers.util.Pair;
-import dev.cafeteria.fakeplayerapi.server.FakeServerPlayer;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -37,7 +36,7 @@ abstract class BlockEntityStoredPlayerImpetusMixin extends BlockEntityAbstractIm
 
     @Unique
     @Nullable
-    private FakeServerPlayer hexbound$fakeFallback = null;
+    private ImpetusFakePlayer hexbound$fakeFallback = null;
 
     @NotNull
     @Override
@@ -101,6 +100,7 @@ abstract class BlockEntityStoredPlayerImpetusMixin extends BlockEntityAbstractIm
     private PlayerEntity hexbound$fallbackToFakePlayer(PlayerEntity original) {
         if (hexbound$fakeFallback != null) {
             if (original == null) {
+                hexbound$fakeFallback.resetToValidState();
                 return hexbound$fakeFallback;
             } else {
                 hexbound$memorizedPlayer = MemorizedPlayerData.Companion.forPlayer(original);

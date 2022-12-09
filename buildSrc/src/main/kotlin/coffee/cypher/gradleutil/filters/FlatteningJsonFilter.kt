@@ -6,6 +6,6 @@ import java.io.Reader
 
 class FlatteningJsonFilter(input: Reader) : FilterReader(
     with(JsonUtil) {
-        input.asJson().flatten().toJson(JsonGrammar.STRICT).reader()
+        input.asJson().flatten().removeIndents().toJson(JsonGrammar.STRICT).reader()
     }
 )

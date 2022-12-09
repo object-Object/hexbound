@@ -1,8 +1,8 @@
 package coffee.cypher.hexbound.feature.construct.command
 
-import coffee.cypher.hexbound.feature.construct.command.execution.ConstructCommandContext
 import coffee.cypher.hexbound.feature.construct.command.exception.BadTargetConstructCommandException
 import coffee.cypher.hexbound.feature.construct.command.exception.ConstructCommandException
+import coffee.cypher.hexbound.feature.construct.command.execution.ConstructCommandContext
 import coffee.cypher.hexbound.feature.construct.entity.component.ItemHolderComponent
 import coffee.cypher.hexbound.init.HexboundData
 import coffee.cypher.kettle.scheduler.TaskContext
@@ -24,14 +24,27 @@ class PickUp(
         withContext {
             val target = world.getEntity(targetUuid) ?: throw BadTargetConstructCommandException("does_not_exist")
 
+            if (construct.squaredDistanceTo(target) > 6.25) {
+                throw BadTargetConstructCommandException(target, "too_far")
+            }
+
             val itemHolder = requireComponent(ItemHolderComponent)
 
+            if (!itemHolder.heldStack.isEmpty) {
+                throw ConstructCommandException(
+                    Text.translatable(
+                        "hexbound.construct.exception.already_has_item",
+                        itemHolder.heldStack.name
+                    )
+                )
+            }
+
             if (target !is ItemEntity) {
-                throw BadTargetConstructCommandException("not_an_item", target.name)
+                throw BadTargetConstructCommandException(target, "not_an_item")
             }
 
             if (!target.isAlive) {
-                throw BadTargetConstructCommandException("target_expired", target.name)
+                throw BadTargetConstructCommandException(target, "target_expired")
             }
 
             itemHolder.heldStack = target.stack.copy()

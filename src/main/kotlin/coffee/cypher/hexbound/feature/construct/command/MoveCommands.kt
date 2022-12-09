@@ -3,6 +3,7 @@ package coffee.cypher.hexbound.feature.construct.command
 import coffee.cypher.hexbound.feature.construct.command.exception.BadTargetConstructCommandException
 import coffee.cypher.hexbound.feature.construct.command.execution.ConstructCommandContext
 import coffee.cypher.hexbound.init.HexboundData
+import coffee.cypher.hexbound.init.config.HexboundConfig
 import coffee.cypher.hexbound.util.formatVector
 import coffee.cypher.kettle.scheduler.TaskContext
 import kotlinx.serialization.Contextual
@@ -20,18 +21,39 @@ class MoveTo(
     override suspend fun TaskContext<out ConstructCommandContext>.execute() {
         withContext {
             maintain {
-                if (construct.pos.distanceTo(targetPos) > 32) {
-                    throw BadTargetConstructCommandException(targetPos, "pos_too_far")
+                if (construct.squaredDistanceTo(targetPos) > 32 * 32) {
+                    throw BadTargetConstructCommandException(targetPos, "too_far")
                 }
             }
 
-            val path = construct.navigation.findPathTo(targetPos.x, targetPos.y, targetPos.z, 1)
-                       ?: throw BadTargetConstructCommandException(targetPos, "no_path_found")
+            construct.navigation.stop()
 
-            construct.navigation.startMovingAlong(path, 1.0)
+            repeat(HexboundConfig.constructPathfindingAttempts) {
+                val path = construct.navigation.findPathTo(targetPos.x, targetPos.y, targetPos.z, 1)
+                           ?: throw BadTargetConstructCommandException(targetPos, "no_path_found")
 
-            waitUntil {
-                !construct.isNavigating
+                construct.navigation.startMovingAlong(path, 1.0)
+
+                waitUntil(checkEvery = 4) {
+                    !construct.isNavigating || construct.squaredDistanceTo(targetPos) < 1.25 * 1.25
+                }
+
+                if (construct.isNavigating) {
+                    var checksMade = 0
+                    waitUntil(checkEvery = 2) {
+                        !construct.isNavigating || checksMade++ >= 10
+                    }
+                }
+
+                construct.navigation.stop()
+
+                if (construct.squaredDistanceTo(targetPos) <= 1.75 * 1.75) {
+                    return
+                }
+            }
+
+            if (construct.squaredDistanceTo(targetPos) > 4) {
+                throw BadTargetConstructCommandException(targetPos, "could_not_reach")
             }
         }
     }
