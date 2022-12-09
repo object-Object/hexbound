@@ -1,9 +1,9 @@
 package coffee.cypher.hexbound.init
 
 import at.petrak.hexcasting.api.PatternRegistry
+import at.petrak.hexcasting.api.spell.Action
 import at.petrak.hexcasting.api.spell.math.HexDir
 import at.petrak.hexcasting.api.spell.math.HexPattern
-import coffee.cypher.hexbound.init.Hexbound.id
 import coffee.cypher.hexbound.feature.pattern_editing.action.OpMergePatterns
 import coffee.cypher.hexbound.feature.pattern_editing.action.OpRotatePattern
 import coffee.cypher.hexbound.feature.colorizer_storage.action.OpColorizerDelete
@@ -18,7 +18,23 @@ import coffee.cypher.hexbound.feature.fake_circles.action.OpSetImpetusFakePlayer
 import coffee.cypher.hexbound.feature.item_patterns.action.*
 import net.minecraft.util.Hand
 
-object HexboundPatterns {
+open class HexboundPatterns {
+    companion object Default : HexboundPatterns()
+
+    protected open fun registerPattern(
+        pattern: HexPattern,
+        id: String,
+        action: Action,
+        perWorld: Boolean = false
+    ) {
+        PatternRegistry.mapPattern(
+            pattern,
+            Hexbound.id(id),
+            action,
+            perWorld
+        )
+    }
+
     fun register() {
         registerItemPatterns()
         registerPatternManipulation()
@@ -26,150 +42,150 @@ object HexboundPatterns {
 
         registerMinionPatterns()
 
-        PatternRegistry.mapPattern(
+        registerPattern(
             HexPattern.fromAngles("qaqdaqwqaeedewd", HexDir.NORTH_EAST),
-            id("set_fake_impetus_player"),
+            "set_fake_impetus_player",
             OpSetImpetusFakePlayer,
             true
         )
     }
 
     private fun registerItemPatterns() {
-        PatternRegistry.mapPattern(
+        registerPattern(
             HexPattern.fromAngles("adeq", HexDir.EAST),
-            id("get_main_hand"),
+            "get_main_hand",
             OpGetHeldItem(Hand.MAIN_HAND)
         )
 
-        PatternRegistry.mapPattern(
+        registerPattern(
             HexPattern.fromAngles("qeda", HexDir.EAST),
-            id("get_off_hand"),
+            "get_off_hand",
             OpGetHeldItem(Hand.OFF_HAND)
         )
 
-        PatternRegistry.mapPattern(
+        registerPattern(
             HexPattern.fromAngles("aqwed", HexDir.NORTH_EAST),
-            id("get_inventory/stacks"),
+            "get_inventory/stacks",
             OpGetInventoryContents(returnStacks = true)
         )
 
-        PatternRegistry.mapPattern(
+        registerPattern(
             HexPattern.fromAngles("dewqa", HexDir.NORTH_EAST),
-            id("get_inventory/items"),
+            "get_inventory/items",
             OpGetInventoryContents(returnStacks = false)
         )
 
-        PatternRegistry.mapPattern(
+        registerPattern(
             HexPattern.fromAngles("wqaqwaq", HexDir.EAST),
-            id("get_entity_item"),
+            "get_entity_item",
             OpGetEntityItem
         )
 
-        PatternRegistry.mapPattern(
+        registerPattern(
             HexPattern.fromAngles("dedqaa", HexDir.WEST),
-            id("get_stack_prop/item"),
+            "get_stack_prop/item",
             OpGetStackItem
         )
 
-        PatternRegistry.mapPattern(
+        registerPattern(
             HexPattern.fromAngles("dedqaq", HexDir.WEST),
-            id("get_stack_prop/size"),
+            "get_stack_prop/size",
             OpGetStackSize
         )
     }
 
     private fun registerPatternManipulation() {
-        PatternRegistry.mapPattern(
+        registerPattern(
             HexPattern.fromAngles("deeee", HexDir.WEST),
-            id("rotate_pattern"),
+            "rotate_pattern",
             OpRotatePattern
         )
 
-        PatternRegistry.mapPattern(
+        registerPattern(
             HexPattern.fromAngles("aqqqqa", HexDir.NORTH_WEST),
-            id("merge_patterns"),
+            "merge_patterns",
             OpMergePatterns
         )
     }
 
     private fun registerMemorizedColorizers() {
-        PatternRegistry.mapPattern(
+        registerPattern(
             HexPattern.fromAngles("wqwawqqawddwqwede", HexDir.NORTH_EAST),
-            id("colorizer/save"),
+            "colorizer/save",
             OpColorizerSave
         )
 
-        PatternRegistry.mapPattern(
+        registerPattern(
             HexPattern.fromAngles("wqwawqqawddwqeqaq", HexDir.NORTH_EAST),
-            id("colorizer/load"),
+            "colorizer/load",
             OpColorizerLoad
         )
 
-        PatternRegistry.mapPattern(
+        registerPattern(
             HexPattern.fromAngles("wqwawqqawddwqwdd", HexDir.NORTH_EAST),
-            id("colorizer/delete"),
+            "colorizer/delete",
             OpColorizerDelete
         )
     }
 
     private fun registerMinionPatterns() {
-        PatternRegistry.mapPattern(
+        registerPattern(
             HexPattern.fromAngles("qaawedee", HexDir.EAST),
-            id("construct_get_self"),
+            "construct_get_self",
             OpConstructGetSelf
         )
 
-        PatternRegistry.mapPattern(
+        registerPattern(
             HexPattern.fromAngles("eddeawaw", HexDir.EAST),
-            id("give_command/pick_up"),
+            "give_command/pick_up",
             OpGiveCommandPickUp
         )
 
-        PatternRegistry.mapPattern(
+        registerPattern(
             HexPattern.fromAngles("qaaqdwdw", HexDir.EAST),
-            id("give_command/drop_off"),
+            "give_command/drop_off",
             OpGiveCommandDropOff
         )
 
-        PatternRegistry.mapPattern(
+        registerPattern(
             HexPattern.fromAngles("qaaqwdaqqqa", HexDir.EAST),
-            id("give_command/move_to"),
+            "give_command/move_to",
             OpGiveCommandMoveTo
         )
 
-        PatternRegistry.mapPattern(
+        registerPattern(
             HexPattern.fromAngles("qaaqqedwed", HexDir.EAST),
-            id("give_command/harvest"),
+            "give_command/harvest",
             OpGiveCommandHarvest
         )
 
-        PatternRegistry.mapPattern(
+        registerPattern(
             HexPattern.fromAngles("qaaqdee", HexDir.EAST),
-            id("give_command/use/block"),
+            "give_command/use/block",
             OpGiveCommandUseOnBlock
         )
 
-        PatternRegistry.mapPattern(
+        registerPattern(
             HexPattern.fromAngles("qaaq", HexDir.EAST),
-            id("instructions/send"),
+            "instructions/send",
             OpSendInstructions
         )
 
-        PatternRegistry.mapPattern(
+        registerPattern(
             HexPattern.fromAngles("qqaaqqqqwq", HexDir.SOUTH_EAST),
-            id("instructions/broadcast"),
+            "instructions/broadcast",
             OpBroadcastInstructions
         )
 
-        PatternRegistry.mapPattern(
+        registerPattern(
             HexPattern.fromAngles("wqaawddewdwewewewewew", HexDir.EAST),
-            id("bind_construct"),
+            "bind_construct",
             OpBindConstruct
         )
 
-        PatternRegistry.mapPattern(
+        registerPattern(
             HexPattern.fromAngles("wqwqwwqwqwqwwaeqaqdwdqaqe", HexDir.SOUTH_WEST),
-            id("create_construct/spider"),
+            "create_construct/spider",
             OpCreateSpiderConstruct
         )
     }

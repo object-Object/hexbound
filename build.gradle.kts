@@ -1,10 +1,11 @@
 @file:Suppress("UnstableApiUsage", "UNCHECKED_CAST")
 
+import coffee.cypher.gradleutil.filters.*
+import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.net.URL
-import coffee.cypher.gradleutil.filters.*
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
@@ -217,6 +218,49 @@ tasks {
         into(project.buildDir.resolve("docs"))
     }
 }
+
+//region doc gen
+tasks {
+    val patternDocgen by registering(JavaExec::class) {
+        dependsOn(classes)
+
+        args(project.buildDir.resolve("docgen/patterns.json"))
+
+        mainClass.set("coffee.cypher.hexbound.docgen.Docgen")
+        classpath = sourceSets.main.get().runtimeClasspath
+    }
+
+    val copyTranslations by registering(Copy::class) {
+        dependsOn(processResources)
+
+        from(processResources.map { it.outputs }) {
+            include("**/lang/*.json")
+        }
+        into(project.buildDir.resolve("docgen/lang/"))
+
+        eachFile {
+            path = name
+        }
+
+        includeEmptyDirs = false
+    }
+
+    val docgen by registering {
+        dependsOn(patternDocgen, copyTranslations)
+
+        with(JsonBuilder()) {
+            call(
+                mapOf(
+                    "lang_path" to "lang/",
+                    "pattern_path" to "patterns.json"
+                )
+            )
+
+            project.buildDir.resolve("docgen/docs.json").writeText(toPrettyString())
+        }
+    }
+}
+//endregion
 
 //region publishing
 
