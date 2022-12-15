@@ -15,9 +15,11 @@ object OpMergePatterns : ConstMediaAction {
         val endDir = startPattern.angles.fold(startPattern.startDir) { dir, angle -> dir.rotatedBy(angle) }
         val joinAngle = extensionPattern.startDir.angleFrom(endDir)
 
+        val angles = (startPattern.angles + joinAngle + extensionPattern.angles).take(1600).toMutableList()
+
         return HexPattern(
             startPattern.startDir,
-            (startPattern.angles + joinAngle + extensionPattern.angles).toMutableList()
+            angles
         ).asActionResult
     }
 }

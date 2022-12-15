@@ -4,6 +4,8 @@ import at.petrak.hexcasting.api.PatternRegistry
 import at.petrak.hexcasting.api.spell.Action
 import at.petrak.hexcasting.api.spell.math.HexDir
 import at.petrak.hexcasting.api.spell.math.HexPattern
+import at.petrak.hexcasting.common.casting.operators.selectors.OpGetEntitiesBy
+import at.petrak.hexcasting.common.casting.operators.selectors.OpGetEntityAt
 import coffee.cypher.hexbound.feature.pattern_editing.action.OpMergePatterns
 import coffee.cypher.hexbound.feature.pattern_editing.action.OpRotatePattern
 import coffee.cypher.hexbound.feature.colorizer_storage.action.OpColorizerDelete
@@ -14,8 +16,10 @@ import coffee.cypher.hexbound.feature.construct.action.command.*
 import coffee.cypher.hexbound.feature.construct.action.crafting.OpCreateSpiderConstruct
 import coffee.cypher.hexbound.feature.construct.action.instruction.OpBroadcastInstructions
 import coffee.cypher.hexbound.feature.construct.action.instruction.OpSendInstructions
+import coffee.cypher.hexbound.feature.construct.entity.AbstractConstructEntity
 import coffee.cypher.hexbound.feature.fake_circles.action.OpSetImpetusFakePlayer
 import coffee.cypher.hexbound.feature.item_patterns.action.*
+import net.minecraft.entity.Entity
 import net.minecraft.util.Hand
 
 open class HexboundPatterns {
@@ -40,7 +44,7 @@ open class HexboundPatterns {
         registerPatternManipulation()
         registerMemorizedColorizers()
 
-        registerMinionPatterns()
+        registerConstructPatterns()
 
         registerPattern(
             HexPattern.fromAngles("qaqdaqwqaeedewd", HexDir.NORTH_EAST),
@@ -73,12 +77,6 @@ open class HexboundPatterns {
             HexPattern.fromAngles("dewqa", HexDir.NORTH_EAST),
             "get_inventory/items",
             OpGetInventoryContents(returnStacks = false)
-        )
-
-        registerPattern(
-            HexPattern.fromAngles("wqaqwaq", HexDir.EAST),
-            "get_entity_item",
-            OpGetEntityItem
         )
 
         registerPattern(
@@ -128,7 +126,7 @@ open class HexboundPatterns {
         )
     }
 
-    private fun registerMinionPatterns() {
+    private fun registerConstructPatterns() {
         registerPattern(
             HexPattern.fromAngles("qaawedee", HexDir.EAST),
             "construct_get_self",
@@ -187,6 +185,25 @@ open class HexboundPatterns {
             HexPattern.fromAngles("wqwqwwqwqwqwwaeqaqdwdqaqe", HexDir.SOUTH_WEST),
             "create_construct/spider",
             OpCreateSpiderConstruct
+        )
+
+        val constructPredicate = { e: Entity -> e is AbstractConstructEntity }
+        registerPattern(
+            HexPattern.fromAngles("qqqqqdaqaawedde", HexDir.SOUTH_EAST),
+            "get_entity/construct",
+            OpGetEntityAt(constructPredicate)
+        )
+
+        registerPattern(
+            HexPattern.fromAngles("qqqqqwdeddwedde", HexDir.SOUTH_EAST),
+            "zone_entity/construct",
+            OpGetEntitiesBy(constructPredicate, false)
+        )
+
+        registerPattern(
+            HexPattern.fromAngles("eeeeewaqaawedde", HexDir.SOUTH_EAST),
+            "zone_entity/not_construct",
+            OpGetEntitiesBy(constructPredicate, true)
         )
     }
 }

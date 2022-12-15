@@ -29,6 +29,8 @@ val modProps = JsonSlurper().parseText(File("mod.json").readText()) as Map<Strin
 version = (modProps.getValue("core") as Map<String, Any>).getValue("version")
 group = "coffee.cypher"
 
+//region dependencies
+
 repositories {
     mavenCentral()
 
@@ -106,6 +108,8 @@ dependencies {
     modCompileOnly(libs.hexal)
     //modLocalRuntime(libs.hexal)
 }
+
+//endregion
 
 val javaVersion = JavaVersion.VERSION_17
 
@@ -195,7 +199,7 @@ tasks {
                 sourceLink {
                     localDirectory.set(projectDir.resolve("src/main/kotlin"))
                     remoteLineSuffix.set("#L")
-                    remoteUrl.set(URL("https://github.com/Cypher121/hex-magia/blob/master/src/main/kotlin"))
+                    remoteUrl.set(URL("https://github.com/Cypher121/hexbound/blob/master/src/main/kotlin"))
                 }
 
                 jdkVersion.set(java.toolchain.languageVersion.get().asInt())
@@ -220,7 +224,7 @@ tasks {
     }
 }
 
-//region doc gen
+//region docgen
 tasks {
     val patternDocgen by registering(JavaExec::class) {
         dependsOn(classes)
@@ -243,9 +247,13 @@ tasks {
                     .firstOrNull { dir -> File(dir, path).exists() }
 
                 val newPattern = pattern.toMutableMap()
-                newPattern["pathToSource"] = File(prefixDir, path)
-                    .toRelativeString(project.rootDir)
-                    .replace(File.separatorChar, '/')
+                if (prefixDir != null) {
+                    newPattern["pathToSource"] = File(prefixDir, path)
+                        .toRelativeString(project.rootDir)
+                        .replace(File.separatorChar, '/')
+                } else {
+                    newPattern["pathToSource"] = "external:$path" //TODO maybe I can find the jar in the docgen class?
+                }
 
                 newPattern
             }
@@ -255,6 +263,10 @@ tasks {
                 outFile.writeText(toPrettyString())
             }
         }
+    }
+
+    val genWebBook by registering(Exec::class) {
+
     }
 
     val copyTranslations by registering(Copy::class) {
@@ -282,6 +294,7 @@ tasks {
                 call(
                     mapOf(
                         "langPath" to "lang",
+                        "defaultLangFile" to "lang/en_us.json",
                         "patternPath" to "patterns.json",
                         "repositoryRoot" to (modProps.getValue("core") as Map<String, Any>).getValue("repository")
                     )
