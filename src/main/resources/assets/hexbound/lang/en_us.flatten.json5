@@ -360,7 +360,7 @@
                 bind: "Removes a reference to a player, a pattern, or $(thing)$(l:hexcasting:casting/influences)Null$() from the stack, and binds the Construct to it.",
                 "3": "If bound to a pattern, the Construct will ignore broadcast orders (but not direct orders!) unless they are associated with the same pattern.$(br2)\
 |                     If bound to a player, the Construct will refuse orders, direct or broadcast, from anyone other than that player.$(br2)\
-|                     Finally, passing Null removes both the pattern and the player the Construct is bound to."
+|                     Finally, passing $(thing)$(l:hexcasting:casting/influences)Null$() removes both the pattern and the player the Construct is bound to."
             }
         }
     }
