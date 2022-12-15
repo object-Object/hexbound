@@ -6,7 +6,7 @@ import java.io.Reader
 object JsonUtil {
     private val jankson: Jankson = Jankson.builder().build()
 
-    fun Reader.asJson() = jankson.load(this.readText())
+    fun Reader.asJson() = jankson.load(this.readText().replace("\r\n", "\n"))
 
     fun JsonElement.flatten(): JsonElement = if (this is JsonObject) {
         val newObj = JsonObject()
