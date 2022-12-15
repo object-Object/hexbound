@@ -13,8 +13,8 @@ object HexalInteropManager {
     fun init() {
         ItemIota.CONVERTER = HexalItemIotaConverter
 
-        LinkableRegistry.registerLinkableType(ConstructLinkableType)
-        AbstractConstructEntity.EXTRA_TICK_HANDLERS += ConstructLinkable::handleLinkRendering
+        //LinkableRegistry.registerLinkableType(ConstructLinkableType)
+        //AbstractConstructEntity.EXTRA_TICK_HANDLERS += ConstructLinkable::handleLinkRendering
     }
 }
 

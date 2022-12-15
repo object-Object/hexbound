@@ -5,6 +5,7 @@ import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.mishaps.MishapBadEntity
 import coffee.cypher.hexbound.feature.item_patterns.iota.ItemStackIota
+import net.minecraft.entity.ItemEntity
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.decoration.ItemFrameEntity
 import net.minecraft.util.Hand
@@ -18,6 +19,12 @@ class OpGetHeldItem(private val hand: Hand) : ConstMediaAction {
             is ItemFrameEntity ->
                 if (hand == Hand.MAIN_HAND) {
                     holder.heldItemStack
+                } else {
+                    throw MishapBadEntity.of(holder, "item.read.offhand")
+                }
+            is ItemEntity ->
+                if (hand == Hand.MAIN_HAND) {
+                    holder.stack
                 } else {
                     throw MishapBadEntity.of(holder, "item.read.offhand")
                 }

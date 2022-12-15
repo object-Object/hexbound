@@ -58,16 +58,18 @@ class ItemStackIota private constructor(val itemStack: ItemStack) : Iota(Type, i
     }
 
     object Type : IotaType<ItemStackIota>() {
-        override fun deserialize(tag: NbtElement, world: ServerWorld): ItemStackIota {
+        override fun deserialize(tag: NbtElement, world: ServerWorld?): ItemStackIota {
             val compound = tag.downcast(NbtCompound.TYPE)
-            val stack = ItemStack.fromNbt(compound.getCompound("iota_stack"))
+            val stack = if ("hexbound:iota_stack" in compound)
+                ItemStack.fromNbt(compound.getCompound("hexbound:iota_stack"))
+            else
+                ItemStack.EMPTY
 
             return ItemStackIota(stack)
         }
 
         override fun display(tag: NbtElement): Text {
-            val compound = tag.downcast(NbtCompound.TYPE)
-            val stack = ItemStack.fromNbt(compound.getCompound("iota_stack"))
+            val stack = deserialize(tag, null).itemStack
 
             return buildText {
                 color(Color(0x1E90FF)) {

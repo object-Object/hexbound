@@ -19,7 +19,6 @@
                 item_stack: "an Item Stack",
                 bindable: "a player, pattern, or Null",
                 spider_component: {
-                    "": "a Spider Construct Core or a fully charged Spider Construct Battery",
                     "core": "a Spider Construct Core",
                     "battery": "a fully charged Spider Construct Battery"
                 }
@@ -66,14 +65,22 @@
                 stacks: "Hoarder's Distillation",
                 items: "Collector's Distillation"
             },
-            get_entity_item: "Sweeper's Purification",
             "get_stack_prop/": {
                 "size": "Treasurer's Purification",
                 "item": "Logistician's Purification"
             },
             "create_construct/": {
                 spider: "Create Spider Construct"
-            }
+            },
+            "get_entity/construct": "Entity Purification: Construct",
+            "zone_entity/construct": "Zone Distillation: Construct",
+            "zone_entity/not_construct": "Zone Distillation: Non-Construct"
+        },
+        "spell.book.hexbound:": {
+            "get_entity/construct": "Entity Prfn.: Construct",
+            "zone_entity/construct": "Zone Dstl.: Construct",
+            "zone_entity/not_construct": "Zone Dstl.: Non-Construct",
+            "get_off_hand": "Shieldbearer's Prfn."
         }
     },
     hexbound: {
@@ -158,6 +165,67 @@
             "1": "I have found evidence of a different branch of _Hexcasting. Known as Hexbinding, this particular school uses media to create and control automata known as Constructs, manipulate items, and more. \
 |                 As always, I will document my findings in this journal."
         },
+        casting: {
+            figments: {
+                title: "Figments",
+                "1": "All my study shows that the act of casting a _Hex inevitably requires a living Caster exist $(i)somewhere$(). \
+|                     Perhaps an obvious and pointless detail: I am the one casting the _Hex, so the requirement is met, but \
+|                     should I discover some means of independent casting (or even rig a deployer to flail a trinket around), \
+|                     it would lose the link and cease to function the moment I cross the portal to the Nether or elsewhere.",
+                "2": "However, I believe a specially designed web of _media could ''trick'' the _Hex into latching onto it long enough to resolve. \
+|                     These Figments as I've begun calling them, would either be severely limited in their abilities, as Constructs are, or would require \
+|                     something much more intricate to hold their hand through the _Hex, so to speak.$(br)\
+|                     Moreover, Figments are not entirely self-aware: Mind's Reflection simply returns Null, \
+|                     while Sentinels and Pigments are unreliable."
+            },
+            item_iotas: {
+                title: "Item Iotas",
+                "1": "I have discovered two additional types of Iotas I can manipulate.$(br2)\
+|                     Item Iotas describe a singular item stripped of its properties, such as damage or enchantments.$(br2)\
+|                     Item Stack Iotas describe a stack of items as they might appear in my inventory, amount, custom names, enchantments, and all.",
+                "2": "It would also seem Item Stack Iotas referring to Foci containing other Item Stack Iotas are somewhat faulty. A limit to the depth of my thought perhaps."
+            },
+            hexbound_mishaps: {
+                title: "Hexbinding Mishaps",
+                "1": "New schools of _Hexcasting bring new and exciting ways of utterly failing a _Hex. Here are some I have discovered.",
+                construct: {
+                    no_construct: {
+                        title: "Not Drawn By Construct",
+                        desc: "The pattern drawn cannot be executed by anything except a Construct. Causes purple sparks and slows me for a few seconds."
+                    },
+                    missing_component: {
+                        title: "Construct Incapable",
+                        desc: "The pattern drawn (usually a command) requires the Construct do something it cannot, such as attacking for a utility Construct. Causes yellow sparks."
+                    },
+                    forbidden: {
+                        title: "Construct Is Forbidden",
+                        desc: "I attempted to give orders to a Construct that will not accept any from me. Causes brown sparks and pushes me away from the Construct."
+                    }
+                },
+                colorizer: {
+                    not_set: {
+                        title: "No Pigment Present",
+                        desc: "I have not internalized a Pigment yet. Causes white sparks."
+                    },
+                    missing_key: {
+                        title: "No Pigment For Key",
+                        desc: "I have not memorized a Pigment for the pattern I entered. Causes white sparks and causes me to lose my current Pigment."
+                    },
+                    too_many: {
+                        title: "Too Many Pigments",
+                        desc: "I have already memorized too many Pigments and cannot add another. Causes red sparks."
+                    }
+                }
+            }
+        },
+        "greatwork.impetus_figment": {
+            title: "Impetus Figments",
+            "1": "Now that I possess the means to contain a mind, I have revisited my notes on Bind Figment and confirmed that a Cleric Impetus would be the perfect vessel for it. \
+|                 The Impetus must be bound to a $(hex)Hexcaster$() as $(o)enlightened$() as I am; no other mind would allow a piece of itself to be unraveled like this.$(br2)Not yet. THEY WILL. In time.",
+            "2": "Furthermore, if the Impetus can connect to its bound caster, that connection will take priority over the figment.$(br2)\
+|                 A thought with no mind bound to a lattice every thought wrapped and screaming it is not itself it always made sense it will never make sense $(k)hello penguin$()$(br2)\
+|                 Ten $(media)Charged Amethyst$() for the spell."
+        },
         "interop.hexal": {
             title: "Hexal-Hexbound",
             "1": "It appears some of the _Hexcasting disciplines I've encountered can operate together.$(br2) \
@@ -165,13 +233,52 @@
 |                 Comparisons between them or their types should therefore work as expected.",
             "2": "The second and, perhaps, even more important discovery is the ability of Constructs to maintain Links. This will allow me to send iotas between Wisps and Constructs, or even Constructs and myself! The possibilities are well and truly endless."
         },
+        patterns: {
+            pattern_editing: {
+                title: "Pattern Editing",
+                "1": "Some patterns I found seem to allow editing other patterns in multiple ways, even producing patterns that would ordinarily be impossible to draw.$(br2)\
+|                     As exciting as that may sound, anything possible otherwise I could just draw myself, and any impossible pattern would, in all likelihood, not produce any valuable results.$(br2)\
+|                     Some look pretty good on a Scroll though, so not entirely pointless!",
+                rotate: "Removes a pattern and an integer from the stack and rotates the pattern the number of times given by the integer. Positive numbers rotate clockwise, while negative rotate counter-clockwise.",
+                merge: "Removes two patterns and merges them, as if first stroke of the second was drawn from the last point of the first. It appears excessively large patterns will simply end after a certain point instead."
+            },
+            item_patterns: {
+                title: "Item Patterns",
+                prop: {
+                    item: "Transforms the Item Stack at the top of the stack into its Item.",
+                    size: "Transforms the Item Stack at the top of the stack into its size."
+                },
+                main_hand: "Transforms the entity at the top of the stack into the Item Stack in its main hand. Also works on Item Frames and dropped items.",
+                off_hand: "Transforms the entity at the top of the stack into the Item Stack in its off hand.",
+                inventory: {
+                    stacks: "Removes two vectors from the stack representing position and side. Returns a list of Item Stacks in the block at the given position accessible from the given side (or all if second vector is zero).",
+                    items: "Removes two vectors from the stack representing position and side. Returns a list of Items in the block at the given position accessible from the given side (or all if second vector is zero)."
+                }
+            },
+            spells: {
+                colorizer_storage: {
+                    title: "Memorizing Pigments",
+                    "1": "The patterns in this chapter allow me to memorize Pigments I have already Internalized.$(br2)\
+|                         Using these patterns associates a Pigment with a pattern of my choosing in my mind, allowing me to revert to it whenever I please.",
+                    save: "Removes a pattern from the stack and associates my current Pigment with that pattern.",
+                    load: "Removes a pattern from the stack and sets my current Pigment to the one I have associated with that pattern",
+                    delete: "Removes a pattern from the stack, and forgets the Pigment I have associated with that pattern."
+                }
+            },
+            great_spells: {
+                set_fake_impetus_player: {
+                    "1": "Removes a vector from the stack and binds a Figment to the block at the position represented by the vector.$(br)\
+|                         I can't tell what the target is supposed to be though."
+                }
+            }
+        },
         constructs: {
             constructs_intro: {
                 title: "Intro to Constructs",
                 "1": "Constructs are a type of machine used by Hexbinders in ages past, and, following meticulous study of surviving blueprints, are now at my disposal.",
                 "2": "What puts Constructs apart from simpler machines such as the Golems employed by villages of this world is their ability to process _Hexes and use special patterns \
-|                     to interpret _Hexes as physical actions to perform. While the limitations are many, these ''commands'' allow me to encode a variety of tasks too mundane or dangerous for me to perform \
-|                     as Construct instructions (unless I find myself getting attached to these inanimate objects).", //TODO rephrase this part
+|                     to interpret _Hexes as physical actions to perform. While the limitations are many, these ''commands'' allow me to encode as Construct instructions a variety of tasks I'd personally \
+|                     find too mundane or dangerous (unless I find myself getting attached to these inanimate objects).",
                 "3": "First, the limitations:$(br)\
 |                     $(li)Constructs are too sensitive to use their own _media for casting _Hexes. It should be assumed they do not possess any _media to spend.\
 |                     $(li)Most patterns, especially Spells, directly affecting the outside world simply cannot be processed by their limited pseudo-minds.\
@@ -229,6 +336,29 @@
 |                     Sometimes I wonder if the Allay's fate should concern me more than a passing thought.",
                 create: "The inputs represent, starting from deepest on the stack, the Allay, a dropped Core, and a dropped fully-charged Battery. \
 |                        The items are consumed, and the Allay is converted into a Construct."
+            },
+            selecting_constructs: {
+                title: "Selecting Constructs",
+                single: "Transform the position on the stack into the Construct at that location (or $(l:casting/influences)$(thing)Null/$ if there isn't one).",
+                zone: "Take a position and maximum distance on the stack, and combine them into a list of Constructs near the position.",
+                zone_negate: "Take a position and maximum distance on the stack, and combine them into a list of non-Construct entities near the position."
+            },
+            bind_broadcast: {
+                title: "Binding and Broadcasting",
+                "1": "I have run into several problems issuing orders to my Constructs: controlling several of them requires I pass orders to each individually, \
+|                     it is quite challenging to send order to only some of the Constructs in an area, and, finally, it occurred to me other Hexcasters can order my Constructs to do anything they please!",
+                broadcaster: {
+                    title: "Construct Broadcaster",
+                    desc: "The Construct Broadcaster is a small structure capable of broadcasting my orders 16 blocks around itself, solving the first two of my issues."
+                },
+                broadcast: "Removes a vector and a list of patterns. Broadcasts the list as instructions through the Broadcaster located at the indicated position.",
+                "2": "Broadcasting orders should save me from a few headaches in the long run, even if the range is still limited. \
+|                     However that is not all: a Slate containing a pattern can be placed in front of the Broadcaster, associating the instructions sent through it with that pattern.$(br2)\
+|                     To make use of that association, a Construct must be bound to a pattern.",
+                bind: "Removes a reference to a player, a pattern, or Null from the stack, and binds the Construct to it.",
+                "3": "If bound to a pattern, the Construct will ignore broadcast orders (but not direct orders!) unless they are associated with the same pattern.$(br2)\
+|                     If bound to a player, the Construct will refuse orders, direct or broadcast, from anyone other than that player.$(br2)\
+|                     Finally, passing Null removes both the pattern and the player the Construct is bound to."
             }
         }
     }
