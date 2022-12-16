@@ -13,6 +13,7 @@ import java.io.File
 import java.io.FileOutputStream
 import kotlin.reflect.full.declaredMemberFunctions
 import kotlin.reflect.jvm.isAccessible
+import kotlin.reflect.jvm.jvmName
 
 @OptIn(ExperimentalSerializationApi::class)
 internal fun main(args: Array<String>) {
@@ -52,13 +53,23 @@ private class DocgenPatterns : HexboundPatterns() {
             stackTrace[0].fileName!!
         }
 
+        val srcPath = action::class.java.protectionDomain.codeSource.location.file
+            .let {
+                if (it.endsWith(".jar")) {
+                    "external:${it.substringAfterLast('/')}:"
+                } else {
+                    it
+                }
+            }
+
         val sourcePackage = action::class.java.packageName.replace(".", "/")
 
         patternData += PatternData(
             id = "hexbound:$id",
             defaultStartDir = pattern.startDir.name,
             angleSignature = pattern.anglesSignature(),
-            pathToSource = "$sourcePackage/$sourceFile",
+            className = action::class.jvmName,
+            pathToSource = "$srcPath$sourcePackage/$sourceFile",
             isPerWorld = perWorld
         )
     }
@@ -69,6 +80,7 @@ private data class PatternData(
     val id: String,
     val defaultStartDir: String,
     val angleSignature: String,
+    val className: String,
     val pathToSource: String,
     val isPerWorld: Boolean
 )

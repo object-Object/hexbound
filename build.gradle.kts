@@ -242,17 +242,43 @@ tasks {
             val processed = patterns.map {
                 val pattern = it as Map<String, Any>
                 val path = pattern["pathToSource"] as String
+                val newPattern = pattern.toMutableMap()
+                newPattern -= "pathToSource"
+                newPattern["source"] = mapOf(
+                    "type" to "unknown"
+                )
+
+                if (path.startsWith("external")) {
+                    val match = Regex("^external:([^:]+):(.+)$").matchEntire(path)?.groupValues
+                    val jar = match?.get(1) ?: "unknown"
+                    val file = match?.get(2) ?: "unknown"
+
+                    newPattern["source"] = mapOf(
+                        "type" to "external",
+                        "jar" to jar,
+                        "path" to file
+                    )
+                    return@map newPattern
+                }
+
+                val outDir = sourceSets.main.get().runtimeClasspath.firstOrNull { outDir ->
+                    File(path).startsWith(outDir)
+                } ?: return@map newPattern
+
+                val relativePath = File(path).toRelativeString(outDir)
 
                 val prefixDir = sourceSets.main.get().allSource.srcDirs
-                    .firstOrNull { dir -> File(dir, path).exists() }
+                    .firstOrNull { dir -> File(dir, relativePath).exists() }
 
-                val newPattern = pattern.toMutableMap()
                 if (prefixDir != null) {
-                    newPattern["pathToSource"] = File(prefixDir, path)
-                        .toRelativeString(project.rootDir)
-                        .replace(File.separatorChar, '/')
-                } else {
-                    newPattern["pathToSource"] = "external:$path" //TODO maybe I can find the jar in the docgen class?
+                    newPattern -= "pathToSource"
+
+                    newPattern["source"] = mapOf(
+                        "type" to "local",
+                        "path" to File(prefixDir, relativePath)
+                            .toRelativeString(project.rootDir)
+                            .replace(File.separatorChar, '/')
+                    )
                 }
 
                 newPattern
@@ -288,19 +314,21 @@ tasks {
         dependsOn(patternDocgen, copyTranslations)
 
         doFirst {
-            project.buildDir.resolve("docgen").mkdirsOrThrow()
+            val docgenDir = project.buildDir.resolve("docgen").also { it.mkdirsOrThrow() }
+            val langDir = docgenDir.resolve("lang")
+            val langFiles = langDir.listFiles().map { it.toRelativeString(docgenDir).replace(File.separatorChar, '/') }
 
             with(JsonBuilder()) {
                 call(
                     mapOf(
-                        "langPath" to "lang",
+                        "availableLangFiles" to langFiles,
                         "defaultLangFile" to "lang/en_us.json",
                         "patternPath" to "patterns.json",
                         "repositoryRoot" to (modProps.getValue("core") as Map<String, Any>).getValue("repository")
                     )
                 )
 
-                project.buildDir.resolve("docgen/docs.json").writeText(toPrettyString())
+                docgenDir.resolve("docs.json").writeText(toPrettyString())
             }
         }
     }
@@ -411,7 +439,7 @@ tasks.register("prepareArtifacts", Copy::class) {
     }
 
     val destination = artifactDir?.let(::File)
-                      ?: project.buildDir.resolve("release")
+        ?: project.buildDir.resolve("release")
 
     into(destination)
 }
