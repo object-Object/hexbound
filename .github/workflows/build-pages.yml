@@ -47,6 +47,8 @@ jobs:
         run: python update_versions.py version "${{ github.event.inputs.version }}"
       - name: Commit changes
         run: |
+          git config user.name "Documentation Generation Bot"
+          git config user.email "noreply@github.com"
           git add .
           git commit -m "Update docs from $GITHUB_REF"
           git push
