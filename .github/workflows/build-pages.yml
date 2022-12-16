@@ -39,6 +39,8 @@ jobs:
         with:
           name: docgen
           path: latest
+      - name: Update latest version
+        run: python _scripts/update_versions.py latest
       - name: Add version from tag
         if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
         run: python _scripts/update_versions.py ref "${{ github.ref }}"
