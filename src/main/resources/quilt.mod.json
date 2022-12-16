@@ -61,6 +61,14 @@
             {
                 "id": "kettle",
                 "versions": ">=2.2.1"
+            },
+            {
+                "id": "geckolib",
+                "versions": "^3.1.37"
+            },
+            {
+                "id": "qkl",
+                "versions": "^1.0.0"
             }
         ]
     },
