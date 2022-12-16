@@ -1,12 +1,15 @@
 {
     "core": {
         "name": "hexbound",
-        "version": "0.0.1-alpha.1+1.19.2",
+        "version": "0.1.0-beta.1+1.19.2",
         "repository": "https://github.com/Cypher121/hexbound/"
     },
     "platforms": {
         "modrinth": {
-            "id": "SRCaBfKA"
+            "id": "PHgo4bVw"
+        },
+        "curseforge": {
+            "id": "739791"
         }
     }
 }
