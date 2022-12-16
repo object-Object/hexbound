@@ -6,7 +6,7 @@
         "version": "${version}",
         "metadata": {
             "name": "Hexbound",
-            "description": "Addon for Hexcasting",
+            "description": "Addon for Hexcasting adding programmable Constructs and more",
             "contributors": {
                 "Cypher121": "Owner"
             },

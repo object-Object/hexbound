@@ -374,7 +374,7 @@ publishing {
 
             pom {
                 name.set("Hexbound")
-                description.set("Hexcasting addon")
+                description.set("Addon for Hexcasting adding programmable Constructs and more")
                 url.set("https://www.modrinth.com/mod/hexbound")
 
                 scm {
