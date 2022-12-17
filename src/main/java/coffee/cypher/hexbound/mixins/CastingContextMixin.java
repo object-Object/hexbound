@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(value = CastingContext.class, remap = false)
+@Mixin(value = CastingContext.class)
 abstract class CastingContextMixin implements CastingContextConstructAccessor {
     @Nullable
     private AbstractConstructEntity hexbound$construct;
@@ -34,7 +34,8 @@ abstract class CastingContextMixin implements CastingContextConstructAccessor {
 
     @ModifyReturnValue(
         method = "isCasterEnlightened",
-        at = @At("RETURN")
+        at = @At("RETURN"),
+        remap = false
     )
     private boolean hexbound$fakeImpetusPlayersAreEnlightened(boolean original) {
         return original || caster instanceof ImpetusFakePlayer;

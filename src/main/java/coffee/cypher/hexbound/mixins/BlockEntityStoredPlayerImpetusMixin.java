@@ -29,9 +29,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 import java.util.UUID;
 
-@Mixin(value = BlockEntityStoredPlayerImpetus.class, remap = false)
+@Mixin(value = BlockEntityStoredPlayerImpetus.class)
 abstract class BlockEntityStoredPlayerImpetusMixin extends BlockEntityAbstractImpetus implements StoredPlayerImpetusAccessor {
-    @Shadow
+    @Shadow(remap = false)
     private UUID storedPlayer;
 
     @Unique
