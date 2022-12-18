@@ -25,6 +25,8 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: docgen
+      - name: Build web book
+        run: python ./doc/collate_data.py ./build/resources/main src/main/kotlin hexbound hexboundbook doc/template.html build/docgen/index.html
       - name: Upload docgen folder
         uses: actions/upload-artifact@v3
         with:
