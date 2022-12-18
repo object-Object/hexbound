@@ -168,7 +168,7 @@
         casting: {
             figments: {
                 title: "Figments",
-                "1": "All my study shows that the act of casting a _Hex inevitably requires a living Caster exist $(italic)somewhere$(). \
+                "1": "All my study shows that the act of casting a _Hex inevitably requires a living Caster exist $(o)somewhere$(). \
 |                     Perhaps an obvious and pointless detail: I am the one casting the _Hex, so the requirement is met, but \
 |                     should I discover $(l:hexcasting:greatwork/spellcircle)some means of independent casting$() (or even rig a dispenser to flail a trinket around), \
 |                     it would lose the link and cease to function the moment I cross the portal to the Nether or elsewhere.",
