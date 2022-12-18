@@ -671,7 +671,7 @@ def main(argv):
         book = parse_book(root, src_root, hex_root, mod_name, book_name)
         template_file = argv[5]
         with open(template_file, "r") as fh:
-            with stdout if len(argv) < 7 else open(argv[6], "w", encoding="utf-8") as out:
+            with open(argv[6], "w", encoding="utf-8") as out:
                 for line in fh:
                     if line.startswith("#DO_NOT_RENDER"):
                         _, *blacklist = line.split()
@@ -684,6 +684,9 @@ def main(argv):
                         print('', file=out)
                     else:
                         print(line, end='', file=out)
+
+        with open(argv[7], "w", encoding="utf-8") as out:
+            json.dump(book['categories'], out)
 
 
 if __name__ == "__main__":

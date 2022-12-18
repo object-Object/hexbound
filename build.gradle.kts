@@ -324,6 +324,7 @@ tasks {
                         "availableLangFiles" to langFiles,
                         "defaultLangFile" to "lang/en_us.json",
                         "patternPath" to "patterns.json",
+                        "bookPath" to "book.json",
                         "repositoryRoot" to (modProps.getValue("core") as Map<String, Any>).getValue("repository")
                     )
                 )
