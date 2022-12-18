@@ -17,6 +17,12 @@ repo_names = {
     "hexcasting": "https://raw.githubusercontent.com/gamma-delta/HexMod/main/Common/src/main/resources",
 }
 
+book_links = {
+    "hexbound": ("", True),
+    "hexal": ("https://talia-12.github.io/Hexal/", True),
+    "hexcasting": ("https://gamma-delta.github.io/HexMod/", True)
+}
+
 extra_i18n = {
     "item.minecraft.amethyst_shard": "Amethyst Shard",
     "item.minecraft.budding_amethyst": "Budding Amethyst",
@@ -100,7 +106,7 @@ def parse_style(sty):
         return "<br />", None
     if sty == "br2":
         return "", Style("para", {})
-    if sty == "li":
+    if sty == "li" or sty == "li2":
         return "", Style("para", {"clazz": "fake-li"})
     if sty[:2] == "k:":
         return keys[sty[2:]], None
@@ -367,7 +373,15 @@ def parse_book(root, src_root, hex_root, mod_name, book_name):
     for filename in walk_dir(f"{cat_dir}/categories", ""):
         basename = filename[:-5]
         parse_ret = parse_category(root_info, book_dir, cat_dir, basename)
-        if parse_ret != -1: categories.append(parse_ret)
+        if parse_ret != -1:
+            categories.append(parse_ret)
+
+    for filename in walk_dir(f"{book_dir}/categories", ""):
+        basename = filename[:-5]
+        parse_ret = parse_category(root_info, book_dir, book_dir, basename)
+        if parse_ret != -1:
+            categories.append(parse_ret)
+
     cats = {cat["id"]: cat for cat in categories}
     categories.sort(key=lambda cat: (parse_sortnum(cats, cat["id"]), cat["name"]))
 
@@ -441,7 +455,14 @@ def get_format(out, ty, value):
     if ty == "link":
         link = value
         if "://" not in link:
+            link_mod = link.split(':')[0]
             link = "#" + link.replace("#", "@")
+            if link_mod in book_links:
+                if book_links[link_mod][1]:
+                    base_link = link.replace(f'#{link_mod}:', '#')
+                else:
+                    base_link = link
+                link = book_links[link_mod][0] + base_link
         return out.pair_tag("a", href=link)
     if ty == "tooltip":
         return out.pair_tag("span", clazz="has-tooltip", title=value)
