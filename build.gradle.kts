@@ -327,7 +327,7 @@ tasks {
                         "book" to mapOf(
                             "webPath" to "index.html",
                             "dumpPath" to "book.json"
-                        )
+                        ),
                         "repositoryRoot" to (modProps.getValue("core") as Map<String, Any>).getValue("repository")
                     )
                 )
