@@ -23,16 +23,17 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 object Hexbound : ModInitializer {
-    lateinit var MOD_ID: String
-    lateinit var LOGGER: Logger
+    const val MOD_ID = "hexbound"
+
+    val LOGGER: Logger by lazy {
+        LoggerFactory.getLogger(MOD_ID)
+    }
 
     fun id(name: String): Identifier {
         return Identifier(MOD_ID, name)
     }
 
     override fun onInitialize(mod: ModContainer) {
-        MOD_ID = mod.metadata().id()
-        LOGGER = LoggerFactory.getLogger(MOD_ID)
 
         HexboundConfig.init()
 
