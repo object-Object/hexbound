@@ -20,12 +20,8 @@ import coffee.cypher.hexbound.init.HexboundData
 import coffee.cypher.hexbound.util.MemorizedPlayerData
 import coffee.cypher.hexbound.util.mixinaccessor.construct
 import coffee.cypher.hexbound.util.mixinaccessor.storedPlayerUuid
-import coffee.cypher.hexbound.util.provideDelegate
 import com.mojang.serialization.Codec
 import net.minecraft.entity.EntityType
-import net.minecraft.entity.data.DataTracker
-import net.minecraft.entity.data.TrackedData
-import net.minecraft.entity.data.TrackedDataHandlerRegistry
 import net.minecraft.entity.mob.PathAwareEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
@@ -39,7 +35,6 @@ import net.minecraft.util.*
 import net.minecraft.world.World
 import org.quiltmc.qkl.library.nbt.set
 import org.quiltmc.qkl.library.text.*
-import java.util.*
 import kotlin.Pair
 import kotlin.jvm.optionals.getOrNull
 
@@ -47,9 +42,6 @@ abstract class AbstractConstructEntity(
     entityType: EntityType<out PathAwareEntity>,
     world: World
 ) : PathAwareEntity(entityType, world) {
-    internal var hexalLinkable: Any? = null
-    internal var hexalLinks by HEXAL_LINKS
-
     private val components = mutableMapOf<ConstructComponentKey<*>, Any>()
 
     @Suppress("LeakingThis")
@@ -256,14 +248,6 @@ abstract class AbstractConstructEntity(
         return true
     }
 
-    override fun initDataTracker() {
-        super.initDataTracker()
-
-        val compound = NbtCompound()
-        compound["render_links"] = NbtList()
-        dataTracker.startTracking(HEXAL_LINKS, compound)
-    }
-
     override fun getArmorItems(): Iterable<ItemStack> {
         return mutableListOf()
     }
@@ -274,8 +258,6 @@ abstract class AbstractConstructEntity(
 
     override fun writeCustomDataToNbt(nbt: NbtCompound) {
         super.writeCustomDataToNbt(nbt)
-
-        nbt["hexal_links"] = hexalLinks
 
         if (world is ServerWorld) {
             command?.let {
@@ -328,8 +310,6 @@ abstract class AbstractConstructEntity(
     override fun readCustomDataFromNbt(nbt: NbtCompound) {
         super.readCustomDataFromNbt(nbt)
 
-        hexalLinks = nbt.getCompound("hexal_links")
-
         command = null
         val serverWorld = world as? ServerWorld ?: return
 
@@ -363,14 +343,5 @@ abstract class AbstractConstructEntity(
         if (nbt.contains("boundPattern")) {
             boundPattern = HexPattern.fromNBT(nbt.getCompound("boundPattern"))
         }
-    }
-
-    companion object {
-        val HEXAL_LINKS: TrackedData<NbtCompound> = DataTracker.registerData(
-            AbstractConstructEntity::class.java,
-            TrackedDataHandlerRegistry.TAG_COMPOUND
-        )
-
-        val EXTRA_TICK_HANDLERS = mutableListOf<(AbstractConstructEntity) -> Unit>()
     }
 }

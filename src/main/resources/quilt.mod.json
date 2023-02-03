@@ -69,7 +69,8 @@
         ]
     },
     "cardinal-components": [
-        "hexbound:memorized_colorizers"
+        "hexbound:memorized_colorizers",
+        "hexbound:construct_linkable"
     ],
     "mixin": "hexbound.mixins.json"
 }

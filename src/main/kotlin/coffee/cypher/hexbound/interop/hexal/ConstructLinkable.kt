@@ -5,57 +5,46 @@ import at.petrak.hexcasting.api.spell.Action
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.EntityIota
 import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.asInt
-import at.petrak.hexcasting.api.utils.asList
 import at.petrak.hexcasting.api.utils.asUUID
 import coffee.cypher.hexbound.feature.construct.entity.AbstractConstructEntity
 import coffee.cypher.hexbound.init.Hexbound
 import coffee.cypher.hexbound.util.mixinaccessor.construct
-import net.minecraft.nbt.*
+import dev.onyxstudios.cca.api.v3.component.ComponentV3
+import dev.onyxstudios.cca.api.v3.component.tick.ClientTickingComponent
+import net.minecraft.nbt.NbtCompound
+import net.minecraft.nbt.NbtElement
+import net.minecraft.nbt.NbtHelper
+import net.minecraft.nbt.NbtInt
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
-import org.quiltmc.qkl.library.nbt.set
+import ram.talia.hexal.api.linkable.ClientLinkableHolder
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.linkable.LinkableRegistry
-import ram.talia.hexal.api.nbt.SerialisedIotaList
-import ram.talia.hexal.client.playLinkParticles
+import ram.talia.hexal.api.linkable.ServerLinkableHolder
 
-class ConstructLinkable constructor(val construct: AbstractConstructEntity) : ILinkable<ConstructLinkable>,
-    ILinkable.IRenderCentre {
-    override val _lazyLinked: ILinkable.LazyILinkableList? = if (construct.world.isClient)
-        null
-    else
-        ILinkable.LazyILinkableList(construct.world as ServerWorld)
-
-    override val _lazyRenderLinks = if (construct.world.isClient)
-        null
-    else
-        ILinkable.LazyILinkableList(construct.world as ServerWorld)
-
-    override val _level: World = construct.world
-    override val _serReceivedIotas = SerialisedIotaList(null)
-
+class ConstructLinkable(val construct: AbstractConstructEntity) : ILinkable,
+    ILinkable.IRenderCentre,
+    ClientTickingComponent,
+    ComponentV3 {
     override val asActionResult = listOf(EntityIota(construct))
 
-    override fun get(): ConstructLinkable {
-        return this
-    }
+    override val linkableHolder = if (!construct.world.isClient)
+        ServerLinkableHolder(this, construct.world as ServerWorld)
+    else
+        null
 
-    override fun colouriser(): FrozenColorizer {
-        return FrozenColorizer.DEFAULT.get()
-    }
+    override val clientLinkableHolder = if (construct.world.isClient)
+        ClientLinkableHolder(this, construct.world, construct.random)
+    else
+        null
 
     override fun getLinkableType(): LinkableRegistry.LinkableType<ConstructLinkable, *> {
         return ConstructLinkableType
     }
 
-    override fun renderCentre(other: ILinkable.IRenderCentre, recursioning: Boolean): Vec3d {
-        return construct.boundingBox.center
-    }
-
-    override fun getPos(): Vec3d {
+    override fun getPosition(): Vec3d {
         return construct.pos
     }
 
@@ -67,19 +56,6 @@ class ConstructLinkable constructor(val construct: AbstractConstructEntity) : IL
         return construct.isRemoved && construct.removalReason?.shouldDestroy() == true
     }
 
-    private fun syncRenderLinks() {
-        if (construct.world.isClient)
-            throw IllegalStateException("LinkableEntity.syncRenderLinks should only be accessed on server.")
-
-        val compound = NbtCompound()
-        compound["render_links"] = _lazyRenderLinks!!.get().mapTo(NbtList()) { LinkableRegistry.wrapSync(it) }
-        construct.hexalLinks = compound
-    }
-
-    override fun syncAddRenderLink(other: ILinkable<*>) = syncRenderLinks()
-
-    override fun syncRemoveRenderLink(other: ILinkable<*>) = syncRenderLinks()
-
     override fun writeToNbt(): NbtElement {
         return NbtHelper.fromUuid(construct.uuid)
     }
@@ -88,19 +64,31 @@ class ConstructLinkable constructor(val construct: AbstractConstructEntity) : IL
         return NbtInt.of(construct.id)
     }
 
-    companion object {
-        fun handleLinkRendering(construct: AbstractConstructEntity) {
-            if (construct.world.isClient) {
-                val linkable = construct.getLinkable()
+    override fun colouriser(): FrozenColorizer {
+        return FrozenColorizer.DEFAULT.get()
+    }
 
-                construct.hexalLinks["render_links"]?.asList?.mapNotNull {
-                    LinkableRegistry.fromSync(
-                        it.asCompound,
-                        construct.world
-                    )
-                }?.forEach { playLinkParticles(linkable, it, construct.random, construct.world) }
+    override fun renderCentre(other: ILinkable.IRenderCentre, recursioning: Boolean): Vec3d {
+        return construct.boundingBox.center
+    }
+
+    override fun readFromNbt(tag: NbtCompound) {
+        if (linkableHolder != null) {
+            if (tag.contains("linkable_holder")) {
+                linkableHolder.readFromNbt(tag.getCompound("linkable_holder"))
             }
         }
+    }
+
+    override fun writeToNbt(tag: NbtCompound) {
+        if (linkableHolder != null) {
+            tag.put("linkable_holder", linkableHolder.writeToNbt())
+        }
+    }
+
+    override fun clientTick() {
+        clientLinkableHolder?.renderLinks()
+        checkLinks()
     }
 }
 
@@ -129,12 +117,4 @@ object ConstructLinkableType :
     override fun matchSync(centre: ILinkable.IRenderCentre, tag: NbtElement): Boolean {
         return (centre as? ConstructLinkable)?.construct?.id == tag.asInt
     }
-}
-
-fun AbstractConstructEntity.getLinkable(): ConstructLinkable {
-    if (hexalLinkable == null) {
-        hexalLinkable = ConstructLinkable(this)
-    }
-
-    return hexalLinkable as ConstructLinkable
 }
