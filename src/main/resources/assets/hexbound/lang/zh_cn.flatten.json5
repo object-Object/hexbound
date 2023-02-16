@@ -229,9 +229,9 @@
         "interop.hexal": {
             title: "咒法拓展-咒法组构学",
             "1": "貌似我曾研究过的$(hex)咒法学$()的其他领域能和咒法组构学互相支撑。$(br2)\
-|                 首先，我发现，由$(l:hexbound:patterns/item_patterns#hexbound:get_main_hand)决斗士之纯化$()得来的$(l:hexbound:casting/item_iotas)物品 iota$() 和$(l:hexbound:hexal:patterns/types#hexal:type/entity)外科医师之纯化$()得来的物品类型 iota 几乎一模一样！\
+|                 首先，我发现，由$(l:hexbound:patterns/item_patterns#hexbound:get_main_hand)决斗士之纯化$()得来的$(l:hexbound:casting/item_iotas)物品 iota$() 和$(l:hexal:patterns/types#hexal:type/entity)外科医师之纯化$()得来的物品类型 iota 几乎一模一样！\
 |                 涉及它们两者或两者 iota 类型的操作应该都能正常执行。",
-            "2": "其次（但也许这一点更为重要），我发现$(l:hexbound:patterns/constructs/constructs_intro)组构体$()也能维持$(l:hexbound:hexal:patterns/spells/links)链接$()。这使得组构体可以和咒灵甚至我互相发送 iota！真是激发出了无限的可能性！"
+            "2": "其次（但也许这一点更为重要），我发现$(l:hexbound:patterns/constructs/constructs_intro)组构体$()也能维持$(l:hexal:patterns/spells/links)链接$()。这使得组构体可以和咒灵甚至我互相发送 iota！真是激发出了无限的可能性！"
         },
         patterns: {
             pattern_editing: {
@@ -322,7 +322,7 @@
                 "1": "经过精心研习，反复实验，填补残存蓝图理论中的漏洞和纸面上的破洞，我相信我已经能够构建出我自己的组构体了。$(br2)\
 |                     我叫它们蛛形组构体。它们体型较小，但能持有物品和与环境交互，是我灵活的助手。",
                 "2": "某张蓝图中记载有这种组构体的另外一种构建方式，我也尽力复原了。两者设计模式可通过潜行时对其使用铁块或紫水晶块\
-|                     来切换。假如这种蜘蛛形态不合我心意，我也可以在$(l:hexbound:file://config/hexbound/config.toml)配置文件$()中打开某种形式的认知滤镜，\
+|                     来切换。假如这种蜘蛛形态不合我心意，我也可以在配置文件中打开某种形式的认知滤镜，\
 |                     从而使所有蛛形组构体以另一种面貌示人。",
                 core: {
                     title: "蛛形组构体核心",

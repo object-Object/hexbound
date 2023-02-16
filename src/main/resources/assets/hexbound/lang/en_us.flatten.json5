@@ -229,9 +229,9 @@
         "interop.hexal": {
             title: "Hexal-Hexbound",
             "1": "It appears some of the _Hexcasting disciplines I've encountered can operate together.$(br2) \
-|                 First, I've discovered that $(l:hexbound:casting/item_iotas)Item Iotas$(), as created by the likes of $(l:hexbound:patterns/item_patterns#hexbound:get_main_hand)Duelist's Purification$(), and Item Type Iotas, as created by $(l:hexbound:hexal:patterns/types#hexal:type/entity)Physician's Purification$(), are near-identical! \
+|                 First, I've discovered that $(l:hexbound:casting/item_iotas)Item Iotas$(), as created by the likes of $(l:hexbound:patterns/item_patterns#hexbound:get_main_hand)Duelist's Purification$(), and Item Type Iotas, as created by $(l:hexal:patterns/types#hexal:type/entity)Physician's Purification$(), are near-identical! \
 |                 Comparisons between them or their types should therefore work as expected.",
-            "2": "The second and, perhaps, even more important discovery is the ability of $(l:hexbound:patterns/constructs/constructs_intro)Constructs$() to maintain $(l:hexbound:hexal:patterns/spells/links)Links$(). This will allow me to send iotas between Wisps and Constructs, or even Constructs and myself! The possibilities are well and truly endless."
+            "2": "The second and, perhaps, even more important discovery is the ability of $(l:hexbound:patterns/constructs/constructs_intro)Constructs$() to maintain $(l:hexal:patterns/spells/links)Links$(). This will allow me to send iotas between Wisps and Constructs, or even Constructs and myself! The possibilities are well and truly endless."
         },
         patterns: {
             pattern_editing: {
@@ -240,7 +240,7 @@
 |                     Exciting as that may sound, anything possible I could just draw myself, and any impossible pattern is very unlikely to produce valuable results.$(br)\
 |                     Some look pretty good on a $(l:hexcasting:items/scroll)Scroll$() though, so not entirely pointless!",
                 rotate: "Removes a pattern and an integer from the stack and rotates the pattern the number of times given by the integer. Positive numbers rotate clockwise, while negative rotate counter-clockwise.",
-                merge: "Removes two patterns and merges them, as if first stroke of the second was drawn from the last point of the first. It appears excessively large patterns will simply end after a certain point instead."
+                merge: "Removes two patterns and merges them, as if first stroke of the second was drawn from the last point of the first. Although, it appears if a pattern is longer than 128 angles, its end will be lost entirely."
             },
             item_patterns: {
                 title: "Item Patterns",
@@ -322,7 +322,7 @@
                 "1": "After careful study, experimentation, and filling in both figurative and literal holes in what blueprints I could find, I believe I'm ready to create a Construct of my own.$(br2)\
 |                     Spider Constructs, as I've taken to calling them, are small, but nimble assistants capable of interacting with their surroundings, and carrying items.",
                 "2": "One of the blueprints contained an alternate design for this Construct, which I replicated as best I could. The two designs can be switched by using an Iron Block or Amethyst Block \
-|                     on the Construct while sneaking or, should I find the Spider form not to my taste, by enabling a form of perception filter in $(l:hexbound:file://config/hexbound/config.toml)configuration files$() \
+|                     on the Construct while sneaking or, should I find the Spider form not to my taste, by enabling a form of perception filter in configuration files \
 |                     to make all Constructs appear to me as their alternate design.",
                 core: {
                     title: "Spider Construct Core",
