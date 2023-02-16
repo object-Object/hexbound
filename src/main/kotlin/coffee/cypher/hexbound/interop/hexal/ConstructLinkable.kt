@@ -12,6 +12,7 @@ import coffee.cypher.hexbound.init.Hexbound
 import coffee.cypher.hexbound.util.mixinaccessor.construct
 import dev.onyxstudios.cca.api.v3.component.ComponentV3
 import dev.onyxstudios.cca.api.v3.component.tick.ClientTickingComponent
+import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
 import net.minecraft.nbt.NbtHelper
@@ -27,6 +28,7 @@ import ram.talia.hexal.api.linkable.ServerLinkableHolder
 class ConstructLinkable(val construct: AbstractConstructEntity) : ILinkable,
     ILinkable.IRenderCentre,
     ClientTickingComponent,
+    ServerTickingComponent,
     ComponentV3 {
     override val asActionResult = listOf(EntityIota(construct))
 
@@ -88,6 +90,9 @@ class ConstructLinkable(val construct: AbstractConstructEntity) : ILinkable,
 
     override fun clientTick() {
         clientLinkableHolder?.renderLinks()
+    }
+
+    override fun serverTick() {
         checkLinks()
     }
 }

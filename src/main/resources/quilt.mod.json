@@ -51,7 +51,7 @@
             },
             {
                 "id": "hexal",
-                "versions": ">=0.2.6",
+                "versions": ">=0.2.7",
                 "optional": true
             },
             {

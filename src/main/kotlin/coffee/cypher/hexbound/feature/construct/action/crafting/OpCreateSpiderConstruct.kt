@@ -11,6 +11,7 @@ import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
 import coffee.cypher.hexbound.feature.construct.item.SpiderConstructBatteryItem
 import coffee.cypher.hexbound.init.Hexbound
 import coffee.cypher.hexbound.init.HexboundData
+import coffee.cypher.hexbound.init.HexboundData.Items.SPIDER_CONSTRUCT_BATTERY
 import coffee.cypher.hexbound.init.HexboundData.Items.SPIDER_CONSTRUCT_CORE
 import coffee.cypher.hexbound.util.getAllay
 import net.minecraft.command.argument.EntityAnchorArgumentType
@@ -38,7 +39,7 @@ object OpCreateSpiderConstruct : SpellAction {
 
         if (
             batteryStack.stack.isEmpty ||
-            !batteryStack.stack.isOf(SPIDER_CONSTRUCT_CORE) ||
+            !batteryStack.stack.isOf(SPIDER_CONSTRUCT_BATTERY) ||
             !SpiderConstructBatteryItem.isFullyCharged(batteryStack.stack)
         ) {
             throw MishapInvalidIota.of(args[2], 0, "spider_component.battery")

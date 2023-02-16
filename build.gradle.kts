@@ -106,7 +106,7 @@ dependencies {
     modImplementation(libs.geckolib)
 
     modCompileOnly(libs.hexal)
-    //modLocalRuntime(libs.hexal)
+    modLocalRuntime(libs.hexal)
 }
 
 //endregion

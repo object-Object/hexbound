@@ -52,7 +52,7 @@ fun List<Iota>.getItemStack(index: Int, argc: Int = 0): ItemStack {
     val x = this.getOrElse(index) { throw MishapNotEnoughArgs(index + 1, this.size) }
 
     return (x as? ItemStackIota)?.itemStack
-           ?: throw MishapInvalidIota.of(x, if (argc == 0) index else argc - (index + 1), "item_stack")
+        ?: throw MishapInvalidIota.of(x, if (argc == 0) index else argc - (index + 1), "item_stack")
 }
 
 /*
@@ -67,7 +67,8 @@ fun redirectSpiderLang(original: String, entity: SpiderConstructEntity? = null):
 }
 
 fun redirectSpiderLang(original: Text, entity: SpiderConstructEntity? = null): Text {
-    if (entity?.isAltModelEnabled != true && !HexboundConfig.replaceSpiderConstruct) {
+    //this doesn't use the delegate as a workaround for HyperPigeon/Eldritch-Mobs#81
+    if (entity?.dataTracker?.get(SpiderConstructEntity.ALT_MODEL_ENABLED) != true && !HexboundConfig.replaceSpiderConstruct) {
         return original
     }
 
