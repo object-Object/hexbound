@@ -6,8 +6,6 @@ import at.petrak.hexcasting.api.spell.math.HexDir
 import at.petrak.hexcasting.api.spell.math.HexPattern
 import at.petrak.hexcasting.common.casting.operators.selectors.OpGetEntitiesBy
 import at.petrak.hexcasting.common.casting.operators.selectors.OpGetEntityAt
-import coffee.cypher.hexbound.feature.pattern_editing.action.OpMergePatterns
-import coffee.cypher.hexbound.feature.pattern_editing.action.OpRotatePattern
 import coffee.cypher.hexbound.feature.colorizer_storage.action.OpColorizerDelete
 import coffee.cypher.hexbound.feature.colorizer_storage.action.OpColorizerLoad
 import coffee.cypher.hexbound.feature.colorizer_storage.action.OpColorizerSave
@@ -19,6 +17,7 @@ import coffee.cypher.hexbound.feature.construct.action.instruction.OpSendInstruc
 import coffee.cypher.hexbound.feature.construct.entity.AbstractConstructEntity
 import coffee.cypher.hexbound.feature.fake_circles.action.OpSetImpetusFakePlayer
 import coffee.cypher.hexbound.feature.item_patterns.action.*
+import coffee.cypher.hexbound.feature.pattern_editing.action.*
 import net.minecraft.entity.Entity
 import net.minecraft.util.Hand
 
@@ -95,14 +94,38 @@ open class HexboundPatterns {
     private fun registerPatternManipulation() {
         registerPattern(
             HexPattern.fromAngles("deeee", HexDir.WEST),
-            "rotate_pattern",
+            "pattern/rotate",
             OpRotatePattern
         )
 
         registerPattern(
             HexPattern.fromAngles("aqqqqa", HexDir.NORTH_WEST),
-            "merge_patterns",
+            "pattern/merge",
             OpMergePatterns
+        )
+
+        registerPattern(
+            HexPattern.fromAngles("wqqqq", HexDir.EAST),
+            "pattern/head",
+            OpPatternHead
+        )
+
+        registerPattern(
+            HexPattern.fromAngles("weeee", HexDir.WEST),
+            "pattern/tail",
+            OpPatternTail
+        )
+
+        registerPattern(
+            HexPattern.fromAngles("qeeee", HexDir.WEST),
+            "pattern/start_dir",
+            OpPatternStartDir
+        )
+
+        registerPattern(
+            HexPattern.fromAngles("eqqqq", HexDir.WEST),
+            "pattern/line_count",
+            OpPatternLineCount
         )
     }
 

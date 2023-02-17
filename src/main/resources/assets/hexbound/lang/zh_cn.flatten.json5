@@ -42,8 +42,10 @@
                 "delete": "遗忘染色剂"
             },
             set_fake_impetus_player: "绑定虚意识",
-            rotate_pattern: "旋转之馏化",
-            merge_patterns: "画家之馏化",
+            "pattern/": {
+                rotate: "旋转之馏化",
+                merge: "画家之馏化"
+            },
             construct_get_self: "自动机之精思",
             "give_command/": {
                 pick_up: "命令：捡拾物品",

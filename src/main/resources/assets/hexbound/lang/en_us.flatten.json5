@@ -42,8 +42,14 @@
                 "delete": "Forget Pigment"
             },
             set_fake_impetus_player: "Bind Figment",
-            rotate_pattern: "Revolving Distillation",
-            merge_patterns: "Painter's Distillation",
+            "pattern/": {
+                rotate: "Revolving Distillation",
+                merge: "Painter's Distillation",
+                head: "Starting Distillation",
+                tail: "Ending Distillation",
+                line_count: "Fragment's Purification",
+                start_dir: "Winding Purification"
+            },
             construct_get_self: "Automaton's Reflection",
             "give_command/": {
                 pick_up: "Command: Pick Up Item",
@@ -240,7 +246,11 @@
 |                     Exciting as that may sound, anything possible I could just draw myself, and any impossible pattern is very unlikely to produce valuable results.$(br)\
 |                     Some look pretty good on a $(l:hexcasting:items/scroll)Scroll$() though, so not entirely pointless!",
                 rotate: "Removes a pattern and an integer from the stack and rotates the pattern the number of times given by the integer. Positive numbers rotate clockwise, while negative rotate counter-clockwise.",
-                merge: "Removes two patterns and merges them, as if first stroke of the second was drawn from the last point of the first. Although, it appears if a pattern is longer than 128 angles, its end will be lost entirely."
+                merge: "Removes two patterns and merges them, as if first stroke of the second was drawn from the last point of the first. It appears if the result is longer than 128 strokes, its end will be lost entirely.",
+                line_count: "Removes a pattern from the stack and returns the number of strokes the removed pattern is composed of.",
+                start_dir: "Removes a pattern from the stack and returns a number from 0 to 5 representing the pattern's starting direction. The returned number will be 0 for north-east, 1 for east, and continue to increase clockwise.",
+                head: "Removes a pattern and a number N from the stack. N must be between 1 and the number of strokes in the removed pattern. Returns a pattern composed of the first N strokes of the removed pattern, preserving the original pattern's direction.",
+                tail: "Removes a pattern and a number from the stack. Behaves exactly as Starting Distillation but takes the last strokes of the pattern instead of the first."
             },
             item_patterns: {
                 title: "Item Patterns",
