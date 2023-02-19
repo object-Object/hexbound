@@ -14,7 +14,7 @@ paucal = "0.5.0"
 hexcasting = "0.10.3"
 cca = "5.0.2"
 
-hexal = "Gijyqodf"
+hexal = "RxK71QKF"
 
 fake-player = "0.5.0"
 mixin-extras = "0.1.0"
@@ -48,7 +48,7 @@ qsl = ["quilt-fapi", "qsl"]
 hexcasting = ["paucal", "hexcasting"]
 
 [plugins]
-quilt_loom = { id = "org.quiltmc.loom", version = "1.+" }
+quilt_loom = { id = "org.quiltmc.loom", version = "1.1.+" }
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin" }
 nexus = { id = "io.github.gradle-nexus.publish-plugin", version = "1.1.0" }

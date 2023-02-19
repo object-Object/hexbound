@@ -1,5 +1,6 @@
 package coffee.cypher.hexbound.mixins;
 
+import at.petrak.hexcasting.api.misc.MediaConstants;
 import at.petrak.hexcasting.api.mod.HexConfig;
 import at.petrak.hexcasting.api.spell.casting.CastingContext;
 import at.petrak.hexcasting.api.spell.casting.CastingHarness;
@@ -20,6 +21,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(value = CastingHarness.class)
 abstract class CastingHarnessMixin {
@@ -49,6 +51,23 @@ abstract class CastingHarnessMixin {
         }
 
         return op.call(target, id);
+    }
+
+    @ModifyVariable(
+        method = "withdrawMedia",
+        index = 1,
+        argsOnly = true,
+        at = @At(
+            value = "LOAD"
+        ),
+        remap = false
+    )
+    private int hexbound$ignoreTinyCostsForConstructs(int value) {
+        if (value <= MediaConstants.DUST_UNIT / 20 && CastingContextConstructAccessorKt.getConstruct(ctx) != null) {
+            return 0;
+        }
+
+        return value;
     }
 
     @WrapWithCondition(
