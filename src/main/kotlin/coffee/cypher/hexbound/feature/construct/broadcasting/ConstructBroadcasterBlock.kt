@@ -3,15 +3,17 @@ package coffee.cypher.hexbound.feature.construct.broadcasting
 import at.petrak.hexcasting.common.lib.HexBlockEntities
 import net.minecraft.block.*
 import net.minecraft.item.ItemPlacementContext
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.state.StateManager
-import net.minecraft.state.property.Properties
+import net.minecraft.state.property.Properties.HORIZONTAL_FACING
+import net.minecraft.state.property.Properties.POWERED
+import net.minecraft.util.BlockMirror
+import net.minecraft.util.BlockRotation
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
-import net.minecraft.util.shape.VoxelShape
-import net.minecraft.util.shape.VoxelShapes
-import net.minecraft.world.BlockView
+import net.minecraft.util.random.RandomGenerator
 import net.minecraft.world.World
 import org.quiltmc.qkl.library.blocks.blockSettingsOf
 import org.quiltmc.qkl.library.math.plus
@@ -30,36 +32,26 @@ object ConstructBroadcasterBlock : Block(
     const val broadcastRadius = 16.0
 
     override fun appendProperties(builder: StateManager.Builder<Block, BlockState>) {
-        builder.add(Properties.HORIZONTAL_FACING)
+        builder.add(HORIZONTAL_FACING).add(POWERED)
     }
 
     init {
-        defaultState = stateManager.defaultState.with(Properties.HORIZONTAL_FACING, Direction.NORTH)
-    }
-
-    override fun hasSidedTransparency(state: BlockState): Boolean {
-        return true
+        defaultState = stateManager.defaultState
+            .with(HORIZONTAL_FACING, Direction.NORTH)
+            .with(POWERED, false)
     }
 
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {
-        return defaultState.with(Properties.HORIZONTAL_FACING, ctx.playerFacing.opposite)
-    }
-
-    override fun getOutlineShape(
-        state: BlockState,
-        world: BlockView,
-        pos: BlockPos,
-        context: ShapeContext
-    ): VoxelShape {
-        return SHAPE
+        return defaultState.with(HORIZONTAL_FACING, ctx.playerFacing.opposite)
     }
 
     @OptIn(ExperimentalStdlibApi::class)
     fun createBroadcastingContext(world: World, blockState: BlockState, pos: BlockPos): BroadcastingContext {
-        val slatePos = pos + blockState[Properties.HORIZONTAL_FACING].vector
+        val slatePos = pos + blockState[HORIZONTAL_FACING].vector
         val pattern = world.getBlockEntity(slatePos, HexBlockEntities.SLATE_TILE).getOrNull()?.pattern
 
         return BroadcastingContext(
+            pos,
             Vec3d.ofCenter(pos),
             broadcastRadius,
             pattern,
@@ -68,9 +60,29 @@ object ConstructBroadcasterBlock : Block(
         )
     }
 
-    private val SHAPE = VoxelShapes.union(
-        createCuboidShape(0.0, 0.0, 0.0, 16.0, 4.0, 16.0),
-        createCuboidShape(7.0, 4.0, 7.0, 9.0, 10.0, 9.0),
-        createCuboidShape(1.0, 10.0, 1.0, 15.0, 16.0, 15.0)
-    )
+    fun onActivated(world: World, pos: BlockPos) {
+        val state = world.getBlockState(pos)
+        if (!state[POWERED]) {
+            world.setBlockState(pos, state.with(POWERED, true))
+            world.scheduleBlockTick(pos, this, 10)
+        }
+
+        world.updateNeighbors(pos, this)
+    }
+
+    override fun rotate(state: BlockState, rotation: BlockRotation): BlockState {
+        return state.with(HORIZONTAL_FACING, rotation.rotate(state[HORIZONTAL_FACING]))
+    }
+
+    override fun mirror(state: BlockState, mirror: BlockMirror): BlockState {
+        return state.with(HORIZONTAL_FACING, mirror.apply(state[HORIZONTAL_FACING]))
+    }
+
+    override fun scheduledTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: RandomGenerator) {
+        if (state[POWERED]) {
+            world.setBlockState(pos, state.with(POWERED, false))
+
+            world.updateNeighbors(pos, this)
+        }
+    }
 }

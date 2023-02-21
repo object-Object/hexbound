@@ -4,9 +4,14 @@
   "package": "coffee.cypher.hexbound.mixins",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "BlockEntityStoredPlayerImpetusMixin", "CastingContextMixin",
-    "CastingHarnessMixin", "FabricXPlatMixin", "MishapSideEffectMixin",
-    "OpGetCasterMixin", "SweetBerryBushBlockMixin",
+    "BlockEntityStoredPlayerImpetusMixin",
+    "CastingContextMixin",
+    "CastingHarnessMixin",
+    "FabricXPlatMixin",
+    "HexInteropMixin",
+    "MishapSideEffectMixin",
+    "OpGetCasterMixin",
+    "SweetBerryBushBlockMixin",
     "accessor.MutableTextAccessor"
   ],
   "injectors": {

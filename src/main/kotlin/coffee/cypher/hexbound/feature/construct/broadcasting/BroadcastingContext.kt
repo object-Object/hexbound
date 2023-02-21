@@ -5,10 +5,12 @@ import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.math.HexPattern
 import at.petrak.hexcasting.xplat.IXplatAbstractions
 import coffee.cypher.hexbound.feature.construct.entity.AbstractConstructEntity
+import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Vec3d
 
 data class BroadcastingContext(
+    val broadcaster: BlockPos,
     val center: Vec3d,
     val radius: Double,
     val pattern: HexPattern?,
@@ -35,6 +37,8 @@ data class BroadcastingContext(
                 random.nextFloat().toDouble()
             ).multiply((random.nextFloat() * 3).toDouble())
         )
+
+        ConstructBroadcasterBlock.onActivated(ctx.world, broadcaster)
 
         BroadcasterActivatedS2CPacket(particleCenter, particleOffset, particleColor).send(ctx.world)
     }

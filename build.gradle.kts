@@ -94,6 +94,7 @@ dependencies {
         exclude(module = "phosphor")
     }
     modImplementation(libs.cca)
+    modImplementation(libs.patchouli)
     modImplementation(libs.kettle)
 
     modImplementation(libs.fake.player)

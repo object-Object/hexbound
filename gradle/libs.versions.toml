@@ -35,6 +35,8 @@ hexcasting = { module = "at.petra-k.hexcasting:hexcasting-fabric-1.19.2", versio
 paucal = { module = "at.petra-k.paucal:paucal-fabric-1.19.2", version.ref = "paucal" }
 cca = { module = "dev.onyxstudios.cardinal-components-api:cardinal-components-api", version.ref = "cca" }
 
+patchouli = { module = "vazkii.patchouli:Patchouli", version = "1.19.2-77-FABRIC" }
+
 hexal = { module = "maven.modrinth:hexal", version.ref = "hexal" }
 
 fake-player = { module = "dev.cafeteria:fake-player-api", version.ref = "fake-player" }
