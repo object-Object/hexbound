@@ -15,9 +15,10 @@ hexcasting = "0.10.3"
 cca = "5.0.2"
 
 hexal = "RxK71QKF"
+dynlights = "2.2.0+1.19.2"
 
 fake-player = "0.5.0"
-mixin-extras = "0.1.0"
+mixin-extras = "0.2.0-beta.3"
 geckolib = "3.1.37"
 kettle = "2.2.1+1.19.2"
 
@@ -38,6 +39,7 @@ cca = { module = "dev.onyxstudios.cardinal-components-api:cardinal-components-ap
 patchouli = { module = "vazkii.patchouli:Patchouli", version = "1.19.2-77-FABRIC" }
 
 hexal = { module = "maven.modrinth:hexal", version.ref = "hexal" }
+dynlights = { module = "dev.lambdaurora:lambdynamiclights", version.ref = "dynlights" }
 
 fake-player = { module = "dev.cafeteria:fake-player-api", version.ref = "fake-player" }
 mixin-extras = { module = "com.github.LlamaLad7:MixinExtras", version.ref = "mixin-extras" }
@@ -48,6 +50,7 @@ kettle = { module = "coffee.cypher.kettle:kettle", version.ref = "kettle" }
 kotlin = ["qkl"]
 qsl = ["quilt-fapi", "qsl"]
 hexcasting = ["paucal", "hexcasting"]
+optionals = ["hexal", "dynlights"]
 
 [plugins]
 quilt_loom = { id = "org.quiltmc.loom", version = "1.1.+" }

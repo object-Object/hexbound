@@ -10,6 +10,7 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.util.math.Vec3d
+import org.quiltmc.loader.api.minecraft.ClientOnly
 import org.quiltmc.qkl.library.math.plus
 import org.quiltmc.qkl.library.math.times
 import org.quiltmc.qkl.library.networking.getPlayersTrackingChunk
@@ -42,6 +43,7 @@ data class BroadcasterActivatedS2CPacket(
         val CHANNEL = Hexbound.id("broadcaster_activated_s2c")
     }
 
+    @ClientOnly
     object Receiver : ChannelReceiver {
         override fun receive(
             client: MinecraftClient,

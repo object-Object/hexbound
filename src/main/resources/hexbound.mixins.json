@@ -10,11 +10,17 @@
     "FabricXPlatMixin",
     "HexInteropMixin",
     "MishapSideEffectMixin",
+    "OpEntityRaycastMixin",
     "OpGetCasterMixin",
+    "ProjectileEntityMixin",
     "SweetBerryBushBlockMixin",
     "accessor.MutableTextAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "client": [
+    "client.GameRendererMixin",
+    "client.VertexBufferMixin"
+  ]
 }

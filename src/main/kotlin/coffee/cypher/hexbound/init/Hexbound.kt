@@ -5,15 +5,19 @@ import at.petrak.hexcasting.api.spell.iota.ListIota
 import at.petrak.hexcasting.common.lib.HexItems
 import coffee.cypher.hexbound.init.config.HexboundConfig
 import coffee.cypher.hexbound.interop.InteropManager
+import net.minecraft.text.Text
 import net.minecraft.util.Hand
 import net.minecraft.util.Identifier
+import net.minecraft.util.math.Vec3d
 import org.quiltmc.loader.api.ModContainer
 import org.quiltmc.loader.api.QuiltLoader
+import org.quiltmc.qkl.library.brigadier.argument.double
+import org.quiltmc.qkl.library.brigadier.argument.literal
+import org.quiltmc.qkl.library.brigadier.argument.value
 import org.quiltmc.qkl.library.brigadier.execute
 import org.quiltmc.qkl.library.brigadier.register
-import org.quiltmc.qkl.library.brigadier.util.player
-import org.quiltmc.qkl.library.brigadier.util.sendFeedback
-import org.quiltmc.qkl.library.brigadier.util.world
+import org.quiltmc.qkl.library.brigadier.required
+import org.quiltmc.qkl.library.brigadier.util.*
 import org.quiltmc.qkl.library.commands.onCommandRegistration
 import org.quiltmc.qkl.library.registerEvents
 import org.quiltmc.qkl.library.text.buildText
@@ -49,23 +53,36 @@ object Hexbound : ModInitializer {
     private fun enableDebugFeatures() {
         registerEvents {
             onCommandRegistration { _, _ ->
-                register("hexbound:getConstructCommands") {
-                    execute {
-                        sendFeedback(buildText {
-                            HexboundData.Registries.CONSTRUCT_COMMANDS.ids.forEach {
-                                literal("[$it -> ${HexboundData.Registries.CONSTRUCT_COMMANDS.get(it)}]\n")
-                            }
-                        })
+                register("hexbound") {
+                    required(literal("getConstructCommands")) {
+                        execute {
+                            sendFeedback(buildText {
+                                HexboundData.Registries.CONSTRUCT_COMMANDS.ids.forEach {
+                                    literal("[$it -> ${HexboundData.Registries.CONSTRUCT_COMMANDS.get(it)}]\n")
+                                }
+                            })
+                        }
                     }
-                }
 
-                register("hexbound:uncraft") {
-                    execute {
-                        val stack = player!!.getStackInHand(Hand.MAIN_HAND)
+                    required(literal("uncraft")) {
+                        execute {
+                            val stack = player!!.getStackInHand(Hand.MAIN_HAND)
 
-                        @Suppress("OverrideOnly")
-                        val hex = (stack.item as HexHolderItem).getHex(stack, world)!!
-                        player!!.setStackInHand(Hand.MAIN_HAND, HexItems.FOCUS.defaultStack.also { HexItems.FOCUS.writeDatum(it, ListIota(hex))})
+                            @Suppress("OverrideOnly")
+                            val hex = (stack.item as HexHolderItem).getHex(stack, world)!!
+                            player!!.setStackInHand(Hand.MAIN_HAND, HexItems.FOCUS.defaultStack.also { HexItems.FOCUS.writeDatum(it, ListIota(hex)) })
+                        }
+                    }
+
+                    required(literal("facingVector"), double("pitch"), double("yaw")) { _, pitch, yaw ->
+                        execute {
+                            sendFeedback(
+                                Text.literal(
+                                    Vec3d.fromPolar(pitch().value().toFloat(),
+                                        yaw().value().toFloat()).toString()
+                                )
+                            )
+                        }
                     }
                 }
             }

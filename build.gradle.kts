@@ -59,6 +59,8 @@ repositories {
         name = "JitPack"
     }
 
+    maven("https://maven.gegy.dev/releases")
+
     maven("https://maven.cafeteria.dev/releases") {
         content {
             includeGroup("dev.cafeteria")
@@ -106,8 +108,9 @@ dependencies {
 
     modImplementation(libs.geckolib)
 
-    modCompileOnly(libs.hexal)
+    modCompileOnly(libs.bundles.optionals)
     modLocalRuntime(libs.hexal)
+    modLocalRuntime(libs.dynlights)
 }
 
 //endregion
@@ -120,6 +123,8 @@ loom {
             vmArgs("-Dmixin.debug.export=true")
         }
     }
+
+    accessWidenerPath.set(file("src/main/resources/hexbound.accesswidener"))
 }
 
 java {

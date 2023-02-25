@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import vazkii.patchouli.api.PatchouliAPI;
 
 @Mixin(HexInterop.class)
-public class HexInteropMixin {
+abstract class HexInteropMixin {
     @Inject(
         method = "initPatchouli",
         at = @At("RETURN"),

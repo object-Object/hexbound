@@ -4,6 +4,7 @@ package coffee.cypher.hexbound.init
 
 import at.petrak.hexcasting.api.spell.iota.IotaType
 import at.petrak.hexcasting.common.lib.hex.HexIotaTypes
+import coffee.cypher.hexbound.feature.combat.shield.ShieldEntity
 import coffee.cypher.hexbound.feature.construct.broadcasting.ConstructBroadcasterBlock
 import coffee.cypher.hexbound.feature.construct.command.*
 import coffee.cypher.hexbound.feature.construct.entity.SpiderConstructEntity
@@ -64,6 +65,10 @@ object HexboundData : DataInitializer() {
     object EntityTypes : Initializer<EntityType<*>>(Registry.ENTITY_TYPE) {
         val SPIDER_CONSTRUCT: EntityType<SpiderConstructEntity> by registry.provide("spider_construct") {
             SpiderConstructEntity.createType()
+        }
+
+        val SHIELD : EntityType<ShieldEntity> by registry.provide("shield") {
+            ShieldEntity.createType()
         }
     }
 
@@ -131,7 +136,7 @@ abstract class DataInitializer {
 
         initializers.forEach {
             it.init()
-            Hexbound.LOGGER.debug("Registered $it")
+            Hexbound.LOGGER.debug("Registered {}", it)
         }
     }
 

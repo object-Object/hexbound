@@ -30,6 +30,10 @@
             "cardinal-components": {
                 "value": "coffee.cypher.hexbound.init.HexboundComponents",
                 "adapter": "kotlin"
+            },
+            "dynamiclights" : {
+                "value": "coffee.cypher.hexbound.interop.dynlights.LambDynamicLightsInterop",
+                "adapter": "kotlin"
             }
         },
         "depends": [
