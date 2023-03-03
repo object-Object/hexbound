@@ -24,6 +24,18 @@ fun initShaders(factory: ResourceFactory, shaderConsumer: Consumer<Pair<ShaderPr
                 "hexbound__shield",
                 VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL
             ),
-            Consumer { ShieldRenderLayer.SHADER = it })
+            Consumer { ShieldRenderLayer.REGULAR_SHADER = it }
+        )
+    )
+
+    shaderConsumer.accept(
+        Pair(
+            TimedShaderProgram(
+                factory,
+                "hexbound__shield_glitchy",
+                VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL
+            ),
+            Consumer { ShieldRenderLayer.GLITCHY_SHADER = it }
+        )
     )
 }

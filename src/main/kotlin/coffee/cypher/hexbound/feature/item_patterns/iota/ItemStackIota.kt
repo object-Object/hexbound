@@ -27,6 +27,8 @@ class ItemStackIota private constructor(val itemStack: ItemStack) : Iota(Type, i
         return NbtCompound().apply {
             //NBT editing calls for a fully-qualified key
             put("hexbound:iota_stack", itemStack.serializeToNBT())
+            //default count is a byte, that's annoying
+            putInt("hexbound:iota_stack_count", itemStack.count)
         }
     }
 
@@ -47,6 +49,7 @@ class ItemStackIota private constructor(val itemStack: ItemStack) : Iota(Type, i
                 if (next is NbtCompound) {
                     if ("hexbound:iota_stack" in next) {
                         next.remove("hexbound:iota_stack")
+                        next.remove("hexbound:iota_stack_count")
                     }
 
                     workQueue.addAll(next.keys.map { next[it]!! })
@@ -61,7 +64,9 @@ class ItemStackIota private constructor(val itemStack: ItemStack) : Iota(Type, i
         override fun deserialize(tag: NbtElement, world: ServerWorld?): ItemStackIota {
             val compound = tag.downcast(NbtCompound.TYPE)
             val stack = if ("hexbound:iota_stack" in compound)
-                ItemStack.fromNbt(compound.getCompound("hexbound:iota_stack"))
+                ItemStack.fromNbt(compound.getCompound("hexbound:iota_stack")).also {
+                    it.count = compound.getInt("hexbound:iota_stack_count")
+                }
             else
                 ItemStack.EMPTY
 

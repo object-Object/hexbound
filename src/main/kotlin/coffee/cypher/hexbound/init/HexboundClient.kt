@@ -13,5 +13,23 @@ object HexboundClient : ClientModInitializer {
             BroadcasterActivatedS2CPacket.CHANNEL,
             BroadcasterActivatedS2CPacket.Receiver
         )
+
+//        registerEvents {
+//            onItemTooltip { stack, _, _, lines ->
+//                lines as MutableList<Text>
+//
+//                if (stack.infusions.isNotEmpty()) {
+//                    lines += stack.infusions.map { (name, level) ->
+//                        buildText {
+//                            color(Color.LIGHT_PURPLE) {
+//                                translatable("hexbound.infusion.$name")
+//                                literal(" ")
+//                                translatable("enchantment.level.$level")
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
 }

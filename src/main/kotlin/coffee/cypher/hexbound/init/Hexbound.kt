@@ -3,8 +3,11 @@ package coffee.cypher.hexbound.init
 import at.petrak.hexcasting.api.item.HexHolderItem
 import at.petrak.hexcasting.api.spell.iota.ListIota
 import at.petrak.hexcasting.common.lib.HexItems
+import coffee.cypher.hexbound.feature.item_patterns.iota.ItemStackIota
 import coffee.cypher.hexbound.init.config.HexboundConfig
 import coffee.cypher.hexbound.interop.InteropManager
+import net.minecraft.item.ItemStack
+import net.minecraft.item.Items
 import net.minecraft.text.Text
 import net.minecraft.util.Hand
 import net.minecraft.util.Identifier
@@ -17,7 +20,10 @@ import org.quiltmc.qkl.library.brigadier.argument.value
 import org.quiltmc.qkl.library.brigadier.execute
 import org.quiltmc.qkl.library.brigadier.register
 import org.quiltmc.qkl.library.brigadier.required
-import org.quiltmc.qkl.library.brigadier.util.*
+import org.quiltmc.qkl.library.brigadier.util.player
+import org.quiltmc.qkl.library.brigadier.util.required
+import org.quiltmc.qkl.library.brigadier.util.sendFeedback
+import org.quiltmc.qkl.library.brigadier.util.world
 import org.quiltmc.qkl.library.commands.onCommandRegistration
 import org.quiltmc.qkl.library.registerEvents
 import org.quiltmc.qkl.library.text.buildText
@@ -70,7 +76,9 @@ object Hexbound : ModInitializer {
 
                             @Suppress("OverrideOnly")
                             val hex = (stack.item as HexHolderItem).getHex(stack, world)!!
-                            player!!.setStackInHand(Hand.MAIN_HAND, HexItems.FOCUS.defaultStack.also { HexItems.FOCUS.writeDatum(it, ListIota(hex)) })
+                            player!!.setStackInHand(
+                                Hand.MAIN_HAND,
+                                HexItems.FOCUS.defaultStack.also { HexItems.FOCUS.writeDatum(it, ListIota(hex)) })
                         }
                     }
 
@@ -78,9 +86,27 @@ object Hexbound : ModInitializer {
                         execute {
                             sendFeedback(
                                 Text.literal(
-                                    Vec3d.fromPolar(pitch().value().toFloat(),
-                                        yaw().value().toFloat()).toString()
+                                    Vec3d.fromPolar(
+                                        pitch().value().toFloat(),
+                                        yaw().value().toFloat()
+                                    ).toString()
                                 )
+                            )
+                        }
+                    }
+
+                    required(literal("funny_focus")) {
+                        execute {
+                            player?.setStackInHand(
+                                Hand.MAIN_HAND,
+                                ItemStack(HexItems.FOCUS).also {
+                                    HexItems.FOCUS.writeDatum(
+                                        it,
+                                        ItemStackIota.createFiltered(
+                                            ItemStack(Items.ENDER_PEARL, 412312312)
+                                        )
+                                    )
+                                }
                             )
                         }
                     }

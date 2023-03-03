@@ -12,6 +12,7 @@
     "MishapSideEffectMixin",
     "OpEntityRaycastMixin",
     "OpGetCasterMixin",
+    "OpGetEntitiesByMixin",
     "ProjectileEntityMixin",
     "SweetBerryBushBlockMixin",
     "accessor.MutableTextAccessor"

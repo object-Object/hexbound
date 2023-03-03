@@ -5,6 +5,7 @@ package coffee.cypher.hexbound.init
 import at.petrak.hexcasting.api.spell.iota.IotaType
 import at.petrak.hexcasting.common.lib.hex.HexIotaTypes
 import coffee.cypher.hexbound.feature.combat.shield.ShieldEntity
+import coffee.cypher.hexbound.feature.combat.status_effects.ReducedAmbitStatusEffect
 import coffee.cypher.hexbound.feature.construct.broadcasting.ConstructBroadcasterBlock
 import coffee.cypher.hexbound.feature.construct.command.*
 import coffee.cypher.hexbound.feature.construct.entity.SpiderConstructEntity
@@ -16,6 +17,7 @@ import com.mojang.serialization.Codec
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.minecraft.block.Block
 import net.minecraft.entity.EntityType
+import net.minecraft.entity.effect.StatusEffect
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
@@ -122,6 +124,12 @@ object HexboundData : DataInitializer() {
 
         val CONSTRUCT_BROADCASTER by registry.provide("construct_broadcaster") {
             BlockItem(ConstructBroadcasterBlock, itemSettingsOf(group = ItemGroups.HEXBOUND))
+        }
+    }
+
+    object StatusEffects : Initializer<StatusEffect>(Registry.STATUS_EFFECT) {
+        val REDUCED_AMBIT by registry.provide("reduced_ambit") {
+            ReducedAmbitStatusEffect()
         }
     }
 }

@@ -2,11 +2,13 @@ package coffee.cypher.hexbound.feature.combat.shield
 
 import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
+import at.petrak.hexcasting.xplat.IXplatAbstractions
 import coffee.cypher.hexbound.util.provideDelegate
 import net.minecraft.entity.*
 import net.minecraft.entity.data.DataTracker
 import net.minecraft.entity.data.TrackedData
 import net.minecraft.entity.data.TrackedDataHandlerRegistry
+import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.network.Packet
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket
@@ -22,8 +24,15 @@ import org.quiltmc.qsl.entity.api.QuiltEntityTypeBuilder
 import java.util.function.BiFunction
 import kotlin.math.abs
 
-class ShieldEntity(type: EntityType<ShieldEntity>, world: World) : Entity(type, world) {
+class ShieldEntity(
+    type: EntityType<ShieldEntity>,
+    world: World,
+    val owner: PlayerEntity?,
+    val maxAge: Int,
+    initialVisualType: VisualType
+) : Entity(type, world) {
     var colorizerTag by COLORIZER
+    var typeOrdinal by VISUAL_TYPE
 
     private val colorizerMemo = Util.memoize(FrozenColorizer::fromNBT)
     private val basisMemo = Util.memoize(BiFunction(ShieldEntity::calculateBasis))
@@ -40,6 +49,22 @@ class ShieldEntity(type: EntityType<ShieldEntity>, world: World) : Entity(type, 
             colorizerTag = value.serializeToNBT()
         }
 
+    var visualType: VisualType
+        get() = VisualType.values()[typeOrdinal]
+        set(value) {
+            typeOrdinal = value.ordinal
+        }
+
+    init {
+        colorizer = if (owner != null) {
+            IXplatAbstractions.INSTANCE.getColorizer(owner)
+        } else {
+            FrozenColorizer.DEFAULT.get()
+        }
+
+        visualType = initialVisualType
+    }
+
     override fun getHeadYaw(): Float {
         return yaw
     }
@@ -53,7 +78,9 @@ class ShieldEntity(type: EntityType<ShieldEntity>, world: World) : Entity(type, 
     }
 
     override fun initDataTracker() {
+
         dataTracker.startTracking(COLORIZER, FrozenColorizer.DEFAULT.get().serializeToNBT())
+        dataTracker.startTracking(VISUAL_TYPE, 0)
     }
 
     override fun readCustomDataFromNbt(nbt: NbtCompound) {
@@ -86,6 +113,15 @@ class ShieldEntity(type: EntityType<ShieldEntity>, world: World) : Entity(type, 
 
     override fun tick() {
         super.tick()
+
+        if (owner?.isRemoved == true || owner?.isAlive == false) {
+            discard()
+        }
+
+        if (!world.isClient && age > maxAge) {
+            discard()
+        }
+
         if (age == DEPLOY_TIME && world.isClient) {
             val (_, up, right) = getBasis()
             val colorizer = colorizer
@@ -117,11 +153,14 @@ class ShieldEntity(type: EntityType<ShieldEntity>, world: World) : Entity(type, 
         val COLORIZER: TrackedData<NbtCompound> =
             DataTracker.registerData(ShieldEntity::class.java, TrackedDataHandlerRegistry.TAG_COMPOUND)
 
+        val VISUAL_TYPE: TrackedData<Int> =
+            DataTracker.registerData(ShieldEntity::class.java, TrackedDataHandlerRegistry.INTEGER)
+
         fun createType(): EntityType<ShieldEntity> {
             return QuiltEntityTypeBuilder
                 .create<ShieldEntity>()
                 .spawnGroup(SpawnGroup.MISC)
-                .entityFactory(::ShieldEntity)
+                .entityFactory { type, world -> ShieldEntity(type, world, null, 200, VisualType.REGULAR) }
                 .makeFireImmune()
                 .disableSaving()
                 .disableSummon()
@@ -149,5 +188,9 @@ class ShieldEntity(type: EntityType<ShieldEntity>, world: World) : Entity(type, 
 
             return Triple(forward, up, right)
         }
+    }
+
+    enum class VisualType {
+        REGULAR, GLITCHY
     }
 }

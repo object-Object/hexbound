@@ -17,8 +17,12 @@ abstract class OpGetCasterMixin {
     private List<Iota> hexbound$hideFakePlayer(List<Iota> original) {
         var iota = original.get(0);
 
-        if ((iota instanceof EntityIota entityIota) && entityIota.getEntity() instanceof HexboundFakePlayer) {
-            return List.of(new NullIota());
+        if (iota instanceof EntityIota entityIota && entityIota.getEntity().isPlayer()) {
+            if (entityIota.getEntity() instanceof HexboundFakePlayer) {
+                return List.of(new NullIota());
+            }
+
+            //check for hunter set here
         }
 
         return original;

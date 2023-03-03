@@ -41,6 +41,10 @@
                 "load": "Recall Pigment",
                 "delete": "Forget Pigment"
             },
+            "create_shield/": {
+                "normal": "Hex Shield",
+                "glitchy": "Unstable Hex Shield"
+            },
             set_fake_impetus_player: "Bind Figment",
             "pattern/": {
                 rotate: "Revolving Distillation",
@@ -146,7 +150,8 @@
     entity: {
         hexbound: {
             spider_construct: "Spider Construct",
-            robot_construct: "Robot Construct"
+            robot_construct: "Robot Construct",
+            shield: "Hex Shield"
         }
     },
     "item.hexbound": {
@@ -161,6 +166,9 @@
         construct_broadcaster: "Construct Broadcaster"
     },
     "itemGroup.hexbound.hexbound_group": "Hexbound",
+    "effect.hexbound": {
+        reduced_ambit: "Event Horizon"
+    },
     "hexbound.book": {
         "category.constructs": {
             title: "Constructs",
@@ -273,6 +281,17 @@
                     save: "Removes a pattern from the stack and associates my current Pigment with that pattern.",
                     load: "Removes a pattern from the stack and sets my current Pigment to the one I have associated with that pattern",
                     delete: "Removes a pattern from the stack, and forgets the Pigment I have associated with that pattern."
+                },
+                shield: {
+                    title: "Hex Shield",
+                    "1": "In my search for geodes and other travels I've discovered that getting shot full of arrows significantly interferes with my ability to focus on my $(hex)Hexes$().$(br2)\
+|                         The patterns detailed in this entry will let me avoid using unwieldy and fragile shields, replacing them with a manifestation of $(media)media$().",
+                    "2": "These manifestations, or $(hex)Hex Shields$(), will block most projectiles from going through, but only in the direction opposite its facing,\
+|                         allowing me to fire a bow or throw potions with no fear of reprisal. Curiously, this extends to $(l:hexcasting:patterns/basics#hexcasting:raycast/entity)Scout's Distillation$(), \
+|                         which will go through the shield only if it's facing in the same direction.$(br2)It appears I cannot have more than 10 active Hex Shields at once.",
+                    normal: "Removes a position vector, facing vector, and a positive number from the stack, creating a Hex Shield with the given position and facing, \
+|                            which will last for the given number of seconds.$(br)Costs 2 $(media)Amethyst Dust$() per second of duration.",
+                    glitchy: "Creates an unstable Hex Shield, which will occasionally distort. The effect appears purely visual."
                 }
             },
             great_spells: {

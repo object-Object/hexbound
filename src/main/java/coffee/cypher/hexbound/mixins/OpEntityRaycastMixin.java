@@ -19,10 +19,8 @@ public class OpEntityRaycastMixin {
                     value = "INVOKE",
                     target = "Lnet/minecraft/entity/projectile/ProjectileUtil;raycast(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Box;Ljava/util/function/Predicate;D)Lnet/minecraft/util/hit/EntityHitResult;"
             ),
-            remap = false,
             index = 4
     )
-    @SuppressWarnings("InvalidInjectorMethodSignature")
     private Predicate<Entity> hexbound$raycastIgnoresShield(Predicate<Entity> original, @Local(ordinal = 1) Vec3d look) {
         return (e) -> original.test(e) && !ShieldEntity.canBypassShieldForDirection(look, e);
     }

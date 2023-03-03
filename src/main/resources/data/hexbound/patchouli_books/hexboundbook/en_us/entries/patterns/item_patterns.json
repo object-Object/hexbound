@@ -19,7 +19,7 @@
             "op_id": "hexbound:get_stack_prop/size",
             "anchor": "hexbound:get_stack_prop/size",
             "input": "item stack",
-            "output": "item",
+            "output": "num",
             "text": "hexbound.book.patterns.item_patterns.prop.size"
         },
         {

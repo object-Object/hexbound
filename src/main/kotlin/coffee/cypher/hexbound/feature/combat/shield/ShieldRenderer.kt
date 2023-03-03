@@ -1,10 +1,10 @@
 package coffee.cypher.hexbound.feature.combat.shield
 
+import coffee.cypher.hexbound.feature.combat.shield.ShieldEntity.VisualType.*
 import coffee.cypher.hexbound.init.Hexbound
 import com.mojang.blaze3d.shader.GlUniform
 import com.mojang.blaze3d.vertex.VertexFormat
 import com.mojang.blaze3d.vertex.VertexFormats
-import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.OverlayTexture
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.ShaderProgram
@@ -35,10 +35,16 @@ class ShieldRenderer(ctx: EntityRendererFactory.Context) : EntityRenderer<Shield
         val (_, up, right) = entity.getBasis()
 
 
-        GlUniform("time", GlUniform.TYPE_FLOAT, 1, ShieldRenderLayer.SHADER).setFloat(worldTime)
+        GlUniform("time", GlUniform.TYPE_FLOAT, 1, ShieldRenderLayer.REGULAR_SHADER).setFloat(worldTime)
 
         matrices.push()
-        val buffer = vertexConsumers.getBuffer(ShieldRenderLayer.INSTANCE)
+
+        val renderLayer = when (entity.visualType) {
+            REGULAR -> ShieldRenderLayer.REGULAR
+            GLITCHY -> ShieldRenderLayer.GLITCHY
+        }
+
+        val buffer = vertexConsumers.getBuffer(renderLayer)
         matrices.translate(0.0, 1.3125, 0.0)
 
         matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180f - entity.yaw))
@@ -59,9 +65,6 @@ class ShieldRenderer(ctx: EntityRendererFactory.Context) : EntityRenderer<Shield
             z: Float,
             u: Float,
             v: Float,
-            normalX: Float,
-            normalY: Float,
-            normalZ: Float,
             color: Int
         ) {
             buffer
@@ -70,7 +73,7 @@ class ShieldRenderer(ctx: EntityRendererFactory.Context) : EntityRenderer<Shield
                 .uv(u, v)
                 .overlay(OverlayTexture.DEFAULT_UV)
                 .light(light)
-                .normal(normal, normalX, normalY, normalZ)
+                .normal(normal, 0f, 0f, 1f)
                 .next()
         }
 
@@ -98,24 +101,15 @@ class ShieldRenderer(ctx: EntityRendererFactory.Context) : EntityRenderer<Shield
                 val lowerYVec = up * lowerY.toDouble()
                 val upperYVec = up * upperY.toDouble()
 
-                val adjustedV = if (MinecraftClient.getInstance().player?.isSneaking == false) {
-                    upperV
-                } else {
-                    lowerV
-                }
-
-                //TODO rotate offset vectors by pitch/yaw
                 val lowerLeftColor = colorizer.getColor(colorTime, entity.pos + lowerXVec + lowerYVec)
                 val lowerRightColor = colorizer.getColor(colorTime, entity.pos + upperXVec + lowerYVec)
                 val upperLeftColor = colorizer.getColor(colorTime, entity.pos + lowerXVec + upperYVec)
                 val upperRightColor = colorizer.getColor(colorTime, entity.pos + upperXVec + upperYVec)
 
-                listOf(-1f, 1f).forEach { face ->
-                    vertex(upperX, upperY, 6.25E-4f * face, upperU, upperV, 0f, 0f, face, upperRightColor)
-                    vertex(lowerX, upperY, 6.25E-4f * face, lowerU, upperV, 0f, 0f, face, upperLeftColor)
-                    vertex(lowerX, lowerY, 6.25E-4f * face, lowerU, lowerV, 0f, 0f, face, lowerLeftColor)
-                    vertex(upperX, lowerY, 6.25E-4f * face, upperU, lowerV, 0f, 0f, face, lowerRightColor)
-                }
+                vertex(upperX, upperY, 6.25E-4f, upperU, upperV, upperRightColor)
+                vertex(lowerX, upperY, 6.25E-4f, lowerU, upperV, upperLeftColor)
+                vertex(lowerX, lowerY, 6.25E-4f, lowerU, lowerV, lowerLeftColor)
+                vertex(upperX, lowerY, 6.25E-4f, upperU, lowerV, lowerRightColor)
             }
         }
 
@@ -146,19 +140,23 @@ class ShieldRenderLayer private constructor(
         throw UnsupportedOperationException("Should not be instantiated")
     }
 
+    @ClientOnly
     companion object {
-        @Suppress("INACCESSIBLE_TYPE")
-        val INSTANCE: RenderLayer = run {
+        val REGULAR = prepareLayer { REGULAR_SHADER }
+        val GLITCHY = prepareLayer { GLITCHY_SHADER }
+
+        private fun prepareLayer(shader: () -> ShaderProgram): RenderLayer {
             val multiPhase = MultiPhaseParameters.builder()
-                .shader(Shader(this::SHADER))
+                .shader(Shader(shader))
                 .texture(Texture(ShieldRenderer.TEXTURE_RESOURCE, false, false))
                 .transparency(TRANSLUCENT_TRANSPARENCY)
                 .cull(DISABLE_CULLING)
                 .lightmap(ENABLE_LIGHTMAP)
                 .overlay(ENABLE_OVERLAY_COLOR)
-                .build(true);
+                .build(true)
 
-            of(
+            @Suppress("INACCESSIBLE_TYPE")
+            return of(
                 Hexbound.id("shield").toString(),
                 VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL,
                 VertexFormat.DrawMode.QUADS,
@@ -167,6 +165,7 @@ class ShieldRenderLayer private constructor(
             )
         }
 
-        lateinit var SHADER: ShaderProgram
+        lateinit var REGULAR_SHADER: ShaderProgram
+        lateinit var GLITCHY_SHADER: ShaderProgram
     }
 }
