@@ -31,7 +31,7 @@
     { "name": "FogColor", "type": "float", "count": 4, "values": [ 0.0, 0.0, 0.0, 0.0 ] },
     { "name": "FogShape", "type": "int", "count": 1, "values": [ 0 ] },
     { "name": "Hexbound_WorldTime", "type": "float", "count":  1, "values": [ 0.0 ] },
-    { "name":  "shake_length_ticks", "type": "float", "count": 1, "values": [ 0.0 ] },
-    { "name":  "shake_repeat_ticks", "type": "float", "count": 1, "values": [ 1.0 ] }
+    { "name": "shake_length_ticks", "type": "float", "count": 1, "values": [ 0.0 ] },
+    { "name": "shake_repeat_ticks", "type": "float", "count": 1, "values": [ 1.0 ] }
   ]
 }

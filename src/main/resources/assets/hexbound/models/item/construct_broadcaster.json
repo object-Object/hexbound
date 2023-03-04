@@ -1,6 +1,3 @@
 {
-    "parent": "minecraft:item/generated",
-    "textures": {
-        "layer0": "hexbound:item/construct_broadcaster"
-    }
+    "parent": "hexbound:block/construct_broadcaster/on"
 }
