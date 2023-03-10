@@ -76,5 +76,6 @@
         "hexbound:memorized_colorizers",
         "hexbound:construct_linkable"
     ],
-    "mixin": "hexbound.mixins.json"
+    "mixin": "hexbound.mixins.json",
+	"access_widener": "hexbound.accesswidener"
 }
