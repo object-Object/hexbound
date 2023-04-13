@@ -67,8 +67,7 @@ fun redirectSpiderLang(original: String, entity: SpiderConstructEntity? = null):
 }
 
 fun redirectSpiderLang(original: Text, entity: SpiderConstructEntity? = null): Text {
-    //this doesn't use the delegate as a workaround for HyperPigeon/Eldritch-Mobs#81
-    if (entity?.dataTracker?.get(SpiderConstructEntity.ALT_MODEL_ENABLED) != true && !HexboundConfig.replaceSpiderConstruct) {
+    if (entity?.isAltModelEnabled != true && !HexboundConfig.replaceSpiderConstruct) {
         return original
     }
 

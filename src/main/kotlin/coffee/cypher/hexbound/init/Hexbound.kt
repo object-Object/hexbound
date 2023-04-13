@@ -33,7 +33,11 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 object Hexbound : ModInitializer {
-    const val MOD_ID = "hexbound"
+    val MOD_ID: String by lazy {
+        QuiltLoader.getModContainer(Hexbound::class.java)
+            .map { it.metadata().id() }
+            .orElse("hexbound")
+    }
 
     val LOGGER: Logger by lazy {
         LoggerFactory.getLogger(MOD_ID)
