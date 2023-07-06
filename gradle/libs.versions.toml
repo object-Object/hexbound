@@ -5,7 +5,7 @@ minecraft = "1.19.2"
 quilt_mappings = "1.19.2+build.21"
 quilt_loader = "0.18.3"
 qsl = "3.0.0-beta.29+1.19.2"
-quilt-fapi = "4.0.0-beta.29+0.68.0-1.19.2"
+quilt-fapi = "4.0.0-beta.30+0.76.0-1.19.2"
 qkl = "1.0.0+kt.1.7.20+flk.1.8.5"
 
 kotlin = "1.7.20"
@@ -14,7 +14,7 @@ paucal = "0.5.0"
 hexcasting = "0.10.3"
 cca = "5.0.2"
 
-hexal = "RxK71QKF"
+hexal = "9RtpOzVO"
 dynlights = "2.2.0+1.19.2"
 
 fake-player = "0.5.0"
@@ -53,7 +53,7 @@ hexcasting = ["paucal", "hexcasting"]
 optionals = ["hexal", "dynlights"]
 
 [plugins]
-quilt_loom = { id = "org.quiltmc.loom", version = "1.0.+" }
+quilt_loom = { id = "org.quiltmc.loom", version = "1.2.+" }
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin" }
 nexus = { id = "io.github.gradle-nexus.publish-plugin", version = "1.1.0" }

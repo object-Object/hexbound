@@ -13,6 +13,7 @@ import coffee.cypher.hexbound.feature.construct.item.SpiderConstructBatteryItem
 import coffee.cypher.hexbound.feature.construct.item.SpiderConstructCoreItem
 import coffee.cypher.hexbound.feature.item_patterns.iota.ItemIota
 import coffee.cypher.hexbound.feature.item_patterns.iota.ItemStackIota
+import coffee.cypher.hexbound.feature.media_attachment.STATIC_MEDIA_ATTACHMENT
 import com.mojang.serialization.Codec
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.minecraft.block.Block
@@ -40,6 +41,7 @@ object HexboundData : DataInitializer() {
         Registries.init()
         ItemGroups.init()
         initRegistries()
+        STATIC_MEDIA_ATTACHMENT
     }
 
     object Registries {

@@ -24,6 +24,7 @@ import ram.talia.hexal.api.linkable.ClientLinkableHolder
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.linkable.LinkableRegistry
 import ram.talia.hexal.api.linkable.ServerLinkableHolder
+import java.util.*
 
 class ConstructLinkable(val construct: AbstractConstructEntity) : ILinkable,
     ILinkable.IRenderCentre,
@@ -36,6 +37,21 @@ class ConstructLinkable(val construct: AbstractConstructEntity) : ILinkable,
         ServerLinkableHolder(this, construct.world as ServerWorld)
     else
         null
+
+    override fun acceptMedia(other: ILinkable, sentMedia: Int) {
+    }
+
+    override fun canAcceptMedia(other: ILinkable, otherMediaLevel: Int): Int {
+        return -1
+    }
+
+    override fun currentMediaLevel(): Int {
+        return 0
+    }
+
+    override fun owner(): UUID {
+        return construct.uuid
+    }
 
     override val clientLinkableHolder = if (construct.world.isClient)
         ClientLinkableHolder(this, construct.world, construct.random)
@@ -56,14 +72,6 @@ class ConstructLinkable(val construct: AbstractConstructEntity) : ILinkable,
 
     override fun shouldRemove(): Boolean {
         return construct.isRemoved && construct.removalReason?.shouldDestroy() == true
-    }
-
-    override fun writeToNbt(): NbtElement {
-        return NbtHelper.fromUuid(construct.uuid)
-    }
-
-    override fun writeToSync(): NbtElement {
-        return NbtInt.of(construct.id)
     }
 
     override fun colouriser(): FrozenColorizer {
@@ -115,11 +123,19 @@ object ConstructLinkableType :
         return ctx.construct?.getLinkable()
     }
 
-    override fun linkableFromIota(iota: Iota): ConstructLinkable? {
+    override fun linkableFromIota(iota: Iota, level: ServerWorld): ConstructLinkable? {
         return ((iota as? EntityIota)?.entity as? AbstractConstructEntity)?.getLinkable()
     }
 
     override fun matchSync(centre: ILinkable.IRenderCentre, tag: NbtElement): Boolean {
         return (centre as? ConstructLinkable)?.construct?.id == tag.asInt
+    }
+
+    override fun toNbt(linkable: ILinkable): NbtElement {
+        return NbtHelper.fromUuid((linkable as ConstructLinkable).construct.uuid)
+    }
+
+    override fun toSync(linkable: ILinkable): NbtElement {
+        return NbtInt.of((linkable as ConstructLinkable).construct.id)
     }
 }

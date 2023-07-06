@@ -5,7 +5,6 @@ import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.kotlin.incremental.mkdirsOrThrow
 import java.net.URL
 
 @Suppress("DSL_SCOPE_VIOLATION")
@@ -320,7 +319,7 @@ tasks {
         dependsOn(patternDocgen, copyTranslations)
 
         doFirst {
-            val docgenDir = project.buildDir.resolve("docgen").also { it.mkdirsOrThrow() }
+            val docgenDir = project.buildDir.resolve("docgen").also { it.mkdirs() }
             val langDir = docgenDir.resolve("lang")
             val langFiles = langDir.listFiles().map { it.toRelativeString(docgenDir).replace(File.separatorChar, '/') }
 
@@ -416,7 +415,7 @@ publishing {
 }
 
 nexusPublishing {
-    repositories {
+    this.repositories {
         sonatype {
             username.set(Keystore(project).sonatypeUsername.orEmpty())
             password.set(Keystore(project).sonatypePassword.orEmpty())
