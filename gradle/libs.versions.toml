@@ -1,26 +1,29 @@
 [versions]
 # The latest versions are available at https://lambdaurora.dev/tools/import_quilt.html
-minecraft = "1.19.2"
+minecraft = "1.20.1"
 
-quilt_mappings = "1.19.2+build.21"
-quilt_loader = "0.18.3"
-qsl = "3.0.0-beta.29+1.19.2"
-quilt-fapi = "4.0.0-beta.30+0.76.0-1.19.2"
-qkl = "1.0.0+kt.1.7.20+flk.1.8.5"
+quilt_mappings = "1.20.1+build.7"
+quilt_loader = "0.19.2"
+qsl = "6.0.3+1.20.1"
+quilt-fapi = "7.0.4+0.84.0-1.20.1"
+qkl = "2.1.0+kt.1.8.22+flk.1.9.4"
 
-kotlin = "1.7.20"
+kotlin = "1.8.22"
+dokka = "1.8.20"
 
-paucal = "0.5.0"
-hexcasting = "0.10.3"
-cca = "5.0.2"
+paucal = "0.6.0-pre-118"
+hexcasting = "0.11.1-0"
+cca = "5.2.1"
 
 hexal = "9RtpOzVO"
-dynlights = "2.2.0+1.19.2"
+dynlights = "2.3.1+1.20.1"
 
-fake-player = "0.5.0"
-mixin-extras = "0.2.0-beta.6"
-geckolib = "3.1.37"
-kettle = "2.2.1+1.19.2"
+fake-player = "0.6.0"
+mixin-extras = "0.2.0-beta.8"
+geckolib = "4.2"
+kettle = "3.0.0+1.20.1"
+
+patchi = "1.20.1-80-FABRIC-SNAPSHOT"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
@@ -32,18 +35,18 @@ quilt-fapi = { module = "org.quiltmc.quilted-fabric-api:quilted-fabric-api", ver
 
 qkl = { module = "org.quiltmc.quilt-kotlin-libraries:quilt-kotlin-libraries", version.ref = "qkl" }
 
-hexcasting = { module = "at.petra-k.hexcasting:hexcasting-fabric-1.19.2", version.ref = "hexcasting" }
-paucal = { module = "at.petra-k.paucal:paucal-fabric-1.19.2", version.ref = "paucal" }
+hexcasting = { module = "at.petra-k.hexcasting:hexcasting-fabric-1.20.1", version.ref = "hexcasting" }
+paucal = { module = "at.petra-k.paucal:paucal-fabric-1.20.1", version.ref = "paucal" }
 cca = { module = "dev.onyxstudios.cardinal-components-api:cardinal-components-api", version.ref = "cca" }
 
-patchouli = { module = "vazkii.patchouli:Patchouli", version = "1.19.2-77-FABRIC" }
+patchouli = { module = "vazkii.patchouli:Patchouli", version.ref = "patchi" }
 
 hexal = { module = "maven.modrinth:hexal", version.ref = "hexal" }
 dynlights = { module = "dev.lambdaurora:lambdynamiclights", version.ref = "dynlights" }
 
 fake-player = { module = "dev.cafeteria:fake-player-api", version.ref = "fake-player" }
 mixin-extras = { module = "com.github.llamalad7.mixinextras:mixinextras-fabric", version.ref = "mixin-extras" }
-geckolib = { module = "software.bernie.geckolib:geckolib-quilt-1.19", version.ref = "geckolib" }
+geckolib = { module = "software.bernie.geckolib:geckolib-fabric-1.20", version.ref = "geckolib" }
 kettle = { module = "coffee.cypher.kettle:kettle", version.ref = "kettle" }
 
 [bundles]
@@ -55,6 +58,6 @@ optionals = ["hexal", "dynlights"]
 [plugins]
 quilt_loom = { id = "org.quiltmc.loom", version = "1.2.+" }
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 nexus = { id = "io.github.gradle-nexus.publish-plugin", version = "1.1.0" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

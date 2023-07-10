@@ -23,30 +23,30 @@ object SpiderConstructBatteryItem : Item(
         maxCount = 1
     )
 ), MediaHolderItem {
-    val maxCharge: Int
-        get() = HexboundConfig.spiderBatteryChargeRequired * MediaConstants.DUST_UNIT
+    val maxCharge: Long
+        get() = (HexboundConfig.spiderBatteryChargeRequired * MediaConstants.DUST_UNIT).toLong()
 
-    var ItemStack.charge: Int
+    var ItemStack.charge: Long
         get() {
             if (!orCreateNbt.contains("charge")) {
-                orCreateNbt["charge"] = 0
+                orCreateNbt["charge"] = 0L
             }
 
-            return orCreateNbt.getInt("charge")
+            return orCreateNbt.getLong("charge")
         }
         set(value) {
             orCreateNbt["charge"] = value
         }
 
-    override fun getMedia(stack: ItemStack): Int {
+    override fun getMedia(stack: ItemStack): Long {
         return stack.charge
     }
 
-    override fun getMaxMedia(stack: ItemStack): Int {
+    override fun getMaxMedia(stack: ItemStack): Long {
         return maxCharge
     }
 
-    override fun setMedia(stack: ItemStack, media: Int) {
+    override fun setMedia(stack: ItemStack, media: Long) {
         stack.charge = media
     }
 

@@ -1,6 +1,6 @@
 package coffee.cypher.hexbound.util
 
-import at.petrak.hexcasting.api.misc.FrozenColorizer
+import at.petrak.hexcasting.api.pigment.FrozenPigment
 import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.NbtCompound
@@ -12,7 +12,7 @@ data class MemorizedPlayerData(
     val uuid: UUID,
     val name: String,
     val displayName: Text,
-    val colorizer: FrozenColorizer
+    val pigment: FrozenPigment
 ) {
     fun toNbt(): NbtCompound {
         val result = NbtCompound()
@@ -20,7 +20,7 @@ data class MemorizedPlayerData(
         result.putUuid("uuid", uuid)
         result["name"] = name
         result["displayName"] = Text.Serializer.toJson(displayName)
-        result["colorizer"] = colorizer.serializeToNBT()
+        result["pigment"] = pigment.serializeToNBT()
 
         return result
     }
@@ -30,7 +30,7 @@ data class MemorizedPlayerData(
             val uuid = nbt.getUuid("uuid")
             val name = nbt.getString("name")
             val displayName = Text.Serializer.fromLenientJson(nbt.getString("displayName")) ?: Text.literal(name)
-            val colorizer = FrozenColorizer.fromNBT(nbt.getCompound("colorizer"))
+            val colorizer = FrozenPigment.fromNBT(nbt.getCompound("colorizer"))
 
             return MemorizedPlayerData(uuid, name, displayName, colorizer)
         }
@@ -40,7 +40,7 @@ data class MemorizedPlayerData(
                 player.uuid,
                 player.gameProfile.name,
                 player.displayName,
-                IXplatAbstractions.INSTANCE.getColorizer(player)
+                IXplatAbstractions.INSTANCE.getPigment(player)
             )
         }
     }

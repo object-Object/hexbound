@@ -1,10 +1,8 @@
 package coffee.cypher.hexbound.interop.hexal
 
-import at.petrak.hexcasting.api.misc.FrozenColorizer
-import at.petrak.hexcasting.api.spell.Action
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.iota.EntityIota
-import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.iota.EntityIota
+import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.utils.asInt
 import at.petrak.hexcasting.api.utils.asUUID
 import coffee.cypher.hexbound.feature.construct.entity.AbstractConstructEntity
@@ -119,7 +117,7 @@ object ConstructLinkableType :
         return (level.getEntityById(tag.asInt) as? AbstractConstructEntity)?.getLinkable()
     }
 
-    override fun linkableFromCastingContext(ctx: CastingContext): ConstructLinkable? {
+    override fun linkableFromCastingEnvironment(ctx: CastingEnvironment): ConstructLinkable? {
         return ctx.construct?.getLinkable()
     }
 

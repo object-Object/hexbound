@@ -1,7 +1,7 @@
 package coffee.cypher.hexbound.init
 
 import at.petrak.hexcasting.api.item.HexHolderItem
-import at.petrak.hexcasting.api.spell.iota.ListIota
+import at.petrak.hexcasting.api.casting.iota.ListIota
 import at.petrak.hexcasting.common.lib.HexItems
 import coffee.cypher.hexbound.feature.item_patterns.iota.ItemStackIota
 import coffee.cypher.hexbound.init.config.HexboundConfig
@@ -67,8 +67,8 @@ object Hexbound : ModInitializer {
                     required(literal("getConstructCommands")) {
                         execute {
                             sendFeedback(buildText {
-                                HexboundData.Registries.CONSTRUCT_COMMANDS.ids.forEach {
-                                    literal("[$it -> ${HexboundData.Registries.CONSTRUCT_COMMANDS.get(it)}]\n")
+                                HexboundData.ModRegistries.CONSTRUCT_COMMANDS.ids.forEach {
+                                    literal("[$it -> ${HexboundData.ModRegistries.CONSTRUCT_COMMANDS.get(it)}]\n")
                                 }
                             })
                         }

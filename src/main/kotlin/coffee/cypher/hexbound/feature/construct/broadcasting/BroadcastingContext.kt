@@ -1,8 +1,8 @@
 package coffee.cypher.hexbound.feature.construct.broadcasting
 
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.math.HexPattern
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.math.HexPattern
 import at.petrak.hexcasting.xplat.IXplatAbstractions
 import coffee.cypher.hexbound.feature.construct.entity.AbstractConstructEntity
 import net.minecraft.util.math.BlockPos
@@ -17,7 +17,7 @@ data class BroadcastingContext(
     val particleCenter: Vec3d,
     val particleOffset: Double
 ) {
-    fun broadcast(instructions: List<Iota>, ctx: CastingContext) {
+    fun broadcast(instructions: List<Iota>, ctx: CastingEnvironment) {
         val radiusSqr = radius * radius
 
         ctx.world.getEntitiesByClass(AbstractConstructEntity::class.java, Box(center, center).expand(radius)) {
@@ -28,8 +28,8 @@ data class BroadcastingContext(
 
         val random = ctx.world.random
 
-        val particleColorizer = IXplatAbstractions.INSTANCE.getColorizer(ctx.caster)
-        val particleColor = particleColorizer.getColor(
+        val particleColorizer = IXplatAbstractions.INSTANCE.getPigment(ctx.caster)
+        val particleColor = particleColorizer.colorProvider.getColor(
             random.nextFloat() * 16384,
             Vec3d(
                 random.nextFloat().toDouble(),

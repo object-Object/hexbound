@@ -2,7 +2,7 @@
 
 package coffee.cypher.hexbound.init
 
-import at.petrak.hexcasting.api.spell.iota.IotaType
+import at.petrak.hexcasting.api.casting.iota.IotaType
 import at.petrak.hexcasting.common.lib.hex.HexIotaTypes
 import coffee.cypher.hexbound.feature.combat.shield.ShieldEntity
 import coffee.cypher.hexbound.feature.combat.status_effects.ReducedAmbitStatusEffect
@@ -16,21 +16,23 @@ import coffee.cypher.hexbound.feature.item_patterns.iota.ItemStackIota
 import coffee.cypher.hexbound.feature.media_attachment.STATIC_MEDIA_ATTACHMENT
 import com.mojang.serialization.Codec
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup
 import net.minecraft.block.Block
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.effect.StatusEffect
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
+import net.minecraft.registry.DefaultedRegistry
+import net.minecraft.registry.Registries
+import net.minecraft.registry.Registry
+import net.minecraft.registry.RegistryKey
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
-import net.minecraft.util.registry.DefaultedRegistry
-import net.minecraft.util.registry.Registry
 import org.quiltmc.qkl.library.items.itemSettingsOf
 import org.quiltmc.qkl.library.registry.RegistryAction
 import org.quiltmc.qkl.library.registry.provide
 import org.quiltmc.qkl.library.serialization.CodecFactory
-import org.quiltmc.qsl.item.group.api.QuiltItemGroup
 import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties
@@ -38,19 +40,21 @@ import kotlin.reflect.jvm.isAccessible
 
 object HexboundData : DataInitializer() {
     fun init() {
-        Registries.init()
+        ModRegistries.init()
         ItemGroups.init()
         initRegistries()
         STATIC_MEDIA_ATTACHMENT
     }
 
-    object Registries {
+    object ModRegistries {
+        lateinit var CONSTRUCT_COMMANDS_KEY: RegistryKey<Registry<ConstructCommand.Type<*>>>
         lateinit var CONSTRUCT_COMMANDS: DefaultedRegistry<ConstructCommand.Type<*>>
 
         fun init() {
+            CONSTRUCT_COMMANDS_KEY = RegistryKey.ofRegistry(Hexbound.id("construct_command"))
+
             CONSTRUCT_COMMANDS = FabricRegistryBuilder.createDefaulted(
-                ConstructCommand.Type::class.java,
-                Hexbound.id("construct_command"),
+                CONSTRUCT_COMMANDS_KEY,
                 Hexbound.id("no_op")
             ).buildAndRegister()
         }
@@ -60,18 +64,18 @@ object HexboundData : DataInitializer() {
         lateinit var HEXBOUND: ItemGroup
 
         fun init() {
-            HEXBOUND = QuiltItemGroup.createWithIcon(Hexbound.id("hexbound_group")) {
+            HEXBOUND = FabricItemGroup.builder().(Hexbound.id("hexbound_group")) {
                 Items.SPIDER_CONSTRUCT_CORE.defaultStack
             }
         }
     }
 
-    object EntityTypes : Initializer<EntityType<*>>(Registry.ENTITY_TYPE) {
+    object EntityTypes : Initializer<EntityType<*>>(Registries.ENTITY_TYPE) {
         val SPIDER_CONSTRUCT: EntityType<SpiderConstructEntity> by registry.provide("spider_construct") {
             SpiderConstructEntity.createType()
         }
 
-        val SHIELD : EntityType<ShieldEntity> by registry.provide("shield") {
+        val SHIELD: EntityType<ShieldEntity> by registry.provide("shield") {
             ShieldEntity.createType()
         }
     }
@@ -86,7 +90,7 @@ object HexboundData : DataInitializer() {
         }
     }
 
-    object ConstructCommandTypes : Initializer<ConstructCommand.Type<*>>(Registries.CONSTRUCT_COMMANDS) {
+    object ConstructCommandTypes : Initializer<ConstructCommand.Type<*>>(ModRegistries.CONSTRUCT_COMMANDS) {
         private val codecFactory = CodecFactory {
             codecs {
                 named(Vec3d.CODEC, "Vec3d")
@@ -109,13 +113,13 @@ object HexboundData : DataInitializer() {
         val USE_ON_BLOCK by provideType<UseItemOnBlock>("use_on_block")
     }
 
-    object Blocks : Initializer<Block>(Registry.BLOCK) {
+    object Blocks : Initializer<Block>(Registries.BLOCK) {
         val CONSTRUCT_BROADCASTER by registry.provide("construct_broadcaster") {
             ConstructBroadcasterBlock
         }
     }
 
-    object Items : Initializer<Item>(Registry.ITEM) {
+    object Items : Initializer<Item>(Registries.ITEM) {
         val SPIDER_CONSTRUCT_BATTERY by registry.provide("spider_construct_battery") {
             SpiderConstructBatteryItem
         }
@@ -129,7 +133,7 @@ object HexboundData : DataInitializer() {
         }
     }
 
-    object StatusEffects : Initializer<StatusEffect>(Registry.STATUS_EFFECT) {
+    object StatusEffects : Initializer<StatusEffect>(Registries.STATUS_EFFECT) {
         val REDUCED_AMBIT by registry.provide("reduced_ambit") {
             ReducedAmbitStatusEffect()
         }

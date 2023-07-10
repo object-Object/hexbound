@@ -1,16 +1,18 @@
 package coffee.cypher.hexbound.feature.combat.shield
 
-import at.petrak.hexcasting.api.misc.FrozenColorizer
+import at.petrak.hexcasting.api.pigment.FrozenPigment
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
 import at.petrak.hexcasting.xplat.IXplatAbstractions
 import coffee.cypher.hexbound.util.provideDelegate
+import coffee.cypher.hexbound.util.times
 import net.minecraft.entity.*
 import net.minecraft.entity.data.DataTracker
 import net.minecraft.entity.data.TrackedData
 import net.minecraft.entity.data.TrackedDataHandlerRegistry
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.NbtCompound
-import net.minecraft.network.Packet
+import net.minecraft.network.listener.ClientPlayPacketListener
+import net.minecraft.network.packet.Packet
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket
 import net.minecraft.util.Util
 import net.minecraft.util.math.Box
@@ -18,7 +20,6 @@ import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
 import org.quiltmc.qkl.library.math.minus
 import org.quiltmc.qkl.library.math.plus
-import org.quiltmc.qkl.library.math.times
 import org.quiltmc.qkl.library.math.unaryMinus
 import org.quiltmc.qsl.entity.api.QuiltEntityTypeBuilder
 import java.util.function.BiFunction
@@ -31,10 +32,10 @@ class ShieldEntity(
     val maxAge: Int,
     initialVisualType: VisualType
 ) : Entity(type, world) {
-    var colorizerTag by COLORIZER
+    var pigmentTag by COLORIZER
     var typeOrdinal by VISUAL_TYPE
 
-    private val colorizerMemo = Util.memoize(FrozenColorizer::fromNBT)
+    private val pigmentMemo = Util.memoize(FrozenPigment::fromNBT)
     private val basisMemo = Util.memoize(BiFunction(ShieldEntity::calculateBasis))
 
     private var lockedPosition: Triple<Vec3d, Float, Float>? = null
@@ -43,10 +44,10 @@ class ShieldEntity(
         lockedPosition = Triple(pos, pitch, yaw)
     }
 
-    var colorizer: FrozenColorizer
-        get() = colorizerMemo.apply(colorizerTag)
+    var pigment: FrozenPigment
+        get() = pigmentMemo.apply(pigmentTag)
         set(value) {
-            colorizerTag = value.serializeToNBT()
+            pigmentTag = value.serializeToNBT()
         }
 
     var visualType: VisualType
@@ -56,10 +57,10 @@ class ShieldEntity(
         }
 
     init {
-        colorizer = if (owner != null) {
-            IXplatAbstractions.INSTANCE.getColorizer(owner)
+        pigment = if (owner != null) {
+            IXplatAbstractions.INSTANCE.getPigment(owner)
         } else {
-            FrozenColorizer.DEFAULT.get()
+            FrozenPigment.DEFAULT.get()
         }
 
         visualType = initialVisualType
@@ -79,7 +80,7 @@ class ShieldEntity(
 
     override fun initDataTracker() {
 
-        dataTracker.startTracking(COLORIZER, FrozenColorizer.DEFAULT.get().serializeToNBT())
+        dataTracker.startTracking(COLORIZER, FrozenPigment.DEFAULT.get().serializeToNBT())
         dataTracker.startTracking(VISUAL_TYPE, 0)
     }
 
@@ -89,7 +90,7 @@ class ShieldEntity(
     override fun writeCustomDataToNbt(nbt: NbtCompound) {
     }
 
-    override fun createSpawnPacket(): Packet<*> {
+    override fun createSpawnPacket(): Packet<ClientPlayPacketListener> {
         return EntitySpawnS2CPacket(this)
     }
 
@@ -124,7 +125,6 @@ class ShieldEntity(
 
         if (age == DEPLOY_TIME && world.isClient) {
             val (_, up, right) = getBasis()
-            val colorizer = colorizer
 
             listOf(
                 -right * 1.5 + up * 1.625,
@@ -133,7 +133,7 @@ class ShieldEntity(
                 right * 1.5 + up
             ).forEach {
                 world.addParticle(
-                    ConjureParticleOptions(colorizer.getColor(world.time.toFloat(), it), true),
+                    ConjureParticleOptions(pigment.colorProvider.getColor(world.time.toFloat(), it)),
                     x + it.x, y + it.y, z + it.z,
                     0.0, 0.0, 0.0
                 )

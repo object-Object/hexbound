@@ -26,24 +26,24 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import org.quiltmc.qkl.library.nbt.set
 import org.quiltmc.qsl.entity.api.QuiltEntityTypeBuilder
-import software.bernie.geckolib3.core.IAnimatable
-import software.bernie.geckolib3.core.PlayState
-import software.bernie.geckolib3.core.builder.AnimationBuilder
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes
-import software.bernie.geckolib3.core.controller.AnimationController
-import software.bernie.geckolib3.core.manager.AnimationData
-import software.bernie.geckolib3.core.manager.AnimationFactory
-import software.bernie.geckolib3.util.GeckoLibUtil
+import software.bernie.geckolib.animatable.GeoEntity
+import software.bernie.geckolib.constant.DefaultAnimations
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache
+import software.bernie.geckolib.core.animation.AnimatableManager
+import software.bernie.geckolib.core.animation.AnimationController
+import software.bernie.geckolib.core.animation.RawAnimation
+import software.bernie.geckolib.core.`object`.PlayState
+import software.bernie.geckolib.util.GeckoLibUtil
 
 class SpiderConstructEntity(
     entityType: EntityType<SpiderConstructEntity>,
     world: World
-) : AbstractConstructEntity(entityType, world), IAnimatable, ItemHolderComponent, InteractionComponent {
+) : AbstractConstructEntity(entityType, world), GeoEntity, ItemHolderComponent, InteractionComponent {
     override var heldStack by HELD_STACK
     var isAltModelEnabled by ALT_MODEL_ENABLED
 
     private var songSource: BlockPos? = null
-    private val animationFactory = GeckoLibUtil.createFactory(this)
+    private val animationCache = GeckoLibUtil.createInstanceCache(this)
 
     init {
         registerComponent(ItemHolderComponent, this)
@@ -51,18 +51,14 @@ class SpiderConstructEntity(
         handDropChances[0] = Float.MAX_VALUE
     }
 
-    private val animationController = AnimationController(this, "animation_controller", 0f) { event ->
+    private val animationController = AnimationController(this, "animation_controller", 0) { state ->
         when {
-            event.isMoving -> {
-                event.controller.setAnimation(WALK_ANIMATION)
-
-                PlayState.CONTINUE
+            state.isMoving -> {
+                state.setAndContinue(DefaultAnimations.WALK)
             }
 
-            event.animatable.canDance() -> {
-                event.controller.setAnimation(DANCE_ANIMATION)
-
-                PlayState.CONTINUE
+            state.animatable.canDance() -> {
+                state.setAndContinue(DANCE_ANIMATION)
             }
 
             else -> PlayState.STOP
@@ -134,12 +130,12 @@ class SpiderConstructEntity(
         return redirectSpiderLang(super.getDefaultName(), this)
     }
 
-    override fun registerControllers(data: AnimationData) {
-        data.addAnimationController(animationController)
+    override fun registerControllers(registar: AnimatableManager.ControllerRegistrar) {
+        registar.add(animationController)
     }
 
-    override fun getFactory(): AnimationFactory {
-        return animationFactory
+    override fun getAnimatableInstanceCache(): AnimatableInstanceCache {
+        return animationCache
     }
 
     override fun writeCustomDataToNbt(nbt: NbtCompound) {
@@ -172,15 +168,9 @@ class SpiderConstructEntity(
                 .build()
         }
 
-        private val DANCE_ANIMATION = AnimationBuilder().addAnimation(
-            "dance",
-            EDefaultLoopTypes.LOOP
-        )
+        private val DANCE_ANIMATION = RawAnimation.begin().thenLoop("dance")
 
-        private val WALK_ANIMATION = AnimationBuilder().addAnimation(
-            "walk",
-            EDefaultLoopTypes.LOOP
-        )
+        private val WALK_ANIMATION = RawAnimation.begin().thenLoop("walk")
 
         val ALT_MODEL_ENABLED: TrackedData<Boolean> = DataTracker.registerData(
             SpiderConstructEntity::class.java,

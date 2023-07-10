@@ -1,6 +1,6 @@
 package coffee.cypher.hexbound.init
 
-import at.petrak.hexcasting.api.misc.FrozenColorizer
+import at.petrak.hexcasting.api.pigment.FrozenPigment
 import coffee.cypher.hexbound.feature.colorizer_storage.component.MemorizedColorizersPlayerComponent
 import coffee.cypher.hexbound.interop.InteropManager
 import dev.onyxstudios.cca.api.v3.component.ComponentKey
@@ -28,5 +28,5 @@ object HexboundComponents : EntityComponentInitializer {
     }
 }
 
-val ServerPlayerEntity.memorizedColorizers: MutableMap<String, FrozenColorizer>
+val ServerPlayerEntity.memorizedColorizers: MutableMap<String, FrozenPigment>
     get() = HexboundComponents.MEMORIZED_COLORIZERS[this].colorizers

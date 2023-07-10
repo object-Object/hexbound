@@ -3,6 +3,7 @@ package coffee.cypher.hexbound.feature.construct.broadcasting
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
 import coffee.cypher.hexbound.init.Hexbound
 import coffee.cypher.hexbound.init.config.HexboundConfig
+import coffee.cypher.hexbound.util.times
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayNetworkHandler
 import net.minecraft.network.PacketByteBuf
@@ -12,7 +13,6 @@ import net.minecraft.util.math.ChunkPos
 import net.minecraft.util.math.Vec3d
 import org.quiltmc.loader.api.minecraft.ClientOnly
 import org.quiltmc.qkl.library.math.plus
-import org.quiltmc.qkl.library.math.times
 import org.quiltmc.qkl.library.networking.getPlayersTrackingChunk
 import org.quiltmc.qsl.networking.api.PacketByteBufs
 import org.quiltmc.qsl.networking.api.PacketSender
@@ -26,7 +26,7 @@ data class BroadcasterActivatedS2CPacket(
     val color: Int
 ) {
     fun send(world: ServerWorld) {
-        val chunk = ChunkPos(BlockPos(particleCenter))
+        val chunk = ChunkPos(BlockPos(particleCenter.x.toInt(), particleCenter.y.toInt(), particleCenter.z.toInt()))
 
         val buf = PacketByteBufs.create().also {
             it.writeInt(color)
@@ -76,7 +76,7 @@ data class BroadcasterActivatedS2CPacket(
                     val particleVelocity = particleVec * 0.2
 
                     client.world?.addParticle(
-                        ConjureParticleOptions(color, true),
+                        ConjureParticleOptions(color),
                         particleStart.x, particleStart.y, particleStart.z,
                         particleVelocity.x, particleVelocity.y, particleVelocity.z,
                     )

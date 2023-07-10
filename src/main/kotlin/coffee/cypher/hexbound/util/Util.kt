@@ -1,10 +1,10 @@
 package coffee.cypher.hexbound.util
 
-import at.petrak.hexcasting.api.spell.iota.EntityIota
-import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.math.HexPattern
-import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
-import at.petrak.hexcasting.api.spell.mishaps.MishapNotEnoughArgs
+import at.petrak.hexcasting.api.casting.iota.EntityIota
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.math.HexPattern
+import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota
+import at.petrak.hexcasting.api.casting.mishaps.MishapNotEnoughArgs
 import coffee.cypher.hexbound.feature.construct.entity.AbstractConstructEntity
 import coffee.cypher.hexbound.feature.construct.entity.SpiderConstructEntity
 import coffee.cypher.hexbound.feature.item_patterns.iota.ItemStackIota
@@ -74,7 +74,7 @@ fun redirectSpiderLang(original: Text, entity: SpiderConstructEntity? = null): T
     val component = original.asComponent()
 
     val newComponent = if (component is TranslatableComponent)
-        TranslatableComponent(redirectSpiderLang(component.key))
+        TranslatableComponent(redirectSpiderLang(component.key), null, emptyArray())
     else
         component
 

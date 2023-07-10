@@ -1,9 +1,13 @@
 package coffee.cypher.hexbound.feature.combat.shield
 
+import at.petrak.hexcasting.api.casting.ParticleSpray
+import at.petrak.hexcasting.api.casting.RenderedSpell
+import at.petrak.hexcasting.api.casting.castables.SpellAction
 import at.petrak.hexcasting.api.misc.MediaConstants
-import at.petrak.hexcasting.api.spell.*
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.getPositiveDouble
+import at.petrak.hexcasting.api.casting.getVec3
+import at.petrak.hexcasting.api.casting.iota.Iota
 import coffee.cypher.hexbound.init.HexboundData
 import net.minecraft.command.argument.EntityAnchorArgumentType
 import net.minecraft.entity.Entity
@@ -16,12 +20,12 @@ import kotlin.collections.ArrayDeque
 class OpCreateShield(val visualType: ShieldEntity.VisualType) : SpellAction {
     override val argc = 3
 
-    override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+    override fun execute(args: List<Iota>, ctx: CastingEnvironment): SpellAction.Result {
         val position = args.getVec3(0, argc)
         val direction = args.getVec3(1, argc).normalize()
         val durationSeconds = args.getPositiveDouble(2, argc)
 
-        return Triple(
+        return SpellAction.Result(
             Spell(position, direction, visualType, (durationSeconds * 20).toInt()),
             (durationSeconds * MediaConstants.DUST_UNIT * 2).toInt(),
             listOf(ParticleSpray.burst(position, 3.0))
@@ -34,7 +38,7 @@ class OpCreateShield(val visualType: ShieldEntity.VisualType) : SpellAction {
         val visualType: ShieldEntity.VisualType,
         val maxAge: Int
     ) : RenderedSpell {
-        override fun cast(ctx: CastingContext) {
+        override fun cast(ctx: CastingEnvironment) {
             val shields = cleanAndGetShieldsFor(ctx.caster)
 
             if (shields.size >= MAX_SHIELDS) {

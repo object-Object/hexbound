@@ -7,6 +7,7 @@ import coffee.cypher.hexbound.feature.construct.entity.component.ItemHolderCompo
 import coffee.cypher.hexbound.init.HexboundData
 import coffee.cypher.hexbound.util.formatVector
 import coffee.cypher.hexbound.util.localizeSide
+import coffee.cypher.hexbound.util.times
 import coffee.cypher.kettle.inventory.get
 import coffee.cypher.kettle.inventory.set
 import coffee.cypher.kettle.math.toDoubleVector
@@ -15,6 +16,7 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import net.minecraft.block.*
 import net.minecraft.command.argument.EntityAnchorArgumentType
+import net.minecraft.entity.Entity
 import net.minecraft.entity.ItemEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.server.network.ServerPlayerEntity
@@ -32,7 +34,6 @@ import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
 import org.quiltmc.qkl.library.math.plus
-import org.quiltmc.qkl.library.math.times
 
 @Serializable
 class Harvest(
@@ -46,7 +47,7 @@ class Harvest(
             val player = requireComponent(InteractionComponent).getInteractionPlayer(world)
             prepareToInteract(player, target)
 
-            when (val harvest = getHarvestingResult(state)) {
+            when (val harvest = getHarvestingResult(construct, state)) {
                 is HarvestingResult.NotHarvestable -> throw BadTargetConstructCommandException(
                     target,
                     "not_harvestable"
@@ -76,7 +77,7 @@ class Harvest(
     }
 
     companion object {
-        fun getHarvestingResult(blockState: BlockState): HarvestingResult {
+        fun getHarvestingResult(picker: Entity, blockState: BlockState): HarvestingResult {
             val block = blockState.block
 
             if (block is CropBlock) {
@@ -102,7 +103,9 @@ class Harvest(
                     return HarvestingResult.NotReady
                 }
 
-                return HarvestingResult.BuiltinHarvest(CaveVines::pickBerries)
+                return HarvestingResult.BuiltinHarvest { state, world, pos ->
+                    CaveVines.pickBerries(picker, state, world, pos)
+                }
             }
 
             return HarvestingResult.NotHarvestable
@@ -118,8 +121,8 @@ class Harvest(
     }
 
     sealed class HarvestingResult {
-        object NotHarvestable : HarvestingResult()
-        object NotReady : HarvestingResult()
+        data object NotHarvestable : HarvestingResult()
+        data object NotReady : HarvestingResult()
         data class StandardHarvest(val replantState: BlockState, val sound: SoundEvent) : HarvestingResult()
         data class BuiltinHarvest(val harvest: (BlockState, World, BlockPos) -> Unit) : HarvestingResult()
     }
@@ -142,7 +145,7 @@ class UseItemOnBlock(
 
             //TODO consider actually raycasting
             val blockHit = BlockHitResult(
-                Vec3d(0.5, 0.5, 0.5) + 0.5 * side.vector.toDoubleVector(),
+                Vec3d(0.5, 0.5, 0.5) + side.vector.toDoubleVector() * 0.5,
                 side,
                 target,
                 false

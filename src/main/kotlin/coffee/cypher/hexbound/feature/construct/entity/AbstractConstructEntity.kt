@@ -1,11 +1,11 @@
 package coffee.cypher.hexbound.feature.construct.entity
 
-import at.petrak.hexcasting.api.misc.FrozenColorizer
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.casting.CastingHarness
-import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.iota.PatternIota
-import at.petrak.hexcasting.api.spell.math.HexPattern
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.eval.vm.CastingVM
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.iota.PatternIota
+import at.petrak.hexcasting.api.casting.math.HexPattern
+import at.petrak.hexcasting.api.pigment.FrozenPigment
 import at.petrak.hexcasting.api.utils.downcast
 import at.petrak.hexcasting.common.lib.HexItems
 import at.petrak.hexcasting.common.lib.hex.HexIotaTypes
@@ -14,7 +14,6 @@ import coffee.cypher.hexbound.feature.construct.command.exception.ConstructComma
 import coffee.cypher.hexbound.feature.construct.command.exception.UnknownConstructCommandException
 import coffee.cypher.hexbound.feature.construct.command.execution.ConstructCommandExecutor
 import coffee.cypher.hexbound.feature.construct.entity.component.ConstructComponentKey
-import coffee.cypher.hexbound.feature.fake_circles.entity.ImpetusFakePlayer
 import coffee.cypher.hexbound.init.Hexbound
 import coffee.cypher.hexbound.init.HexboundData
 import coffee.cypher.hexbound.util.MemorizedPlayerData
@@ -51,7 +50,7 @@ abstract class AbstractConstructEntity(
         ConstructFakePlayer(world as ServerWorld, this)
 
     protected var command: Pair<ConstructCommand<*>, List<Iota>>? = null
-    protected var harness: CastingHarness? = null
+    protected var harness: CastingVM? = null
     protected var error: Text? = null
 
     private var instructionSet: List<Iota>? = null
@@ -60,12 +59,12 @@ abstract class AbstractConstructEntity(
 
     private lateinit var _executor: ConstructCommandExecutor
 
-    private fun getOrCreateHarness(): CastingHarness {
+    private fun getOrCreateHarness(): CastingVM {
         if (harness == null) {
-            harness = CastingHarness(
-                createCastingContext(),
-                FrozenColorizer(
-                    ItemStack(HexItems.DYE_COLORIZERS[DyeColor.PURPLE]!!),
+            harness = CastingVM(
+                createCastingEnvironment(),
+                FrozenPigment(
+                    ItemStack(HexItems.DYE_PIGMENTS[DyeColor.PURPLE]!!),
                     Util.NIL_UUID
                 )
             )
@@ -74,11 +73,11 @@ abstract class AbstractConstructEntity(
         return harness!!
     }
 
-    private fun createCastingContext(): CastingContext {
-        val castingContext = CastingContext(
+    private fun createCastingEnvironment(): CastingEnvironment {
+        val castingContext = CastingEnvironment(
             fakePlayer!!,
             Hand.OFF_HAND,
-            CastingContext.CastSource.STAFF,
+            CastingEnvironment.CastSource.STAFF,
             null
         )
 
@@ -130,7 +129,7 @@ abstract class AbstractConstructEntity(
 
     fun acceptInstructions(
         instructionSet: List<Iota>,
-        player: PlayerEntity,
+        player: PlayerEntity?,
         isBroadcasting: Boolean,
         pattern: HexPattern?
     ): Boolean {
@@ -282,7 +281,7 @@ abstract class AbstractConstructEntity(
         val (command, callback) = commandPair
         val compound = NbtCompound()
 
-        val type = HexboundData.Registries.CONSTRUCT_COMMANDS.getId(command.getType())
+        val type = HexboundData.ModRegistries.CONSTRUCT_COMMANDS.getId(command.getType())
         compound["type"] = type.toString()
 
         val callbackList = NbtList()
@@ -293,7 +292,7 @@ abstract class AbstractConstructEntity(
 
         compound["on_complete"] = callbackList
 
-        if (HexboundData.Registries.CONSTRUCT_COMMANDS.get(type) != command.getType()) {
+        if (HexboundData.ModRegistries.CONSTRUCT_COMMANDS.get(type) != command.getType()) {
             Hexbound.LOGGER.warn("Construct command type for $command was not registered")
             compound["data"] = NbtCompound()
             return compound
@@ -306,7 +305,6 @@ abstract class AbstractConstructEntity(
         return compound
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     override fun readCustomDataFromNbt(nbt: NbtCompound) {
         super.readCustomDataFromNbt(nbt)
 
@@ -317,7 +315,7 @@ abstract class AbstractConstructEntity(
             //TODO maybe this can go into a command frame class (low priority)
             val commandNbt = nbt.getCompound("command")
             val typeId = Identifier.tryParse(commandNbt.getString("type"))
-            val type = HexboundData.Registries.CONSTRUCT_COMMANDS.get(typeId)
+            val type = HexboundData.ModRegistries.CONSTRUCT_COMMANDS.get(typeId)
             val result = type.codec.decode(NbtOps.INSTANCE, commandNbt.get("data"))
             val onComplete = commandNbt.getList("on_complete", NbtElement.COMPOUND_TYPE.toInt()).map {
                 HexIotaTypes.deserialize(it.downcast(NbtCompound.TYPE), serverWorld)
@@ -331,7 +329,7 @@ abstract class AbstractConstructEntity(
         }
 
         if (nbt.contains("harness")) {
-            harness = CastingHarness.fromNBT(nbt.getCompound("harness"), createCastingContext())
+            harness = CastingHarness.fromNBT(nbt.getCompound("harness"), createCastingEnvironment())
         }
 
         boundPlayerData = null

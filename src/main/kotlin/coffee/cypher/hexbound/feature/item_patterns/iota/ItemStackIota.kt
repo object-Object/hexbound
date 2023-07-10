@@ -1,7 +1,7 @@
 package coffee.cypher.hexbound.feature.item_patterns.iota
 
-import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.iota.IotaType
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.iota.IotaType
 import at.petrak.hexcasting.api.utils.downcast
 import at.petrak.hexcasting.api.utils.serializeToNBT
 import net.minecraft.item.ItemStack

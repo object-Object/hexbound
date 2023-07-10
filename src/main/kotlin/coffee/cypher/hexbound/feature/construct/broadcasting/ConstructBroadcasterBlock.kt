@@ -22,8 +22,8 @@ import kotlin.jvm.optionals.getOrNull
 @Suppress("OVERRIDE_DEPRECATION")
 object ConstructBroadcasterBlock : Block(
     blockSettingsOf(
-        material = Material.STONE,
-        color = MapColor.DEEPSLATE_GRAY,
+        material = Material.STONE, //TODO copy slate
+        mapColor = MapColor.DEEPSLATE,
         soundGroup = BlockSoundGroup.DEEPSLATE_TILES,
         resistance = 4f,
         hardness = 4f

@@ -2,8 +2,8 @@
 
 package coffee.cypher.hexbound.docgen
 
-import at.petrak.hexcasting.api.spell.Action
-import at.petrak.hexcasting.api.spell.math.HexPattern
+import at.petrak.hexcasting.api.casting.castables.Action
+import at.petrak.hexcasting.api.casting.math.HexPattern
 import coffee.cypher.hexbound.init.HexboundPatterns
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable

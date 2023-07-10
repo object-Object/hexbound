@@ -50,7 +50,7 @@ repositories {
     maven("https://maven.terraformersmc.com/") {
         name = "TerraformersMC"
     }
-    maven("https://ladysnake.jfrog.io/artifactory/mods") {
+    maven("https://maven.ladysnake.org/releases") {
         name = "Ladysnake Libs"
     }
 
@@ -76,6 +76,8 @@ repositories {
             includeGroup("maven.modrinth")
         }
     }
+
+    mavenLocal()
 }
 
 dependencies {
@@ -160,7 +162,7 @@ tasks {
 
     withType<KotlinCompile> {
         kotlinOptions {
-            useK2 = false
+            languageVersion = "2.0"
             jvmTarget = javaVersion.toString()
             freeCompilerArgs =
                 listOf("-Xenable-builder-inference")
@@ -193,7 +195,7 @@ tasks {
     dokkaJavadoc.configure {
         description = "Generates Javadoc for the project"
 
-        outputDirectory.set(this@tasks.javadoc.map { it.destinationDir!! })
+        outputDirectory.fileProvider(this@tasks.javadoc.map { it.destinationDir!! })
     }
 
     withType<DokkaTask> {
@@ -321,7 +323,7 @@ tasks {
         doFirst {
             val docgenDir = project.buildDir.resolve("docgen").also { it.mkdirs() }
             val langDir = docgenDir.resolve("lang")
-            val langFiles = langDir.listFiles().map { it.toRelativeString(docgenDir).replace(File.separatorChar, '/') }
+            val langFiles = langDir.listFiles().orEmpty().map { it.toRelativeString(docgenDir).replace(File.separatorChar, '/') }
 
             with(JsonBuilder()) {
                 call(

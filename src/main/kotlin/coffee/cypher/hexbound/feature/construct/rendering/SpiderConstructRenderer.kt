@@ -12,17 +12,11 @@ import net.minecraft.client.render.model.json.ModelTransformation
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.item.ItemStack
 import net.minecraft.util.Identifier
-import net.minecraft.util.math.Vec3f
-import software.bernie.geckolib3.core.processor.IBone
-import software.bernie.geckolib3.geo.render.built.GeoBone
-import software.bernie.geckolib3.model.AnimatedGeoModel
-import software.bernie.geckolib3.renderers.geo.ExtendedGeoEntityRenderer
-import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer
-import software.bernie.geckolib3.renderers.geo.IGeoRenderer
+import software.bernie.geckolib.renderer.GeoEntityRenderer
 
 class SpiderConstructRenderer(
     renderManager: EntityRendererFactory.Context
-) : ExtendedGeoEntityRenderer<SpiderConstructEntity>(
+) : GeoEntityRenderer<SpiderConstructEntity>(
     renderManager,
     SpiderConstructModel()
 ) {

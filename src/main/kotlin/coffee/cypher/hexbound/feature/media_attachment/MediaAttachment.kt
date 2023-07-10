@@ -4,13 +4,13 @@ import at.petrak.hexcasting.api.addldata.ADMediaHolder
 import at.petrak.hexcasting.fabric.cc.adimpl.CCMediaHolder
 import coffee.cypher.hexbound.init.Hexbound
 import net.minecraft.item.ItemStack
-import net.minecraft.util.registry.Registry
+import net.minecraft.registry.Registries
 import org.quiltmc.qkl.library.serialization.CodecFactory
 import org.quiltmc.qsl.registry.attachment.api.RegistryEntryAttachment
 
 internal val STATIC_MEDIA_ATTACHMENT by lazy {
     RegistryEntryAttachment.builder(
-        Registry.ITEM,
+        Registries.ITEM,
         Hexbound.id("media_values"),
         StaticMediaValue::class.java,
         CodecFactory.create<StaticMediaValue>()

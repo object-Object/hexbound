@@ -1,11 +1,10 @@
 package coffee.cypher.hexbound.init
 
-import at.petrak.hexcasting.api.PatternRegistry
-import at.petrak.hexcasting.api.spell.Action
-import at.petrak.hexcasting.api.spell.math.HexDir
-import at.petrak.hexcasting.api.spell.math.HexPattern
-import at.petrak.hexcasting.common.casting.operators.selectors.OpGetEntitiesBy
-import at.petrak.hexcasting.common.casting.operators.selectors.OpGetEntityAt
+import at.petrak.hexcasting.api.casting.castables.Action
+import at.petrak.hexcasting.api.casting.math.HexDir
+import at.petrak.hexcasting.api.casting.math.HexPattern
+import at.petrak.hexcasting.common.casting.actions.selectors.OpGetEntitiesBy
+import at.petrak.hexcasting.common.casting.actions.selectors.OpGetEntityAt
 import coffee.cypher.hexbound.feature.colorizer_storage.action.OpColorizerDelete
 import coffee.cypher.hexbound.feature.colorizer_storage.action.OpColorizerLoad
 import coffee.cypher.hexbound.feature.colorizer_storage.action.OpColorizerSave
@@ -13,9 +12,12 @@ import coffee.cypher.hexbound.feature.combat.shield.OpCreateShield
 import coffee.cypher.hexbound.feature.combat.shield.ShieldEntity
 import coffee.cypher.hexbound.feature.construct.action.*
 import coffee.cypher.hexbound.feature.construct.action.command.*
-import coffee.cypher.hexbound.feature.construct.action.crafting.OpCreateSpiderConstruct
-import coffee.cypher.hexbound.feature.construct.action.instruction.OpBroadcastInstructions
-import coffee.cypher.hexbound.feature.construct.action.instruction.OpSendInstructions
+import coffee.cypher.hexbound.feature.construct.casting.action.crafting.OpCreateSpiderConstruct
+import coffee.cypher.hexbound.feature.construct.casting.action.instruction.OpBroadcastInstructions
+import coffee.cypher.hexbound.feature.construct.casting.action.instruction.OpSendInstructions
+import coffee.cypher.hexbound.feature.construct.casting.action.OpBindConstruct
+import coffee.cypher.hexbound.feature.construct.casting.action.OpConstructGetSelf
+import coffee.cypher.hexbound.feature.construct.casting.action.command.*
 import coffee.cypher.hexbound.feature.construct.entity.AbstractConstructEntity
 import coffee.cypher.hexbound.feature.fake_circles.action.OpSetImpetusFakePlayer
 import coffee.cypher.hexbound.feature.item_patterns.action.*

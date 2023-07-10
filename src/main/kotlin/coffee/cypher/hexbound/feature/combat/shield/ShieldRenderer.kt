@@ -1,7 +1,9 @@
 package coffee.cypher.hexbound.feature.combat.shield
 
-import coffee.cypher.hexbound.feature.combat.shield.ShieldEntity.VisualType.*
+import coffee.cypher.hexbound.feature.combat.shield.ShieldEntity.VisualType.GLITCHY
+import coffee.cypher.hexbound.feature.combat.shield.ShieldEntity.VisualType.REGULAR
 import coffee.cypher.hexbound.init.Hexbound
+import coffee.cypher.hexbound.util.times
 import com.mojang.blaze3d.shader.GlUniform
 import com.mojang.blaze3d.vertex.VertexFormat
 import com.mojang.blaze3d.vertex.VertexFormats
@@ -13,11 +15,10 @@ import net.minecraft.client.render.entity.EntityRenderer
 import net.minecraft.client.render.entity.EntityRendererFactory
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.Identifier
+import net.minecraft.util.math.Axis
 import net.minecraft.util.math.MathHelper
-import net.minecraft.util.math.Vec3f
 import org.quiltmc.loader.api.minecraft.ClientOnly
 import org.quiltmc.qkl.library.math.plus
-import org.quiltmc.qkl.library.math.times
 
 @ClientOnly
 class ShieldRenderer(ctx: EntityRendererFactory.Context) : EntityRenderer<ShieldEntity>(ctx) {
@@ -30,7 +31,7 @@ class ShieldRenderer(ctx: EntityRendererFactory.Context) : EntityRenderer<Shield
         light: Int
     ) {
         val worldTime = entity.world.time + tickDelta
-        val colorizer = entity.colorizer
+        val pigment = entity.pigment
         val colorTime = worldTime * 4
         val (_, up, right) = entity.getBasis()
 
@@ -47,8 +48,8 @@ class ShieldRenderer(ctx: EntityRendererFactory.Context) : EntityRenderer<Shield
         val buffer = vertexConsumers.getBuffer(renderLayer)
         matrices.translate(0.0, 1.3125, 0.0)
 
-        matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180f - entity.yaw))
-        matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-entity.pitch))
+        matrices.multiply(Axis.Y_POSITIVE.rotationDegrees(180f - entity.yaw))
+        matrices.multiply(Axis.X_POSITIVE.rotationDegrees(-entity.pitch))
 
         if (entity.age < ShieldEntity.DEPLOY_TIME) {
             val deployProgress = (entity.age + tickDelta) / ShieldEntity.DEPLOY_TIME
@@ -100,6 +101,8 @@ class ShieldRenderer(ctx: EntityRendererFactory.Context) : EntityRenderer<Shield
                 val upperXVec = right * upperX.toDouble()
                 val lowerYVec = up * lowerY.toDouble()
                 val upperYVec = up * upperY.toDouble()
+
+                val colorizer = pigment.colorProvider
 
                 val lowerLeftColor = colorizer.getColor(colorTime, entity.pos + lowerXVec + lowerYVec)
                 val lowerRightColor = colorizer.getColor(colorTime, entity.pos + upperXVec + lowerYVec)
