@@ -1,14 +1,15 @@
 package coffee.cypher.hexbound.feature.construct.entity
 
-import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.eval.vm.CastingImage
 import at.petrak.hexcasting.api.casting.eval.vm.CastingVM
 import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.iota.IotaType
 import at.petrak.hexcasting.api.casting.iota.PatternIota
 import at.petrak.hexcasting.api.casting.math.HexPattern
-import at.petrak.hexcasting.api.pigment.FrozenPigment
 import at.petrak.hexcasting.api.utils.downcast
 import at.petrak.hexcasting.common.lib.HexItems
 import at.petrak.hexcasting.common.lib.hex.HexIotaTypes
+import coffee.cypher.hexbound.feature.construct.casting.env.ConstructCastEnv
 import coffee.cypher.hexbound.feature.construct.command.ConstructCommand
 import coffee.cypher.hexbound.feature.construct.command.exception.ConstructCommandException
 import coffee.cypher.hexbound.feature.construct.command.exception.UnknownConstructCommandException
@@ -17,8 +18,6 @@ import coffee.cypher.hexbound.feature.construct.entity.component.ConstructCompon
 import coffee.cypher.hexbound.init.Hexbound
 import coffee.cypher.hexbound.init.HexboundData
 import coffee.cypher.hexbound.util.MemorizedPlayerData
-import coffee.cypher.hexbound.util.mixinaccessor.construct
-import coffee.cypher.hexbound.util.mixinaccessor.storedPlayerUuid
 import com.mojang.serialization.Codec
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.mob.PathAwareEntity
@@ -50,7 +49,7 @@ abstract class AbstractConstructEntity(
         ConstructFakePlayer(world as ServerWorld, this)
 
     protected var command: Pair<ConstructCommand<*>, List<Iota>>? = null
-    protected var harness: CastingVM? = null
+    protected var castVm: CastingVM? = null
     protected var error: Text? = null
 
     private var instructionSet: List<Iota>? = null
@@ -60,30 +59,14 @@ abstract class AbstractConstructEntity(
     private lateinit var _executor: ConstructCommandExecutor
 
     private fun getOrCreateHarness(): CastingVM {
-        if (harness == null) {
-            harness = CastingVM(
-                createCastingEnvironment(),
-                FrozenPigment(
-                    ItemStack(HexItems.DYE_PIGMENTS[DyeColor.PURPLE]!!),
-                    Util.NIL_UUID
-                )
+        if (castVm == null) {
+            castVm = CastingVM(
+                CastingImage(),
+                ConstructCastEnv(this)
             )
         }
 
-        return harness!!
-    }
-
-    private fun createCastingEnvironment(): CastingEnvironment {
-        val castingContext = CastingEnvironment(
-            fakePlayer!!,
-            Hand.OFF_HAND,
-            CastingEnvironment.CastSource.STAFF,
-            null
-        )
-
-        castingContext.construct = this
-
-        return castingContext
+        return castVm!!
     }
 
     private fun getOrCreateExecutor(world: ServerWorld): ConstructCommandExecutor {
@@ -111,21 +94,7 @@ abstract class AbstractConstructEntity(
         setLastError(commandException.errorText)
     }
 
-    fun isPlayerAllowed(player: PlayerEntity): Boolean {
-        if (boundPlayerData != null) {
-            val realUuid = if (player is ImpetusFakePlayer) {
-                player.impetus.storedPlayerUuid
-            } else {
-                player.uuid
-            }
-
-            if (boundPlayerData?.uuid != realUuid) {
-                return false
-            }
-        }
-
-        return true
-    }
+    fun isPlayerAllowed(player: PlayerEntity?) = (boundPlayerData == null) || (boundPlayerData?.uuid == player?.uuid)
 
     fun acceptInstructions(
         instructionSet: List<Iota>,
@@ -148,7 +117,7 @@ abstract class AbstractConstructEntity(
     fun setLastError(error: Text) {
         this.error = error
         command = null
-        harness = null
+        castVm = null
     }
 
     private fun evaluateInstructions(instructionSet: List<Iota>) {
@@ -156,14 +125,14 @@ abstract class AbstractConstructEntity(
 
         error = null
 
-        val info = getOrCreateHarness().executeIotas(instructionSet, serverWorld)
+        val view = getOrCreateHarness().queueExecuteAndWrapIotas(instructionSet, serverWorld)
 
-        if (!info.resolutionType.success) {
+        if (!view.resolutionType.success) {
             getOrCreateExecutor(serverWorld).cancelCommand()
         }
 
         if (command == null) {
-            harness = null
+            castVm = null
         }
     }
 
@@ -182,7 +151,7 @@ abstract class AbstractConstructEntity(
         fakePlayer?.setPos(x, y, z)
 
         if (instructionSet != null) {
-            harness = null
+            castVm = null
             evaluateInstructions(instructionSet!!)
             instructionSet = null
         }
@@ -263,8 +232,8 @@ abstract class AbstractConstructEntity(
                 nbt["command"] = encodeCommand(it)
             }
 
-            harness?.let {
-                nbt["harness"] = it.serializeToNBT()
+            castVm?.let {
+                nbt["casting_image"] = it.image.serializeToNbt()
             }
 
             boundPlayerData?.let {
@@ -287,7 +256,7 @@ abstract class AbstractConstructEntity(
         val callbackList = NbtList()
 
         callback.forEach {
-            callbackList.add(HexIotaTypes.serialize(it))
+            callbackList.add(IotaType.serialize(it))
         }
 
         compound["on_complete"] = callbackList
@@ -318,7 +287,7 @@ abstract class AbstractConstructEntity(
             val type = HexboundData.ModRegistries.CONSTRUCT_COMMANDS.get(typeId)
             val result = type.codec.decode(NbtOps.INSTANCE, commandNbt.get("data"))
             val onComplete = commandNbt.getList("on_complete", NbtElement.COMPOUND_TYPE.toInt()).map {
-                HexIotaTypes.deserialize(it.downcast(NbtCompound.TYPE), serverWorld)
+                IotaType.deserialize(it.downcast(NbtCompound.TYPE), serverWorld)
             }
 
             val newCommand = result.result().getOrNull()?.first
@@ -328,8 +297,11 @@ abstract class AbstractConstructEntity(
             }
         }
 
-        if (nbt.contains("harness")) {
-            harness = CastingHarness.fromNBT(nbt.getCompound("harness"), createCastingEnvironment())
+        if (nbt.contains("casting_image")) {
+            castVm = CastingVM(
+                CastingImage.loadFromNbt(nbt.getCompound("casting_image"), serverWorld),
+                ConstructCastEnv(this)
+            )
         }
 
         boundPlayerData = null

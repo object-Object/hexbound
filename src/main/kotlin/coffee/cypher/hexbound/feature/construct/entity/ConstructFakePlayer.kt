@@ -22,7 +22,7 @@ class ConstructFakePlayer(
 
     companion object {
         val CONSTRUCT_UUID: UUID = UUID.fromString("e4d9ffe8-8f9b-4fda-839f-c854f8771f0c")
-        val CONSTRUCT_PROFILE = GameProfile(CONSTRUCT_UUID, "Construct Figment")
-        val CONSTRUCT_BUILDER = FakePlayerBuilder(Hexbound.id("impetus_fake_player"))
+        val CONSTRUCT_PROFILE = GameProfile(CONSTRUCT_UUID, "Construct")
+        val CONSTRUCT_BUILDER = FakePlayerBuilder(Hexbound.id("construct_fake_player"))
     }
 }

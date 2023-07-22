@@ -12,6 +12,8 @@ import coffee.cypher.hexbound.feature.colorizer_storage.mishap.MishapColorizerNo
 import coffee.cypher.hexbound.feature.colorizer_storage.mishap.MishapTooManyColorizers
 import coffee.cypher.hexbound.init.memorizedColorizers
 import coffee.cypher.hexbound.util.nonBlankSignature
+import coffee.cypher.hexbound.util.requireCaster
+import net.minecraft.server.network.ServerPlayerEntity
 
 object OpColorizerSave : SpellAction {
     override val argc = 1
@@ -21,10 +23,11 @@ object OpColorizerSave : SpellAction {
         ctx: CastingEnvironment
     ): SpellAction.Result {
         val pattern = args.getPattern(0, 1)
+        val caster = ctx.requireCaster()
 
-        val currentColorizer = HexCardinalComponents.FAVORED_PIGMENT[ctx.caster].pigment
+        val currentColorizer = HexCardinalComponents.FAVORED_PIGMENT[caster].pigment
 
-        if (ctx.caster.memorizedColorizers.size >= 64 && pattern.nonBlankSignature !in ctx.caster.memorizedColorizers) {
+        if (caster.memorizedColorizers.size >= 64 && pattern.nonBlankSignature !in caster.memorizedColorizers) {
             throw MishapTooManyColorizers()
         }
 
@@ -33,16 +36,19 @@ object OpColorizerSave : SpellAction {
         }
 
         return SpellAction.Result(
-            Spell(pattern, currentColorizer),
+            Spell(pattern, currentColorizer, caster),
             0,
             emptyList()
         )
     }
 
-    private data class Spell(val key: HexPattern, val value: FrozenPigment) : RenderedSpell {
+    private data class Spell(
+        val key: HexPattern,
+        val value: FrozenPigment,
+        val caster: ServerPlayerEntity
+    ) : RenderedSpell {
         override fun cast(ctx: CastingEnvironment) {
-            ctx.world.getBlockState(BlockPos(0, 0, 0)).isAir
-            ctx.caster.memorizedColorizers[key.nonBlankSignature] = value
+            caster.memorizedColorizers[key.nonBlankSignature] = value
         }
     }
 }

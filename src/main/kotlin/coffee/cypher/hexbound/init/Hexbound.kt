@@ -3,11 +3,8 @@ package coffee.cypher.hexbound.init
 import at.petrak.hexcasting.api.item.HexHolderItem
 import at.petrak.hexcasting.api.casting.iota.ListIota
 import at.petrak.hexcasting.common.lib.HexItems
-import coffee.cypher.hexbound.feature.item_patterns.iota.ItemStackIota
 import coffee.cypher.hexbound.init.config.HexboundConfig
 import coffee.cypher.hexbound.interop.InteropManager
-import net.minecraft.item.ItemStack
-import net.minecraft.item.Items
 import net.minecraft.text.Text
 import net.minecraft.util.Hand
 import net.minecraft.util.Identifier
@@ -95,22 +92,6 @@ object Hexbound : ModInitializer {
                                         yaw().value().toFloat()
                                     ).toString()
                                 )
-                            )
-                        }
-                    }
-
-                    required(literal("funny_focus")) {
-                        execute {
-                            player?.setStackInHand(
-                                Hand.MAIN_HAND,
-                                ItemStack(HexItems.FOCUS).also {
-                                    HexItems.FOCUS.writeDatum(
-                                        it,
-                                        ItemStackIota.createFiltered(
-                                            ItemStack(Items.ENDER_PEARL, 412312312)
-                                        )
-                                    )
-                                }
                             )
                         }
                     }

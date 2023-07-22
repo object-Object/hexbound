@@ -1,18 +1,22 @@
 package coffee.cypher.hexbound.util
 
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.EntityIota
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.math.HexPattern
+import at.petrak.hexcasting.api.casting.mishaps.Mishap
 import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota
 import at.petrak.hexcasting.api.casting.mishaps.MishapNotEnoughArgs
+import at.petrak.hexcasting.api.casting.mishaps.circle.MishapNoSpellCircle
+import coffee.cypher.hexbound.feature.construct.casting.env.ConstructCastEnv
 import coffee.cypher.hexbound.feature.construct.entity.AbstractConstructEntity
 import coffee.cypher.hexbound.feature.construct.entity.SpiderConstructEntity
-import coffee.cypher.hexbound.feature.item_patterns.iota.ItemStackIota
+import coffee.cypher.hexbound.feature.construct.mishap.MishapNoConstruct
 import coffee.cypher.hexbound.init.config.HexboundConfig
 import coffee.cypher.hexbound.mixins.accessor.MutableTextAccessor
 import net.minecraft.entity.Entity
 import net.minecraft.entity.passive.AllayEntity
-import net.minecraft.item.ItemStack
+import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
 import net.minecraft.text.component.TranslatableComponent
 import net.minecraft.util.math.Direction
@@ -48,12 +52,9 @@ fun List<Iota>.getSpiderConstruct(index: Int, argc: Int = 0): SpiderConstructEnt
 fun List<Iota>.getAllay(index: Int, argc: Int = 0): AllayEntity =
     getEntityOfType("entity.allay", index, argc)
 
-fun List<Iota>.getItemStack(index: Int, argc: Int = 0): ItemStack {
-    val x = this.getOrElse(index) { throw MishapNotEnoughArgs(index + 1, this.size) }
+fun CastingEnvironment.requireCaster(): ServerPlayerEntity = caster ?: throw MishapNoSpellCircle() //TODO better mishap
 
-    return (x as? ItemStackIota)?.itemStack
-        ?: throw MishapInvalidIota.of(x, if (argc == 0) index else argc - (index + 1), "item_stack")
-}
+fun CastingEnvironment.requireConstruct(): ConstructCastEnv = this as? ConstructCastEnv ?: throw MishapNoConstruct()
 
 /*
  * For now only used for display name on Robot version constructs

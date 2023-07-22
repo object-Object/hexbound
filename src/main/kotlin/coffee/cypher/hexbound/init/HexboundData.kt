@@ -2,8 +2,6 @@
 
 package coffee.cypher.hexbound.init
 
-import at.petrak.hexcasting.api.casting.iota.IotaType
-import at.petrak.hexcasting.common.lib.hex.HexIotaTypes
 import coffee.cypher.hexbound.feature.combat.shield.ShieldEntity
 import coffee.cypher.hexbound.feature.combat.status_effects.ReducedAmbitStatusEffect
 import coffee.cypher.hexbound.feature.construct.broadcasting.ConstructBroadcasterBlock
@@ -11,8 +9,6 @@ import coffee.cypher.hexbound.feature.construct.command.*
 import coffee.cypher.hexbound.feature.construct.entity.SpiderConstructEntity
 import coffee.cypher.hexbound.feature.construct.item.SpiderConstructBatteryItem
 import coffee.cypher.hexbound.feature.construct.item.SpiderConstructCoreItem
-import coffee.cypher.hexbound.feature.item_patterns.iota.ItemIota
-import coffee.cypher.hexbound.feature.item_patterns.iota.ItemStackIota
 import coffee.cypher.hexbound.feature.media_attachment.STATIC_MEDIA_ATTACHMENT
 import com.mojang.serialization.Codec
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
@@ -27,6 +23,7 @@ import net.minecraft.registry.DefaultedRegistry
 import net.minecraft.registry.Registries
 import net.minecraft.registry.Registry
 import net.minecraft.registry.RegistryKey
+import net.minecraft.text.Text
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
 import org.quiltmc.qkl.library.items.itemSettingsOf
@@ -64,9 +61,10 @@ object HexboundData : DataInitializer() {
         lateinit var HEXBOUND: ItemGroup
 
         fun init() {
-            HEXBOUND = FabricItemGroup.builder().(Hexbound.id("hexbound_group")) {
-                Items.SPIDER_CONSTRUCT_CORE.defaultStack
-            }
+            HEXBOUND = FabricItemGroup.builder()
+                .name(Text.translatable("hexbound.item_group"))
+                .icon(Items.SPIDER_CONSTRUCT_CORE::getDefaultStack)
+                .build()
         }
     }
 
@@ -77,16 +75,6 @@ object HexboundData : DataInitializer() {
 
         val SHIELD: EntityType<ShieldEntity> by registry.provide("shield") {
             ShieldEntity.createType()
-        }
-    }
-
-    object IotaTypes : Initializer<IotaType<*>>(HexIotaTypes.REGISTRY) {
-        val ITEM_STACK by registry.provide("item_stack") {
-            ItemStackIota.Type
-        }
-
-        val ITEM by registry.provide("item") {
-            ItemIota.Type
         }
     }
 

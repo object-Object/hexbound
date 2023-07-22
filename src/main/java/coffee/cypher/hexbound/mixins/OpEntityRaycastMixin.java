@@ -1,6 +1,6 @@
 package coffee.cypher.hexbound.mixins;
 
-import at.petrak.hexcasting.common.casting.operators.OpEntityRaycast;
+import at.petrak.hexcasting.common.casting.actions.raycast.OpEntityRaycast;
 import coffee.cypher.hexbound.feature.combat.shield.ShieldEntity;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.entity.Entity;

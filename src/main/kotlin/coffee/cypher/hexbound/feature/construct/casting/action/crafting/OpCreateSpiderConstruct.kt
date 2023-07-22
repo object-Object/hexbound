@@ -83,7 +83,7 @@ object OpCreateSpiderConstruct : SpellAction {
             }
 
             construct.setPosition(x, y + 0.25, z)
-            construct.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, ctx.caster.pos)
+            construct.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, ctx.mishapSprayPos())
             ctx.world.spawnEntity(construct)
         }
 

@@ -3,16 +3,21 @@ package coffee.cypher.hexbound.feature.construct.rendering
 import coffee.cypher.hexbound.feature.construct.entity.SpiderConstructEntity
 import coffee.cypher.hexbound.init.Hexbound
 import coffee.cypher.hexbound.init.config.HexboundConfig
-import net.minecraft.block.BlockState
-import net.minecraft.client.render.OverlayTexture
+import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.render.entity.EntityRendererFactory
-import net.minecraft.client.render.model.json.ModelTransformation
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.item.ItemStack
 import net.minecraft.util.Identifier
+import net.minecraft.util.math.Axis
+import software.bernie.geckolib.cache.`object`.BakedGeoModel
+import software.bernie.geckolib.cache.`object`.GeoBone
+import software.bernie.geckolib.model.GeoModel
 import software.bernie.geckolib.renderer.GeoEntityRenderer
+import software.bernie.geckolib.renderer.GeoRenderer
+import software.bernie.geckolib.renderer.layer.BlockAndItemGeoLayer
+import software.bernie.geckolib.renderer.layer.GeoRenderLayer
 
 class SpiderConstructRenderer(
     renderManager: EntityRendererFactory.Context
@@ -21,73 +26,12 @@ class SpiderConstructRenderer(
     SpiderConstructModel()
 ) {
     init {
-        addLayer(SpiderConstructTranslucentLayer(this))
-    }
-
-    override fun isArmorBone(bone: GeoBone): Boolean {
-        return false
-    }
-
-    override fun getCameraTransformForItemAtBone(boneItem: ItemStack, boneName: String): ModelTransformation.Mode {
-        return ModelTransformation.Mode.FIXED
-    }
-
-    override fun preRenderItem(
-        poseStack: MatrixStack,
-        item: ItemStack,
-        boneName: String,
-        currentEntity: SpiderConstructEntity,
-        bone: IBone
-    ) {
-        poseStack.push()
-        poseStack.scale(0.25f, 0.25f, 0.25f)
-        poseStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90f))
-    }
-
-    override fun postRenderItem(
-        poseStack: MatrixStack,
-        item: ItemStack,
-        boneName: String,
-        currentEntity: SpiderConstructEntity,
-        bone: IBone
-    ) {
-        poseStack.pop()
-    }
-
-    override fun preRenderBlock(
-        poseStack: MatrixStack?,
-        block: BlockState?,
-        boneName: String?,
-        currentEntity: SpiderConstructEntity?
-    ) {
-    }
-
-    override fun postRenderBlock(
-        poseStack: MatrixStack,
-        block: BlockState,
-        boneName: String,
-        currentEntity: SpiderConstructEntity
-    ) {
-    }
-
-    override fun getHeldBlockForBone(boneName: String, currentEntity: SpiderConstructEntity): BlockState? {
-        return null
-    }
-
-    override fun getHeldItemForBone(boneName: String, currentEntity: SpiderConstructEntity): ItemStack? {
-        if ("item" in boneName && !currentEntity.heldStack.isEmpty) {
-            return currentEntity.heldStack
-        }
-
-        return null
-    }
-
-    override fun getTextureForBone(boneName: String, currentEntity: SpiderConstructEntity): Identifier? {
-        return null
+        addRenderLayer(SpiderConstructTranslucentLayer(this))
+        addRenderLayer(SpiderConstructItemLayer(this))
     }
 }
 
-class SpiderConstructModel : AnimatedGeoModel<SpiderConstructEntity>() {
+class SpiderConstructModel : GeoModel<SpiderConstructEntity>() {
     companion object {
         val MODEL_RESOURCE = Hexbound.id("geo/spider_construct.geo.json")
         val TEXTURE_RESOURCE = Hexbound.id("textures/construct/spider_construct.png")
@@ -122,43 +66,72 @@ class SpiderConstructModel : AnimatedGeoModel<SpiderConstructEntity>() {
     }
 }
 
-class SpiderConstructTranslucentLayer(
-    renderer: IGeoRenderer<SpiderConstructEntity>
-) : GeoLayerRenderer<SpiderConstructEntity>(renderer) {
-    override fun render(
-        matrixStackIn: MatrixStack,
-        bufferIn: VertexConsumerProvider,
-        packedLightIn: Int,
-        entitylivingbaseIn: SpiderConstructEntity,
-        limbSwing: Float,
-        limbSwingAmount: Float,
-        partialTicks: Float,
-        ageInTicks: Float,
-        netHeadYaw: Float,
-        headPitch: Float
+class SpiderConstructItemLayer(
+    renderer: GeoRenderer<SpiderConstructEntity>
+) : BlockAndItemGeoLayer<SpiderConstructEntity>(renderer) {
+    override fun getStackForBone(bone: GeoBone, animatable: SpiderConstructEntity): ItemStack? {
+        if ("item" in bone.name && !animatable.heldStack.isEmpty) {
+            return animatable.heldStack
+        }
+
+        return null
+    }
+
+    override fun renderStackForBone(
+        poseStack: MatrixStack,
+        bone: GeoBone?,
+        stack: ItemStack?,
+        animatable: SpiderConstructEntity?,
+        bufferSource: VertexConsumerProvider?,
+        partialTick: Float,
+        packedLight: Int,
+        packedOverlay: Int
     ) {
-        val layerTexture = if (entitylivingbaseIn.isAltModelEnabled || HexboundConfig.replaceSpiderConstruct)
+        poseStack.push()
+        poseStack.scale(0.25f, 0.25f, 0.25f)
+        poseStack.multiply(Axis.X_POSITIVE.rotationDegrees(90f))
+
+        super.renderStackForBone(
+            poseStack,
+            bone,
+            stack,
+            animatable,
+            bufferSource,
+            partialTick,
+            packedLight,
+            packedOverlay
+        )
+
+        poseStack.pop()
+    }
+}
+
+class SpiderConstructTranslucentLayer(
+    renderer: GeoRenderer<SpiderConstructEntity>
+) : GeoRenderLayer<SpiderConstructEntity>(renderer) {
+
+    override fun render(
+        poseStack: MatrixStack,
+        animatable: SpiderConstructEntity,
+        bakedModel: BakedGeoModel,
+        renderType: RenderLayer,
+        bufferSource: VertexConsumerProvider,
+        buffer: VertexConsumer,
+        partialTick: Float,
+        packedLight: Int,
+        packedOverlay: Int
+    ) {
+        val layerTexture = if (animatable.isAltModelEnabled || HexboundConfig.replaceSpiderConstruct)
             SpiderConstructModel.ALT_LAYER_TEXTURE_RESOURCE
         else
             SpiderConstructModel.LAYER_TEXTURE_RESOURCE
 
-        val type = RenderLayer.getEntityTranslucentCull(layerTexture)
+        val layer = RenderLayer.getEntityTranslucentCull(layerTexture)
 
-        renderer.render(
-            entityModel.getModel(SpiderConstructModel.MODEL_RESOURCE),
-            entitylivingbaseIn,
-            partialTicks,
-            type,
-            matrixStackIn,
-            bufferIn,
-            bufferIn.getBuffer(type),
-            packedLightIn,
-            OverlayTexture.DEFAULT_UV,
-            1f,
-            1f,
-            1f,
-            1f
-        )
+        poseStack.push()
+        renderer.preRender(poseStack, animatable, bakedModel, bufferSource, bufferSource.getBuffer(layer), false, partialTick, packedLight, packedOverlay, 1f, 1f, 1f, 1f);
+        renderer.actuallyRender(poseStack, animatable, bakedModel, renderType, bufferSource, bufferSource.getBuffer(layer), false, partialTick, packedLight, packedOverlay, 1f, 1f, 1f, 1f)
+        renderer.postRender(poseStack, animatable, bakedModel, bufferSource, bufferSource.getBuffer(layer), false, partialTick, packedLight, packedOverlay, 1f, 1f, 1f, 1f)
+        poseStack.pop()
     }
-
 }

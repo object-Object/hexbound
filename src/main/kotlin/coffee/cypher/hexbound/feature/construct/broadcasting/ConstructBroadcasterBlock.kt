@@ -1,10 +1,11 @@
 package coffee.cypher.hexbound.feature.construct.broadcasting
 
 import at.petrak.hexcasting.common.lib.HexBlockEntities
-import net.minecraft.block.*
+import net.minecraft.block.Block
+import net.minecraft.block.BlockState
+import net.minecraft.block.Blocks
 import net.minecraft.item.ItemPlacementContext
 import net.minecraft.server.world.ServerWorld
-import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties.HORIZONTAL_FACING
 import net.minecraft.state.property.Properties.POWERED
@@ -15,19 +16,12 @@ import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
 import net.minecraft.util.random.RandomGenerator
 import net.minecraft.world.World
-import org.quiltmc.qkl.library.blocks.blockSettingsOf
 import org.quiltmc.qkl.library.math.plus
 import kotlin.jvm.optionals.getOrNull
 
 @Suppress("OVERRIDE_DEPRECATION")
 object ConstructBroadcasterBlock : Block(
-    blockSettingsOf(
-        material = Material.STONE, //TODO copy slate
-        mapColor = MapColor.DEEPSLATE,
-        soundGroup = BlockSoundGroup.DEEPSLATE_TILES,
-        resistance = 4f,
-        hardness = 4f
-    )
+    Settings.copy(Blocks.DEEPSLATE).strength(4f, 4f)
 ) {
     const val broadcastRadius = 16.0
 
@@ -45,7 +39,6 @@ object ConstructBroadcasterBlock : Block(
         return defaultState.with(HORIZONTAL_FACING, ctx.playerFacing.opposite)
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     fun createBroadcastingContext(world: World, blockState: BlockState, pos: BlockPos): BroadcastingContext {
         val slatePos = pos + blockState[HORIZONTAL_FACING].vector
         val pattern = world.getBlockEntity(slatePos, HexBlockEntities.SLATE_TILE).getOrNull()?.pattern

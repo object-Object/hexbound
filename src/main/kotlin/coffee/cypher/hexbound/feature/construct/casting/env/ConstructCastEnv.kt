@@ -14,7 +14,7 @@ import net.minecraft.util.Hand
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
 
-class ConstructCastEnv(val construct: AbstractConstructEntity, world: ServerWorld) : CastingEnvironment(world) {
+class ConstructCastEnv(val construct: AbstractConstructEntity) : CastingEnvironment(construct.world as ServerWorld) {
     override fun getCaster(): ServerPlayerEntity? {
         return null
     }

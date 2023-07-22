@@ -1,21 +1,16 @@
 package coffee.cypher.hexbound.feature.construct.casting.action.command
 
+import at.petrak.hexcasting.api.casting.*
 import at.petrak.hexcasting.api.casting.castables.ConstMediaAction
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
-import at.petrak.hexcasting.api.casting.evaluatable
-import at.petrak.hexcasting.api.casting.getBlockPos
-import at.petrak.hexcasting.api.casting.getItemEntity
-import at.petrak.hexcasting.api.casting.getVec3
 import at.petrak.hexcasting.api.casting.iota.Iota
-import at.petrak.hexcasting.api.casting.iota.PatternIota
 import coffee.cypher.hexbound.feature.construct.command.*
 import coffee.cypher.hexbound.feature.construct.entity.AbstractConstructEntity
 import coffee.cypher.hexbound.feature.construct.entity.component.ConstructComponentKey
 import coffee.cypher.hexbound.feature.construct.entity.component.InteractionComponent
 import coffee.cypher.hexbound.feature.construct.entity.component.ItemHolderComponent
 import coffee.cypher.hexbound.feature.construct.mishap.MishapMissingConstructComponent
-import coffee.cypher.hexbound.feature.construct.mishap.MishapNoConstruct
-import coffee.cypher.hexbound.util.mixinaccessor.construct
+import coffee.cypher.hexbound.util.requireConstruct
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
 import org.quiltmc.qkl.library.math.minus
@@ -26,17 +21,17 @@ abstract class OpGiveCommand : ConstMediaAction {
 
     protected abstract val baseArgc: Int
 
-    override fun execute(args: List<Iota>, ctx: CastingEnvironment): List<Iota> {
-        val construct = ctx.construct ?: throw MishapNoConstruct()
-        val callback = evaluatable(args.last(), 0).map({ listOf(PatternIota(it)) }, { it.toList() })
+    override fun execute(args: List<Iota>, env: CastingEnvironment): List<Iota> {
+        val construct = env.requireConstruct().construct
+        val callback = args.getList(baseArgc, argc).toList()
 
         val command = getCommand(
             args,
-            ctx,
+            env,
             construct
         )
 
-        construct.executeCommand(command, callback, ctx.world)
+        construct.executeCommand(command, callback, env.world)
 
         return emptyList()
     }

@@ -1,6 +1,6 @@
 package coffee.cypher.hexbound.mixins;
 
-import at.petrak.hexcasting.common.casting.operators.selectors.OpGetEntitiesBy;
+import at.petrak.hexcasting.common.casting.actions.selectors.OpGetEntitiesBy;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(OpGetEntitiesBy.Companion.class)

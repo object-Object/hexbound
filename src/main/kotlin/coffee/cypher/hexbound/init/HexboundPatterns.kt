@@ -1,29 +1,28 @@
 package coffee.cypher.hexbound.init
 
+import at.petrak.hexcasting.api.casting.ActionRegistryEntry
 import at.petrak.hexcasting.api.casting.castables.Action
 import at.petrak.hexcasting.api.casting.math.HexDir
 import at.petrak.hexcasting.api.casting.math.HexPattern
 import at.petrak.hexcasting.common.casting.actions.selectors.OpGetEntitiesBy
 import at.petrak.hexcasting.common.casting.actions.selectors.OpGetEntityAt
+import at.petrak.hexcasting.common.lib.hex.HexActions
 import coffee.cypher.hexbound.feature.colorizer_storage.action.OpColorizerDelete
 import coffee.cypher.hexbound.feature.colorizer_storage.action.OpColorizerLoad
 import coffee.cypher.hexbound.feature.colorizer_storage.action.OpColorizerSave
 import coffee.cypher.hexbound.feature.combat.shield.OpCreateShield
 import coffee.cypher.hexbound.feature.combat.shield.ShieldEntity
-import coffee.cypher.hexbound.feature.construct.action.*
-import coffee.cypher.hexbound.feature.construct.action.command.*
-import coffee.cypher.hexbound.feature.construct.casting.action.crafting.OpCreateSpiderConstruct
-import coffee.cypher.hexbound.feature.construct.casting.action.instruction.OpBroadcastInstructions
-import coffee.cypher.hexbound.feature.construct.casting.action.instruction.OpSendInstructions
 import coffee.cypher.hexbound.feature.construct.casting.action.OpBindConstruct
 import coffee.cypher.hexbound.feature.construct.casting.action.OpConstructGetSelf
 import coffee.cypher.hexbound.feature.construct.casting.action.command.*
+import coffee.cypher.hexbound.feature.construct.casting.action.crafting.OpCreateSpiderConstruct
+import coffee.cypher.hexbound.feature.construct.casting.action.instruction.OpBroadcastInstructions
+import coffee.cypher.hexbound.feature.construct.casting.action.instruction.OpSendInstructions
 import coffee.cypher.hexbound.feature.construct.entity.AbstractConstructEntity
-import coffee.cypher.hexbound.feature.fake_circles.action.OpSetImpetusFakePlayer
-import coffee.cypher.hexbound.feature.item_patterns.action.*
 import coffee.cypher.hexbound.feature.pattern_editing.action.*
 import net.minecraft.entity.Entity
 import net.minecraft.util.Hand
+import org.quiltmc.qkl.library.registry.withId
 
 open class HexboundPatterns {
     companion object Default : HexboundPatterns()
@@ -34,29 +33,16 @@ open class HexboundPatterns {
         action: Action,
         perWorld: Boolean = false
     ) {
-        PatternRegistry.mapPattern(
-            pattern,
-            Hexbound.id(id),
-            action,
-            perWorld
-        )
+        ActionRegistryEntry(pattern, action) withId Hexbound.id(id) toRegistry HexActions.REGISTRY
     }
 
     fun register() {
-        registerItemPatterns()
         registerPatternManipulation()
         registerMemorizedColorizers()
 
         registerCombatPatterns()
 
         registerConstructPatterns()
-
-        registerPattern(
-            HexPattern.fromAngles("qaqdaqwqaeedewd", HexDir.NORTH_EAST),
-            "set_fake_impetus_player",
-            OpSetImpetusFakePlayer,
-            true
-        )
     }
 
     private fun registerCombatPatterns() {
@@ -70,44 +56,6 @@ open class HexboundPatterns {
             HexPattern.fromAngles("eqdweeqdw", HexDir.NORTH_EAST),
             "create_shield/glitchy",
             OpCreateShield(ShieldEntity.VisualType.GLITCHY)
-        )
-    }
-
-    private fun registerItemPatterns() {
-        registerPattern(
-            HexPattern.fromAngles("adeq", HexDir.EAST),
-            "get_main_hand",
-            OpGetHeldItem(Hand.MAIN_HAND)
-        )
-
-        registerPattern(
-            HexPattern.fromAngles("qeda", HexDir.EAST),
-            "get_off_hand",
-            OpGetHeldItem(Hand.OFF_HAND)
-        )
-
-        registerPattern(
-            HexPattern.fromAngles("aqwed", HexDir.NORTH_EAST),
-            "get_inventory/stacks",
-            OpGetInventoryContents(returnStacks = true)
-        )
-
-        registerPattern(
-            HexPattern.fromAngles("dewqa", HexDir.NORTH_EAST),
-            "get_inventory/items",
-            OpGetInventoryContents(returnStacks = false)
-        )
-
-        registerPattern(
-            HexPattern.fromAngles("dedqaa", HexDir.WEST),
-            "get_stack_prop/item",
-            OpGetStackItem
-        )
-
-        registerPattern(
-            HexPattern.fromAngles("dedqaq", HexDir.WEST),
-            "get_stack_prop/size",
-            OpGetStackSize
         )
     }
 

@@ -7,9 +7,9 @@ import kotlinx.serialization.Serializable
 data class StaticMediaValue(val priority: Int, val amount: Int, val unit: Unit) {
     enum class Unit(val calculate: (Int) -> Int) {
         ABSOLUTE({ it }),
-        DUST({ it * MediaConstants.DUST_UNIT }),
-        SHARD({ it * MediaConstants.SHARD_UNIT }),
-        CRYSTAL({ it * MediaConstants.CRYSTAL_UNIT })
+        DUST(MediaConstants.DUST_UNIT::times),
+        SHARD(MediaConstants.SHARD_UNIT::times),
+        CRYSTAL(MediaConstants.CRYSTAL_UNIT::times)
     }
 
     val value get() = unit.calculate(amount)

@@ -12,6 +12,7 @@ import net.minecraft.entity.attribute.EntityAttributes
 import net.minecraft.entity.data.DataTracker
 import net.minecraft.entity.data.TrackedData
 import net.minecraft.entity.data.TrackedDataHandlerRegistry
+import net.minecraft.entity.mob.MobEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
@@ -160,7 +161,7 @@ class SpiderConstructEntity(
                 .entityFactory(::SpiderConstructEntity)
                 .setDimensions(EntityDimensions.fixed(1.25f, 0.75f))
                 .defaultAttributes(
-                    createMobAttributes()
+                    createAttributes()
                         .add(EntityAttributes.GENERIC_MAX_HEALTH, 10.0)
                         .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25)
                         .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 32.0)
@@ -169,8 +170,6 @@ class SpiderConstructEntity(
         }
 
         private val DANCE_ANIMATION = RawAnimation.begin().thenLoop("dance")
-
-        private val WALK_ANIMATION = RawAnimation.begin().thenLoop("walk")
 
         val ALT_MODEL_ENABLED: TrackedData<Boolean> = DataTracker.registerData(
             SpiderConstructEntity::class.java,
