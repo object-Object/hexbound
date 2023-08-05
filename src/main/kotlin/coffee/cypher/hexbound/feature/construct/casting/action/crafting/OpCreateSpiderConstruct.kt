@@ -24,14 +24,14 @@ import org.quiltmc.qkl.library.math.component3
 object OpCreateSpiderConstruct : SpellAction {
     override val argc = 3
 
-    override fun execute(args: List<Iota>, ctx: CastingEnvironment): SpellAction.Result {
+    override fun execute(args: List<Iota>, env: CastingEnvironment): SpellAction.Result {
         val allay = args.getAllay(0, argc)
         val coreStack = args.getItemEntity(1, argc)
         val batteryStack = args.getItemEntity(2, argc)
 
-        ctx.assertEntityInRange(allay)
-        ctx.assertEntityInRange(coreStack)
-        ctx.assertEntityInRange(batteryStack)
+        env.assertEntityInRange(allay)
+        env.assertEntityInRange(coreStack)
+        env.assertEntityInRange(batteryStack)
 
         if (coreStack.stack.isEmpty || !coreStack.stack.isOf(SPIDER_CONSTRUCT_CORE)) {
             throw MishapInvalidIota.of(args[1], 1, "spider_component.core")
@@ -54,7 +54,7 @@ object OpCreateSpiderConstruct : SpellAction {
 
     private class Spell(val allay: AllayEntity, val coreStack: ItemEntity, val batteryStack: ItemEntity) :
         RenderedSpell {
-        override fun cast(ctx: CastingEnvironment) {
+        override fun cast(env: CastingEnvironment) {
             coreStack.stack.decrement(1)
             if (coreStack.stack.isEmpty) {
                 coreStack.kill()
@@ -69,7 +69,7 @@ object OpCreateSpiderConstruct : SpellAction {
 
             allay.discard()
 
-            val construct = HexboundData.EntityTypes.SPIDER_CONSTRUCT.create(ctx.world)
+            val construct = HexboundData.EntityTypes.SPIDER_CONSTRUCT.create(env.world)
 
             if (construct == null) {
                 Hexbound.LOGGER.error(
@@ -83,8 +83,8 @@ object OpCreateSpiderConstruct : SpellAction {
             }
 
             construct.setPosition(x, y + 0.25, z)
-            construct.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, ctx.mishapSprayPos())
-            ctx.world.spawnEntity(construct)
+            construct.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, env.mishapSprayPos())
+            env.world.spawnEntity(construct)
         }
 
     }

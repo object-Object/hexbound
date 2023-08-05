@@ -102,12 +102,12 @@ class ShieldRenderer(ctx: EntityRendererFactory.Context) : EntityRenderer<Shield
                 val lowerYVec = up * lowerY.toDouble()
                 val upperYVec = up * upperY.toDouble()
 
-                val colorizer = pigment.colorProvider
+                val colorProvider = pigment.colorProvider
 
-                val lowerLeftColor = colorizer.getColor(colorTime, entity.pos + lowerXVec + lowerYVec)
-                val lowerRightColor = colorizer.getColor(colorTime, entity.pos + upperXVec + lowerYVec)
-                val upperLeftColor = colorizer.getColor(colorTime, entity.pos + lowerXVec + upperYVec)
-                val upperRightColor = colorizer.getColor(colorTime, entity.pos + upperXVec + upperYVec)
+                val lowerLeftColor = colorProvider.getColor(colorTime, entity.pos + lowerXVec + lowerYVec)
+                val lowerRightColor = colorProvider.getColor(colorTime, entity.pos + upperXVec + lowerYVec)
+                val upperLeftColor = colorProvider.getColor(colorTime, entity.pos + lowerXVec + upperYVec)
+                val upperRightColor = colorProvider.getColor(colorTime, entity.pos + upperXVec + upperYVec)
 
                 vertex(upperX, upperY, 6.25E-4f, upperU, upperV, upperRightColor)
                 vertex(lowerX, upperY, 6.25E-4f, lowerU, upperV, upperLeftColor)

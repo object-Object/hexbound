@@ -13,6 +13,7 @@ import coffee.cypher.hexbound.feature.media_attachment.STATIC_MEDIA_ATTACHMENT
 import com.mojang.serialization.Codec
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents
 import net.minecraft.block.Block
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.effect.StatusEffect
@@ -36,10 +37,10 @@ import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.jvm.isAccessible
 
 object HexboundData : DataInitializer() {
-    fun init() {
+    override fun init() {
         ModRegistries.init()
-        ItemGroups.init()
-        initRegistries()
+        super.init()
+        ItemGroups.fillGroups()
         STATIC_MEDIA_ATTACHMENT
     }
 
@@ -57,14 +58,22 @@ object HexboundData : DataInitializer() {
         }
     }
 
-    object ItemGroups {
-        lateinit var HEXBOUND: ItemGroup
-
-        fun init() {
-            HEXBOUND = FabricItemGroup.builder()
+    object ItemGroups : Initializer<ItemGroup>(Registries.ITEM_GROUP) {
+        val HEXBOUND: ItemGroup by registry.provide("item_group") {
+            FabricItemGroup.builder()
                 .name(Text.translatable("hexbound.item_group"))
                 .icon(Items.SPIDER_CONSTRUCT_CORE::getDefaultStack)
                 .build()
+        }
+
+        fun fillGroups() {
+            ItemGroupEvents.modifyEntriesEvent(Registries.ITEM_GROUP.getKey(HEXBOUND).get()).register {
+                it.addItem(Items.CONSTRUCT_BROADCASTER)
+                it.addItem(Items.SPIDER_CONSTRUCT_CORE)
+
+                it.addStack(Items.SPIDER_CONSTRUCT_BATTERY.defaultStack)
+                it.addStack(Items.SPIDER_CONSTRUCT_BATTERY.chargedStack)
+            }
         }
     }
 
@@ -117,7 +126,7 @@ object HexboundData : DataInitializer() {
         }
 
         val CONSTRUCT_BROADCASTER by registry.provide("construct_broadcaster") {
-            BlockItem(ConstructBroadcasterBlock, itemSettingsOf(group = ItemGroups.HEXBOUND))
+            BlockItem(ConstructBroadcasterBlock, itemSettingsOf())
         }
     }
 
@@ -131,7 +140,7 @@ object HexboundData : DataInitializer() {
 abstract class DataInitializer {
     private val initializers = mutableListOf<Initializer<*>>()
 
-    fun initRegistries() {
+    open fun init() {
         this::class.nestedClasses.forEach {
             it.objectInstance
         }

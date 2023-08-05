@@ -17,7 +17,7 @@ abstract class SweetBerryBushBlockMixin {
         method = "onEntityCollision",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/entity/Entity;slowMovement(Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/Vec3d;)V"
+            target = "Lnet/minecraft/entity/Entity;setMovementMultiplier(Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/Vec3d;)V"
         ),
         cancellable = true
     )

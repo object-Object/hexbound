@@ -18,11 +18,11 @@ import net.minecraft.entity.player.PlayerEntity
 object OpBindConstruct : SpellAction {
     override val argc = 2
 
-    override fun execute(args: List<Iota>, ctx: CastingEnvironment): SpellAction.Result {
+    override fun execute(args: List<Iota>, env: CastingEnvironment): SpellAction.Result {
         val construct = args.getConstruct(0, argc)
         val req = args[1]
 
-        if (!construct.isPlayerAllowed(ctx.caster)) {
+        if (!construct.isPlayerAllowed(env.caster)) {
             throw MishapConstructForbidden(construct)
         }
 
@@ -44,13 +44,13 @@ object OpBindConstruct : SpellAction {
     }
 
     private class PatternSpell(val construct: AbstractConstructEntity, val pattern: HexPattern) : RenderedSpell {
-        override fun cast(ctx: CastingEnvironment) {
+        override fun cast(env: CastingEnvironment) {
             construct.boundPattern = pattern
         }
     }
 
     private class PlayerSpell(val construct: AbstractConstructEntity, val playerData: MemorizedPlayerData) : RenderedSpell {
-        override fun cast(ctx: CastingEnvironment) {
+        override fun cast(env: CastingEnvironment) {
             construct.boundPlayerData = playerData
 
         }

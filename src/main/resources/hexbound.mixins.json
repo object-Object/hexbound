@@ -4,18 +4,19 @@
   "package": "coffee.cypher.hexbound.mixins",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "BlockEntityStoredPlayerImpetusMixin",
-    "CastingContextMixin",
-    "CastingHarnessMixin",
     "FabricXPlatMixin",
-    "HexInteropMixin",
-    "MishapSideEffectMixin",
     "OpEntityRaycastMixin",
-    "OpGetCasterMixin",
     "OpGetEntitiesByMixin",
+    "PlayerBasedCastEnvMixin",
     "ProjectileEntityMixin",
     "SweetBerryBushBlockMixin",
-    "accessor.MutableTextAccessor"
+    "accessor.MutableTextAccessor",
+    "fakeplayer.ClientConnectionAccessor",
+    "fakeplayer.EntityMixin",
+    "fakeplayer.PlayerAdvancementTrackerMixin",
+    "fakeplayer.ServerPlayerEntityAccessor",
+    "fakeplayer.ServerPlayerEntityMixin",
+    "fakeplayer.TargetPredicateMixin"
   ],
   "injectors": {
     "defaultRequire": 1

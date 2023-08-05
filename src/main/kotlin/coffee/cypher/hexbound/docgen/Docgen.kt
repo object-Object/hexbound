@@ -4,7 +4,7 @@ package coffee.cypher.hexbound.docgen
 
 import at.petrak.hexcasting.api.casting.castables.Action
 import at.petrak.hexcasting.api.casting.math.HexPattern
-import coffee.cypher.hexbound.init.HexboundPatterns
+import coffee.cypher.hexbound.init.HexboundActions
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -19,7 +19,7 @@ import kotlin.reflect.jvm.jvmName
 internal fun main(args: Array<String>) {
     val (targetPath) = args
 
-    val patterns = DocgenPatterns()
+    val patterns = DocgenActions()
     patterns.register()
 
     val outputFile = File(targetPath).also { it.parentFile.mkdirs() }
@@ -28,10 +28,10 @@ internal fun main(args: Array<String>) {
     json.encodeToStream(patterns.patternData, FileOutputStream(outputFile))
 }
 
-private class DocgenPatterns : HexboundPatterns() {
+private class DocgenActions : HexboundActions() {
     val patternData = mutableListOf<PatternData>()
 
-    override fun registerPattern(pattern: HexPattern, id: String, action: Action, perWorld: Boolean) {
+    override fun registerAction(pattern: HexPattern, id: String, action: Action, perWorld: Boolean) {
         val sourceFile = action::class.declaredMemberFunctions.first().let {
             val args = Array<Any?>(it.parameters.size - 1) { null }
 

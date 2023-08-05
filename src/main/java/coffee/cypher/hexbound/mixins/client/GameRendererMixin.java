@@ -5,7 +5,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.ShaderProgram;
-import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.ResourceFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -24,9 +24,9 @@ abstract class GameRendererMixin {
     )
     private ArrayList<Pair<ShaderProgram, Consumer<ShaderProgram>>> hexbound$loadShaders(
             ArrayList<Pair<ShaderProgram, Consumer<ShaderProgram>>> programList,
-            ResourceManager manager
+            ResourceFactory factory
     ) {
-        ClientRegistriesKt.initShaders(manager, programList::add);
+        ClientRegistriesKt.initShaders(factory, programList::add);
         return programList;
     }
 }

@@ -21,13 +21,13 @@ import kotlin.math.min
 class OpCreateShield(val visualType: ShieldEntity.VisualType) : SpellAction {
     override val argc = 3
 
-    override fun execute(args: List<Iota>, ctx: CastingEnvironment): SpellAction.Result {
+    override fun execute(args: List<Iota>, env: CastingEnvironment): SpellAction.Result {
         val position = args.getVec3(0, argc)
         val direction = args.getVec3(1, argc).normalize()
         val durationSeconds = args.getPositiveDouble(2, argc)
         val durationTicks = (durationSeconds * 20).toInt()
 
-        val (actualDurationTicks, cost) = if (ctx.caster == null) {
+        val (actualDurationTicks, cost) = if (env.caster == null) {
             val cappedDuration = min(durationTicks, 60)
             val cappedDurationSeconds = min(durationSeconds, 3.0)
 
@@ -38,7 +38,7 @@ class OpCreateShield(val visualType: ShieldEntity.VisualType) : SpellAction {
 
         return SpellAction.Result(
             Spell(position, direction, visualType, actualDurationTicks),
-            cost,
+            cost.toLong(),
             listOf(ParticleSpray.burst(position, 3.0))
         )
     }
@@ -49,16 +49,16 @@ class OpCreateShield(val visualType: ShieldEntity.VisualType) : SpellAction {
         val visualType: ShieldEntity.VisualType,
         val maxAge: Int
     ) : RenderedSpell {
-        override fun cast(ctx: CastingEnvironment) {
+        override fun cast(env: CastingEnvironment) {
             val shield = ShieldEntity(
                 HexboundData.EntityTypes.SHIELD,
-                ctx.world,
-                ctx.caster,
+                env.world,
+                env.caster,
                 maxAge,
                 visualType
             )
 
-            ctx.caster?.let {
+            env.caster?.let {
                 val shields = cleanAndGetShieldsFor(it)
 
                 if (shields.size >= MAX_SHIELDS) {
@@ -72,7 +72,7 @@ class OpCreateShield(val visualType: ShieldEntity.VisualType) : SpellAction {
             val basePos = position - Vec3d(0.0, 1.3125, 0.0)
             shield.setPosition(basePos)
             shield.lookAt(EntityAnchorArgumentType.EntityAnchor.FEET, basePos + direction)
-            ctx.world.spawnEntity(shield)
+            env.world.spawnEntity(shield)
             shield.lockPosition()
         }
     }

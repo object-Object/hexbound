@@ -128,10 +128,16 @@ class SpiderConstructTranslucentLayer(
 
         val layer = RenderLayer.getEntityTranslucentCull(layerTexture)
 
-        poseStack.push()
-        renderer.preRender(poseStack, animatable, bakedModel, bufferSource, bufferSource.getBuffer(layer), false, partialTick, packedLight, packedOverlay, 1f, 1f, 1f, 1f);
-        renderer.actuallyRender(poseStack, animatable, bakedModel, renderType, bufferSource, bufferSource.getBuffer(layer), false, partialTick, packedLight, packedOverlay, 1f, 1f, 1f, 1f)
-        renderer.postRender(poseStack, animatable, bakedModel, bufferSource, bufferSource.getBuffer(layer), false, partialTick, packedLight, packedOverlay, 1f, 1f, 1f, 1f)
-        poseStack.pop()
+        val hidden = bakedModel.bones.filter { "_translucent" !in it.name }.onEach {
+            it.isHidden = true
+            it.setChildrenHidden(true)
+        }
+
+        renderer.reRender(bakedModel, poseStack, bufferSource, animatable, layer, bufferSource.getBuffer(layer), partialTick, packedLight, packedOverlay, 1f, 1f, 1f, 1f)
+
+        hidden.forEach {
+            it.isHidden = false
+            it.setChildrenHidden(false)
+        }
     }
 }

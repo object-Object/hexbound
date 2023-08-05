@@ -4,7 +4,6 @@
             no_construct: "%s can only be executed by a Construct",
             construct_forbidden: "%s takes orders only from %s",
             bad_block: {
-                stored_impetus: "a Cleric Impetus bound to someone present",
                 construct_broadcaster: "a Construct Broadcaster"
             },
             invalid_value: {
@@ -23,20 +22,15 @@
                     "battery": "a fully charged Spider Construct Battery"
                 }
             },
-            colorizer: {
+            pigment: {
                 missing_key: 'Pattern "%s" does not match a saved pigment',
                 absent: "No pigment is present to be saved",
                 storage_full: "Too many pigments have already been stored"
             },
-            disallowed_construct: "%s is not allowed for Constructs",
-            target_not_enlightened: "%s is not enlightened enough"
+            disallowed_construct: "%s is not allowed for Constructs"
         },
-        "iota.hexbound:": {
-            item: "Item",
-            item_stack: "Item Stack"
-        },
-        "spell.hexbound:": {
-            "colorizer/": {
+        "action.hexbound:": {
+            "pigment/": {
                 "save": "Memorize Pigment",
                 "load": "Recall Pigment",
                 "delete": "Forget Pigment"
@@ -45,7 +39,6 @@
                 "normal": "Hex Shield",
                 "glitchy": "Unstable Hex Shield"
             },
-            set_fake_impetus_player: "Bind Figment",
             "pattern/": {
                 rotate: "Revolving Distillation",
                 merge: "Painter's Distillation",
@@ -69,16 +62,6 @@
                 send: "Send Instructions",
                 broadcast: "Broadcast Instructions"
             },
-            get_main_hand: "Duelist's Purification",
-            get_off_hand: "Shieldbearer's Purification",
-            "get_inventory/": {
-                stacks: "Hoarder's Distillation",
-                items: "Collector's Distillation"
-            },
-            "get_stack_prop/": {
-                "size": "Treasurer's Purification",
-                "item": "Logistician's Purification"
-            },
             "create_construct/": {
                 spider: "Create Spider Construct"
             },
@@ -86,14 +69,14 @@
             "zone_entity/construct": "Zone Distillation: Construct",
             "zone_entity/not_construct": "Zone Distillation: Non-Construct"
         },
-        "spell.book.hexbound:": {
+        "action.book.hexbound:": {
             "get_entity/construct": "Entity Prfn.: Construct",
             "zone_entity/construct": "Zone Dstl.: Construct",
-            "zone_entity/not_construct": "Zone Dstl.: Non-Construct",
-            "get_off_hand": "Shieldbearer's Prfn."
+            "zone_entity/not_construct": "Zone Dstl.: Non-Construct"
         }
     },
     hexbound: {
+        item_group: "Hexbound",
         vector_format: "(%s, %s, %s)",
         stack: {
             format: "%dx %s",
@@ -144,8 +127,7 @@
                 already_has_item: "construct is already carrying %s",
                 unknown_error: "Unknown exception has occurred (this is likely a bug!): %s"
             }
-        },
-        "impetus.fake_enabled": "Contains a Figment"
+        }
     },
     entity: {
         hexbound: {
@@ -180,25 +162,6 @@
 |                 As always, I will document my findings in this journal."
         },
         casting: {
-            figments: {
-                title: "Figments",
-                "1": "All my study shows that the act of casting a _Hex inevitably requires a living Caster exist $(o)somewhere$(). \
-|                     Perhaps an obvious and pointless detail: I am the one casting the _Hex, so the requirement is met, but \
-|                     should I discover $(l:hexcasting:greatwork/spellcircle)some means of independent casting$() (or even rig a dispenser to flail a trinket around), \
-|                     it would lose the link and cease to function the moment I cross the portal to the Nether or elsewhere.",
-                "2": "However, I believe a specially designed web of _media could ''trick'' the _Hex into latching onto it long enough to resolve. \
-|                     These Figments as I've begun calling them, would either be severely limited in their abilities, as Constructs are, or would require \
-|                     something much more intricate to hold their hand through the _Hex, so to speak.$(br)\
-|                     Moreover, Figments are not entirely self-aware: Mind's Reflection simply returns $(l:hexcasting:casting/influences)$(thing)Null$(), \
-|                     while $(l:hexcasting:patterns/spells/sentinels)Sentinels$() and $(thing)$(l:hexcasting:items/pigments)Pigments$() are unreliable."
-            },
-            item_iotas: {
-                title: "Item Iotas",
-                "1": "I have discovered two additional types of iotas I can manipulate.$(br2)\
-|                     Item Iotas describe a singular item stripped of its properties, such as damage or enchantments.$(br2)\
-|                     Item Stack Iotas describe a stack of items as they might appear in my inventory, amount, custom names, enchantments, and all.",
-                "2": "It would also seem Item Stack iotas referring to Foci containing other Item Stack iotas are somewhat faulty. A limit to the depth of my thought perhaps."
-            },
             hexbound_mishaps: {
                 title: "Hexbinding Mishaps",
                 "1": "New schools of _Hexcasting bring new and exciting ways of utterly failing a _Hex. Here are some I have discovered.",
@@ -216,14 +179,14 @@
                         desc: "I attempted to give orders to a Construct that will not accept any from me. Causes brown sparks and pushes me away from the Construct."
                     }
                 },
-                colorizer: {
+                pigment: {
                     not_set: {
                         title: "No Pigment Present",
                         desc: "I have not internalized a Pigment yet. Causes white sparks."
                     },
                     missing_key: {
                         title: "No Pigment For Key",
-                        desc: "I have not $(l:hexbound:patterns/spells/colorizer_storage)memorized a Pigment$() for the pattern I entered. Causes white sparks and causes me to lose my current Pigment."
+                        desc: "I have not $(l:hexbound:patterns/spells/pigment_storage)memorized a Pigment$() for the pattern I entered. Causes white sparks and causes me to lose my current Pigment."
                     },
                     too_many: {
                         title: "Too Many Pigments",
@@ -232,20 +195,11 @@
                 }
             }
         },
-        "greatwork.impetus_figment": {
-            title: "Impetus Figments",
-            "1": "Now that I possess the means to contain a mind, I have revisited my notes on $(l:hexbound:patterns/great_spells/impetus_fake_player)Bind Figment$() and confirmed that a $(l:hexcasting:greatwork/impetuses)Cleric Impetus$() would be the perfect vessel for it. \
-|                 The Impetus must be bound to a $(hex)Hexcaster$() as $(o)enlightened$() as I am; no other mind would allow a piece of itself to be unraveled like this.$(br2)Not yet. THEY WILL. In time.",
-            "2": "Furthermore, if the Impetus can connect to its bound caster, that connection will take priority over the Figment.$(br2)\
-|                 A thought with no mind bound to a lattice every thought wrapped and screaming it is not itself it always made sense it will never make sense $(k)hello penguin$()$(br2)\
-|                 Ten $(media)Charged Amethyst$() for the spell."
-        },
         "interop.hexal": {
             title: "Hexal-Hexbound",
             "1": "It appears some of the _Hexcasting disciplines I've encountered can operate together.$(br2) \
-|                 First, I've discovered that $(l:hexbound:casting/item_iotas)Item Iotas$(), as created by the likes of $(l:hexbound:patterns/item_patterns#hexbound:get_main_hand)Duelist's Purification$(), and Item Type Iotas, as created by $(l:hexal:patterns/types#hexal:type/entity)Physician's Purification$(), are near-identical! \
-|                 Comparisons between them or their types should therefore work as expected.",
-            "2": "The second and, perhaps, even more important discovery is the ability of $(l:hexbound:patterns/constructs/constructs_intro)Constructs$() to maintain $(l:hexal:patterns/spells/links)Links$(). This will allow me to send iotas between Wisps and Constructs, or even Constructs and myself! The possibilities are well and truly endless."
+|                 In particular, the $(l:hexbound:patterns/constructs/constructs_intro)Constructs$() I have designed are capable of maintaining $(l:hexal:patterns/spells/links)Links$(). \
+|                 This will allow me to send iotas between Wisps and Constructs, or even Constructs and myself! The possibilities are well and truly endless."
         },
         patterns: {
             pattern_editing: {
@@ -260,21 +214,8 @@
                 head: "Removes a pattern and a number N from the stack. N must be between 1 and the number of strokes in the removed pattern. Returns a pattern composed of the first N strokes of the removed pattern, preserving the original pattern's direction.",
                 tail: "Removes a pattern and a number from the stack. Behaves exactly as Starting Distillation but takes the last strokes of the pattern instead of the first."
             },
-            item_patterns: {
-                title: "Item Patterns",
-                prop: {
-                    item: "Transforms the $(l:hexbound:casting/item_iotas)Item Stack$() at the top of the stack into its Item.",
-                    size: "Transforms the Item Stack at the top of the stack into its size."
-                },
-                main_hand: "Transforms the entity at the top of the stack into the Item Stack in its main hand. Also works on Item Frames and dropped items.",
-                off_hand: "Transforms the entity at the top of the stack into the Item Stack in its off hand.",
-                inventory: {
-                    stacks: "Removes two vectors from the stack representing position and side. Returns a list of Item Stacks in the block at the given position accessible from the given side (or all if second vector is zero).",
-                    items: "Removes two vectors from the stack representing position and side. Returns a list of Items in the block at the given position accessible from the given side (or all if second vector is zero)."
-                }
-            },
             spells: {
-                colorizer_storage: {
+                pigment_storage: {
                     title: "Memorizing Pigments",
                     "1": "The patterns in this chapter allow me to memorize $(thing)$(l:hexcasting:items/pigments)Pigments$() I have already Internalized.$(br2)\
 |                         Using these patterns associates a Pigment with a pattern of my choosing in my mind, allowing me to revert to it whenever I please. I will never run out of eggs again!",
@@ -293,12 +234,6 @@
 |                            which will last for the given number of seconds.$(br)Costs 2 $(media)Amethyst Dust$() per second of duration.",
                     glitchy: "Creates an unstable Hex Shield, which will occasionally distort. The effect appears purely visual."
                 }
-            },
-            great_spells: {
-                set_fake_impetus_player: {
-                    "1": "Removes a vector from the stack and binds a $(l:hexbound:casting/figments)Figment$() to the block at the position represented by the vector.$(br)\
-|                         I can't tell what the $(l:hexbound:greatwork/impetus_figment)target$() is supposed to be though."
-                }
             }
         },
         constructs: {
@@ -311,8 +246,8 @@
                 "3": "First, the limitations:$(br)\
 |                     $(li)Constructs are too sensitive to use their own _media for casting _Hexes. It should be assumed they do not possess any _media to spend.\
 |                     $(li)Most patterns, especially Spells, directly affecting the outside world simply cannot be processed by their limited pseudo-minds.\
-|                     $(li)Said pseudo-minds behave as any other $(l:hexbound:casting/figments)Figment$(): $(l:hexcasting:patterns/basics#hexcasting:get_caster)Mind's Reflection$() will push \
-|                     $(thing)$(l:hexcasting:casting/influences)Null$(), $(l:hexcasting:items/pigments)Pigments$() and $(l:hexcasting:patterns/spells/sentinels)Sentinels$() will not function.",
+|                     $(li)Said pseudo-minds behave slightly different from my own consciousness: $(l:hexcasting:patterns/basics#hexcasting:get_caster)Mind's Reflection$() will push \
+|                     $(thing)$(l:hexcasting:casting/influences)Null$(), and $(l:hexcasting:patterns/spells/sentinels)Sentinels$() will not function.",
                 "4": "Now, for some details about the casting mechanism:$(br)\
 |                     $(li)Construct instructions are a list of iotas and are executed immediately after each other, not unlike those contained within $(l:hexcasting:items/hexcasting)Casting Items$().\
 |                     $(li)Constructs start new instructions with an empty $(l:hexcasting:casting/stack)stack$() and $(l:hexcasting:patterns/readwrite#hexcasting:local)Ravenmind$().\

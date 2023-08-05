@@ -32,7 +32,7 @@ class ShieldEntity(
     val maxAge: Int,
     initialVisualType: VisualType
 ) : Entity(type, world) {
-    var pigmentTag by COLORIZER
+    var pigmentTag by PIGMENT
     var typeOrdinal by VISUAL_TYPE
 
     private val pigmentMemo = Util.memoize(FrozenPigment::fromNBT)
@@ -80,7 +80,7 @@ class ShieldEntity(
 
     override fun initDataTracker() {
 
-        dataTracker.startTracking(COLORIZER, FrozenPigment.DEFAULT.get().serializeToNBT())
+        dataTracker.startTracking(PIGMENT, FrozenPigment.DEFAULT.get().serializeToNBT())
         dataTracker.startTracking(VISUAL_TYPE, 0)
     }
 
@@ -150,7 +150,7 @@ class ShieldEntity(
     companion object {
         const val DEPLOY_TIME = 3
 
-        val COLORIZER: TrackedData<NbtCompound> =
+        val PIGMENT: TrackedData<NbtCompound> =
             DataTracker.registerData(ShieldEntity::class.java, TrackedDataHandlerRegistry.TAG_COMPOUND)
 
         val VISUAL_TYPE: TrackedData<Int> =

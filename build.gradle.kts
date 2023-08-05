@@ -77,6 +77,10 @@ repositories {
         }
     }
 
+    flatDir {
+        dirs("libs")
+    }
+
     mavenLocal()
 }
 
@@ -99,9 +103,9 @@ dependencies {
     modImplementation(libs.cca)
     modImplementation(libs.patchouli)
     modImplementation(libs.kettle)
-
-    modImplementation(libs.fake.player)
-    include(libs.fake.player)
+    modImplementation(libs.cloth.config) {
+        exclude(group = "net.fabricmc.fabric-api")
+    }
 
     modImplementation(libs.mixin.extras)
     annotationProcessor(libs.mixin.extras)
@@ -110,8 +114,11 @@ dependencies {
     modImplementation(libs.geckolib)
 
     modCompileOnly(libs.bundles.optionals)
-    modLocalRuntime(libs.hexal)
+    //modLocalRuntime(libs.hexal)
     modLocalRuntime(libs.dynlights)
+    modLocalRuntime(libs.gravity.api)
+
+    modLocalRuntime("io.github.tropheusj:serialization-hooks:0.4.99999")
 }
 
 //endregion
@@ -162,7 +169,7 @@ tasks {
 
     withType<KotlinCompile> {
         kotlinOptions {
-            languageVersion = "2.0"
+            //languageVersion = "2.0"
             jvmTarget = javaVersion.toString()
             freeCompilerArgs =
                 listOf("-Xenable-builder-inference")

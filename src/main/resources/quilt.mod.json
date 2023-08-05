@@ -63,8 +63,8 @@
                 "versions": ">=2.2.1"
             },
             {
-                "id": "geckolib3",
-                "versions": ">=3.1.37"
+                "id": "geckolib",
+                "versions": ">=4.2.1"
             },
             {
                 "id": "qkl",
@@ -73,7 +73,7 @@
         ]
     },
     "cardinal-components": [
-        "hexbound:memorized_colorizers",
+        "hexbound:memorized_pigments",
         "hexbound:construct_linkable"
     ],
     "mixin": "hexbound.mixins.json",

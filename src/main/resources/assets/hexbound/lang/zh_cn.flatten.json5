@@ -23,7 +23,7 @@
                     "battery": "一个已充满的蛛形组构体媒质池"
                 }
             },
-            colorizer: {
+            pigment: {
                 missing_key: "图案“%s”并未对应一个已存储的染色剂",
                 absent: "无染色剂可存储",
                 storage_full: "已存储过多染色剂"
@@ -36,7 +36,7 @@
             item_stack: "物品组"
         },
         "spell.hexbound:": {
-            "colorizer/": {
+            "pigment/": {
                 "save": "记忆染色剂",
                 "load": "回想染色剂",
                 "delete": "遗忘染色剂"
@@ -216,14 +216,14 @@
                         desc: "试图向不会接受我指令的组构体发送指令。产生棕色火花，并将我推离组构体。"
                     }
                 },
-                colorizer: {
+                pigment: {
                     not_set: {
                         title: "无当前染色剂",
                         desc: "施法者还未内化染色剂。产生白色火花。"
                     },
                     missing_key: {
                         title: "无对应染色剂",
-                        desc: "施法者还未以绘制的图案$(l:hexbound:patterns/spells/colorizer_storage)记忆过染色剂$()。产生白色火花，并使我丢失当前染色剂。"
+                        desc: "施法者还未以绘制的图案$(l:hexbound:patterns/spells/pigment_storage)记忆过染色剂$()。产生白色火花，并使我丢失当前染色剂。"
                     },
                     too_many: {
                         title: "染色剂过多",
@@ -274,7 +274,7 @@
                 }
             },
             spells: {
-                colorizer_storage: {
+                pigment_storage: {
                     title: "记忆染色剂",
                     "1": "这一节的图案能使我记忆已经内化的$(thing)$(l:hexcasting:items/pigments)染色剂$()。$(br2)\
 |                         绘制这些图案就能在我意识中将某染色剂和一个图案对应起来，只要愿意随时都能切换回去。再也不会缺蛋了！",

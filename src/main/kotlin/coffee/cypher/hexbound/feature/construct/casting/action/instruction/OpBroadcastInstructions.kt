@@ -15,13 +15,13 @@ import coffee.cypher.kettle.math.toDoubleVector
 object OpBroadcastInstructions : SpellAction {
     override val argc = 2
 
-    override fun execute(args: List<Iota>, ctx: CastingEnvironment): SpellAction.Result {
+    override fun execute(args: List<Iota>, env: CastingEnvironment): SpellAction.Result {
         val broadcasterPos = args.getBlockPos(0, OpSendInstructions.argc)
         val instructions = args.getList(1, OpSendInstructions.argc)
 
-        ctx.assertVecInRange(broadcasterPos.toDoubleVector())
+        env.assertVecInRange(broadcasterPos.toDoubleVector())
 
-        val broadcasterState = ctx.world.getBlockState(broadcasterPos)
+        val broadcasterState = env.world.getBlockState(broadcasterPos)
 
         if (!broadcasterState.isOf(HexboundData.Blocks.CONSTRUCT_BROADCASTER)) {
             throw MishapBadBlock.of(broadcasterPos, "construct_broadcaster")
@@ -29,7 +29,7 @@ object OpBroadcastInstructions : SpellAction {
 
         return SpellAction.Result(
             Spell(
-                ConstructBroadcasterBlock.createBroadcastingContext(ctx.world, broadcasterState, broadcasterPos),
+                ConstructBroadcasterBlock.createBroadcastingContext(env.world, broadcasterState, broadcasterPos),
                 instructions.toList()
             ),
             0,
@@ -38,8 +38,8 @@ object OpBroadcastInstructions : SpellAction {
     }
 
     private class Spell(val context: BroadcastingContext, val instructions: List<Iota>) : RenderedSpell {
-        override fun cast(ctx: CastingEnvironment) {
-            context.broadcast(instructions, ctx)
+        override fun cast(env: CastingEnvironment) {
+            context.broadcast(instructions, env)
         }
     }
 }

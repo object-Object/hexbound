@@ -14,14 +14,14 @@ object OpSendInstructions : SpellAction {
 
     override fun execute(
         args: List<Iota>,
-        ctx: CastingEnvironment
+        env: CastingEnvironment
     ): SpellAction.Result {
         val construct = args.getConstruct(0, argc)
         val instructions = args.getList(1, argc)
 
-        ctx.assertEntityInRange(construct)
+        env.assertEntityInRange(construct)
 
-        if (!construct.isPlayerAllowed(ctx.caster)) {
+        if (!construct.isPlayerAllowed(env.caster)) {
             throw MishapConstructForbidden(construct)
         }
 
@@ -36,8 +36,8 @@ object OpSendInstructions : SpellAction {
         val constructEntity: AbstractConstructEntity,
         val instructions: List<Iota>
     ) : RenderedSpell {
-        override fun cast(ctx: CastingEnvironment) {
-            constructEntity.acceptInstructions(instructions, ctx.caster, false, null)
+        override fun cast(env: CastingEnvironment) {
+            constructEntity.acceptInstructions(instructions, env.caster, false, null)
         }
     }
 }

@@ -28,8 +28,9 @@ data class BroadcastingContext(
 
         val random = ctx.world.random
 
-        val particleColorizer = IXplatAbstractions.INSTANCE.getPigment(ctx.caster)
-        val particleColor = particleColorizer.colorProvider.getColor(
+        val particlePigment = IXplatAbstractions.INSTANCE.getPigment(ctx.caster)
+
+        val particleColor = particlePigment.colorProvider.getColor(
             random.nextFloat() * 16384,
             Vec3d(
                 random.nextFloat().toDouble(),

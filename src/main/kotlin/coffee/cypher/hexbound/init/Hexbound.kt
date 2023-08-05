@@ -1,10 +1,15 @@
 package coffee.cypher.hexbound.init
 
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironmentComponent
+import at.petrak.hexcasting.api.casting.eval.env.PlayerBasedCastEnv
 import at.petrak.hexcasting.api.item.HexHolderItem
 import at.petrak.hexcasting.api.casting.iota.ListIota
+import at.petrak.hexcasting.api.casting.math.HexPattern
+import at.petrak.hexcasting.api.pigment.FrozenPigment
 import at.petrak.hexcasting.common.lib.HexItems
+import at.petrak.hexcasting.fabric.event.CastingEnvironmentCreatedCallback
 import coffee.cypher.hexbound.init.config.HexboundConfig
-import coffee.cypher.hexbound.interop.InteropManager
+import coffee.cypher.hexbound.interop.RootInteropManager
 import net.minecraft.text.Text
 import net.minecraft.util.Hand
 import net.minecraft.util.Identifier
@@ -49,12 +54,36 @@ object Hexbound : ModInitializer {
         HexboundConfig.init()
 
         HexboundData.init()
-        HexboundPatterns.register()
-        InteropManager.init()
+        HexboundActions.register()
+        RootInteropManager.init()
+
+        CastingEnvironmentCreatedCallback.EVENT.register {
+            if (it is PlayerBasedCastEnv) {
+                it.addExtension(object : StoredPigmentComponent {
+                    override fun getStoredPigment(key: HexPattern): FrozenPigment? {
+                        return HexboundComponents.MEMORIZED_PIGMENTS[it.caster!!].pigments[key.anglesSignature()]
+                    }
+
+                    override fun storePigment(key: HexPattern, value: FrozenPigment) {
+                        HexboundComponents.MEMORIZED_PIGMENTS[it.caster!!].pigments[key.anglesSignature()] = value
+                    }
+                })
+            }
+        }
 
         if (QuiltLoader.isDevelopmentEnvironment()) {
             enableDebugFeatures()
         }
+    }
+
+    interface StoredPigmentComponent : CastingEnvironmentComponent {
+        companion object : CastingEnvironmentComponent.Key<StoredPigmentComponent>
+
+        override fun getKey() = StoredPigmentComponent
+
+        fun getStoredPigment(key: HexPattern): FrozenPigment?
+
+        fun storePigment(key: HexPattern, value: FrozenPigment)
     }
 
     private fun enableDebugFeatures() {

@@ -4,7 +4,7 @@ import at.petrak.hexcasting.api.item.MediaHolderItem
 import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.utils.mediaBarColor
 import at.petrak.hexcasting.api.utils.mediaBarWidth
-import coffee.cypher.hexbound.init.HexboundData
+import coffee.cypher.hexbound.init.config.HexboundConfig
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
@@ -13,18 +13,10 @@ import net.minecraft.world.World
 import org.quiltmc.qkl.library.items.itemSettingsOf
 import org.quiltmc.qkl.library.nbt.set
 import org.quiltmc.qkl.library.text.*
-import coffee.cypher.hexbound.init.config.HexboundConfig
-import net.minecraft.item.ItemGroup
-import net.minecraft.util.collection.DefaultedList
 
-object SpiderConstructBatteryItem : Item(
-    itemSettingsOf(
-        group = HexboundData.ItemGroups.HEXBOUND,
-        maxCount = 1
-    )
-), MediaHolderItem {
+object SpiderConstructBatteryItem : Item(itemSettingsOf(maxCount = 1)), MediaHolderItem {
     val maxCharge: Long
-        get() = (HexboundConfig.spiderBatteryChargeRequired * MediaConstants.DUST_UNIT).toLong()
+        get() = (HexboundConfig.spiderBatteryChargeRequired * MediaConstants.DUST_UNIT)
 
     var ItemStack.charge: Long
         get() {
@@ -37,6 +29,9 @@ object SpiderConstructBatteryItem : Item(
         set(value) {
             orCreateNbt["charge"] = value
         }
+
+    val chargedStack
+        get() = defaultStack.apply { charge = maxCharge }
 
     override fun getMedia(stack: ItemStack): Long {
         return stack.charge
@@ -72,13 +67,6 @@ object SpiderConstructBatteryItem : Item(
 
     override fun getDefaultStack(): ItemStack {
         return ItemStack(this, 1).also { it.charge }
-    }
-
-    override fun appendStacks(group: ItemGroup?, stacks: DefaultedList<ItemStack>) {
-        if (isInGroup(group)) {
-            stacks.add(ItemStack(this).also { it.charge = 0 })
-            stacks.add(ItemStack(this).also { it.charge = maxCharge })
-        }
     }
 
     override fun appendTooltip(

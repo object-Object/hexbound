@@ -4,7 +4,7 @@ import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.mishaps.Mishap
 import at.petrak.hexcasting.api.pigment.FrozenPigment
-import dev.cafeteria.fakeplayerapi.server.FakeServerPlayer
+import coffee.cypher.hexbound.util.fakeplayer.FakeServerPlayer
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.text.Text
@@ -19,9 +19,9 @@ class MishapNoConstruct : Mishap() {
         return error("no_construct", actionName(errorCtx.name))
     }
 
-    override fun execute(ctx: CastingEnvironment, errorCtx: Context, stack: MutableList<Iota>) {
-        if (ctx.caster !is FakeServerPlayer) {
-            ctx.caster?.addStatusEffect(StatusEffectInstance(StatusEffects.SLOWNESS, 20, 2))
+    override fun execute(env: CastingEnvironment, errorCtx: Context, stack: MutableList<Iota>) {
+        if (env.caster !is FakeServerPlayer) {
+            env.caster?.addStatusEffect(StatusEffectInstance(StatusEffects.SLOWNESS, 20, 2))
         }
     }
 }

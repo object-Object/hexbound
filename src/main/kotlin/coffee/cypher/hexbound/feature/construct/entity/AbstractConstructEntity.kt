@@ -43,7 +43,7 @@ abstract class AbstractConstructEntity(
     private val components = mutableMapOf<ConstructComponentKey<*>, Any>()
 
     @Suppress("LeakingThis")
-    protected val fakePlayer = if (world.isClient)
+    internal val fakePlayer = if (world.isClient)
         null
     else
         ConstructFakePlayer(world as ServerWorld, this)
@@ -213,6 +213,10 @@ abstract class AbstractConstructEntity(
     }
 
     override fun cannotDespawn(): Boolean {
+        return true
+    }
+
+    override fun canBreatheInWater(): Boolean {
         return true
     }
 

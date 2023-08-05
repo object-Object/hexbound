@@ -12,16 +12,18 @@ kotlin = "1.8.22"
 dokka = "1.8.20"
 
 paucal = "0.6.0-pre-118"
-hexcasting = "0.11.1-0"
+hexcasting = "0.11.1-7-local-6"
 cca = "5.2.1"
+cloth = "11.1.106"
 
 hexal = "9RtpOzVO"
 dynlights = "2.3.1+1.20.1"
+gravity-api = "Jz5M433B"
 
 fake-player = "0.6.0"
 mixin-extras = "0.2.0-beta.8"
-geckolib = "4.2"
-kettle = "3.0.0+1.20.1"
+geckolib = "4.2.1"
+kettle = "3.0.1+1.20.1"
 
 patchi = "1.20.1-80-FABRIC-SNAPSHOT"
 
@@ -39,21 +41,24 @@ hexcasting = { module = "at.petra-k.hexcasting:hexcasting-fabric-1.20.1", versio
 paucal = { module = "at.petra-k.paucal:paucal-fabric-1.20.1", version.ref = "paucal" }
 cca = { module = "dev.onyxstudios.cardinal-components-api:cardinal-components-api", version.ref = "cca" }
 
+cloth_config = { module = "me.shedaniel.cloth:cloth-config-fabric", version.ref = "cloth"}
+
 patchouli = { module = "vazkii.patchouli:Patchouli", version.ref = "patchi" }
 
 hexal = { module = "maven.modrinth:hexal", version.ref = "hexal" }
 dynlights = { module = "dev.lambdaurora:lambdynamiclights", version.ref = "dynlights" }
+gravity-api = { module = "maven.modrinth:gravity-api", version.ref = "gravity-api" }
 
 fake-player = { module = "dev.cafeteria:fake-player-api", version.ref = "fake-player" }
 mixin-extras = { module = "com.github.llamalad7.mixinextras:mixinextras-fabric", version.ref = "mixin-extras" }
-geckolib = { module = "software.bernie.geckolib:geckolib-fabric-1.20", version.ref = "geckolib" }
+geckolib = { module = "software.bernie.geckolib:geckolib-fabric-1.20.1", version.ref = "geckolib" }
 kettle = { module = "coffee.cypher.kettle:kettle", version.ref = "kettle" }
 
 [bundles]
 kotlin = ["qkl"]
 qsl = ["quilt-fapi", "qsl"]
 hexcasting = ["paucal", "hexcasting"]
-optionals = ["hexal", "dynlights"]
+optionals = ["hexal", "dynlights", "gravity-api"]
 
 [plugins]
 quilt_loom = { id = "org.quiltmc.loom", version = "1.2.+" }

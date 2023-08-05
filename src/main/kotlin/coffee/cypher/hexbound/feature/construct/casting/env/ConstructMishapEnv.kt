@@ -5,7 +5,9 @@ import coffee.cypher.hexbound.feature.construct.entity.AbstractConstructEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.Vec3d
 
-class ConstructMishapEnv(val construct: AbstractConstructEntity, world: ServerWorld) : MishapEnvironment(world, null) {
+class ConstructMishapEnv(
+    val construct: AbstractConstructEntity
+) : MishapEnvironment(construct.world as ServerWorld, null) {
     override fun yeetHeldItemsTowards(targetPos: Vec3d?) {
         TODO("Not yet implemented")
     }

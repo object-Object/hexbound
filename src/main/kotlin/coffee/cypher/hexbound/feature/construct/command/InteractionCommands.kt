@@ -121,8 +121,8 @@ class Harvest(
     }
 
     sealed class HarvestingResult {
-        data object NotHarvestable : HarvestingResult()
-        data object NotReady : HarvestingResult()
+        object NotHarvestable : HarvestingResult()
+        object NotReady : HarvestingResult()
         data class StandardHarvest(val replantState: BlockState, val sound: SoundEvent) : HarvestingResult()
         data class BuiltinHarvest(val harvest: (BlockState, World, BlockPos) -> Unit) : HarvestingResult()
     }
