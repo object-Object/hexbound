@@ -12,6 +12,7 @@ name = "hexdoc-hexbound"
 description = "Python web book docgen and hexdoc plugin for Hexbound."
 readme = "doc/README.md"
 authors = [
+    { name="Cypher121" },
     { name="object-Object" },
 ]
 keywords = ["hexdoc"]
@@ -26,16 +27,17 @@ Source = "https://github.com/object-Object/hexbound"
 
 [tool.hatch.version]
 scheme = "gradle"
-source = "gradle-properties"
+source = "json"
 py-path = "doc/src/hexdoc_hexbound/__version__.py"
-key = "modVersion"
+json-path = "mod.json"
+key = "core.version"
 
-[tool.hatch.metadata.hooks.gradle-properties]
+[tool.hatch.metadata.hooks.version-catalog]
 dependencies = [
-    { package="hexdoc-hexcasting", op="~=", py-version="1.0.dev20", key="hexcastingVersion" },
+    { package="hexdoc-hexcasting", op="~=", py-version="1.0", key="hexcasting" },
 ]
 
-[tool.hatch.metadata.hooks.gradle-properties.optional-dependencies]
+[tool.hatch.metadata.hooks.version-catalog.optional-dependencies]
 dev = [
     "ruff~=0.1.4",
 ]
@@ -45,7 +47,8 @@ dev = [
 [tool.hatch.build]
 only-include = [
     "doc/src/hexdoc_hexbound",
-    "gradle.properties",
+    "gradle/libs.versions.toml",
+    "mod.json",
 ]
 artifacts = [
     "/doc/src/hexdoc_hexbound/_export/generated",
