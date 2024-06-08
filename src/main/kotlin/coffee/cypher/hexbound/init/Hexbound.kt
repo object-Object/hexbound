@@ -50,7 +50,6 @@ object Hexbound : ModInitializer {
     }
 
     override fun onInitialize(mod: ModContainer) {
-
         HexboundConfig.init()
 
         HexboundData.init()

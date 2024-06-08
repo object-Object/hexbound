@@ -32,9 +32,9 @@ import org.quiltmc.qkl.library.registry.RegistryAction
 import org.quiltmc.qkl.library.registry.provide
 import org.quiltmc.qkl.library.serialization.CodecFactory
 import java.util.*
-import kotlin.reflect.KClass
-import kotlin.reflect.full.declaredMemberProperties
-import kotlin.reflect.jvm.isAccessible
+import kotlin.properties.PropertyDelegateProvider
+import kotlin.properties.ReadOnlyProperty
+import kotlin.reflect.KProperty
 
 object HexboundData : DataInitializer() {
     override fun init() {
@@ -59,7 +59,7 @@ object HexboundData : DataInitializer() {
     }
 
     object ItemGroups : Initializer<ItemGroup>(Registries.ITEM_GROUP) {
-        val HEXBOUND: ItemGroup by registry.provide("item_group") {
+        val HEXBOUND: ItemGroup by provide("item_group") {
             FabricItemGroup.builder()
                 .name(Text.translatable("hexbound.item_group"))
                 .icon(Items.SPIDER_CONSTRUCT_CORE::getDefaultStack)
@@ -78,11 +78,11 @@ object HexboundData : DataInitializer() {
     }
 
     object EntityTypes : Initializer<EntityType<*>>(Registries.ENTITY_TYPE) {
-        val SPIDER_CONSTRUCT: EntityType<SpiderConstructEntity> by registry.provide("spider_construct") {
+        val SPIDER_CONSTRUCT: EntityType<SpiderConstructEntity> by provide("spider_construct") {
             SpiderConstructEntity.createType()
         }
 
-        val SHIELD: EntityType<ShieldEntity> by registry.provide("shield") {
+        val SHIELD: EntityType<ShieldEntity> by provide("shield") {
             ShieldEntity.createType()
         }
     }
@@ -96,10 +96,8 @@ object HexboundData : DataInitializer() {
             }
         }
 
-        private inline fun <reified T : ConstructCommand<T>> provideType(id: String): Lazy<ConstructCommand.Type<T>> {
-            return registry.provide(id) {
-                ConstructCommand.Type(codecFactory.create())
-            }
+        private inline fun <reified T : ConstructCommand<T>> provideType(id: String) = provide(id) {
+            ConstructCommand.Type<T>(codecFactory.create())
         }
 
         val PICK_UP by provideType<PickUp>("pick_up")
@@ -111,27 +109,27 @@ object HexboundData : DataInitializer() {
     }
 
     object Blocks : Initializer<Block>(Registries.BLOCK) {
-        val CONSTRUCT_BROADCASTER by registry.provide("construct_broadcaster") {
+        val CONSTRUCT_BROADCASTER by provide("construct_broadcaster") {
             ConstructBroadcasterBlock
         }
     }
 
     object Items : Initializer<Item>(Registries.ITEM) {
-        val SPIDER_CONSTRUCT_BATTERY by registry.provide("spider_construct_battery") {
+        val SPIDER_CONSTRUCT_BATTERY by provide("spider_construct_battery") {
             SpiderConstructBatteryItem
         }
 
-        val SPIDER_CONSTRUCT_CORE by registry.provide("spider_construct_core") {
+        val SPIDER_CONSTRUCT_CORE by provide("spider_construct_core") {
             SpiderConstructCoreItem
         }
 
-        val CONSTRUCT_BROADCASTER by registry.provide("construct_broadcaster") {
+        val CONSTRUCT_BROADCASTER by provide("construct_broadcaster") {
             BlockItem(ConstructBroadcasterBlock, itemSettingsOf())
         }
     }
 
     object StatusEffects : Initializer<StatusEffect>(Registries.STATUS_EFFECT) {
-        val REDUCED_AMBIT by registry.provide("reduced_ambit") {
+        val REDUCED_AMBIT by provide("reduced_ambit") {
             ReducedAmbitStatusEffect()
         }
     }
@@ -151,10 +149,11 @@ abstract class DataInitializer {
         }
     }
 
-    abstract inner class Initializer<T>(
+    abstract inner class Initializer<T : Any>(
         registry: Registry<T>
     ) {
-        protected val registry = RegistryAction(Hexbound.MOD_ID, registry)
+        private val registry = RegistryAction(Hexbound.MOD_ID, registry)
+        private val registryDelegates = mutableListOf<RegistryDelegate<*>>()
 
         init {
             @Suppress("LeakingThis")
@@ -162,21 +161,33 @@ abstract class DataInitializer {
         }
 
         fun init() {
-            initClass(this)
+            registryDelegates.forEach {
+                it.getValue(this, it.property)
+            }
         }
 
-        private fun <T : Any> initClass(instance: T) {
-            @Suppress("UNCHECKED_CAST")
-            val klass = instance::class as KClass<T>
+        protected fun <V: T> provide(path: String, init: () -> V): PropertyDelegateProvider<Initializer<T>, RegistryDelegate<V>> =
+            RegistryDelegateProvider(path, init)
 
-            klass.declaredMemberProperties.onEach {
-                it.isAccessible = true
-            }.forEach {
-                val delegate = it.getDelegate(instance)
+        protected inner class RegistryDelegate<V : T>(
+            val property: KProperty<*>,
+            path: String,
+            init: () -> V
+        ) : ReadOnlyProperty<Initializer<T>, V> {
+            private val value: V by registry.provide(path, init)
 
-                if (delegate is Lazy<*>) {
-                    delegate.getValue(instance, it)
-                }
+            override fun getValue(thisRef: Initializer<T>, property: KProperty<*>): V {
+                return value
+            }
+        }
+
+        protected inner class RegistryDelegateProvider<V: T>(val path: String, val init: () -> V) : PropertyDelegateProvider<Initializer<T>, RegistryDelegate<V>> {
+            override fun provideDelegate(thisRef: Initializer<T>, property: KProperty<*>): RegistryDelegate<V> {
+                val delegate = RegistryDelegate(property, path, init)
+
+                registryDelegates += delegate
+
+                return delegate
             }
         }
     }

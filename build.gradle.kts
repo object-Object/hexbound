@@ -116,7 +116,7 @@ dependencies {
     modCompileOnly(libs.bundles.optionals)
     //modLocalRuntime(libs.hexal)
     modLocalRuntime(libs.dynlights)
-    modLocalRuntime(libs.gravity.api)
+    //modLocalRuntime(libs.gravity.api)
 
     modLocalRuntime("io.github.tropheusj:serialization-hooks:0.4.99999")
 }

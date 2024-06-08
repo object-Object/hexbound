@@ -29,6 +29,10 @@ class SpiderConstructRenderer(
         addRenderLayer(SpiderConstructTranslucentLayer(this))
         addRenderLayer(SpiderConstructItemLayer(this))
     }
+
+    override fun updateAnimatedTextureFrame(animatable: SpiderConstructEntity?) {
+        super.updateAnimatedTextureFrame(animatable)
+    }
 }
 
 class SpiderConstructModel : GeoModel<SpiderConstructEntity>() {
@@ -42,6 +46,8 @@ class SpiderConstructModel : GeoModel<SpiderConstructEntity>() {
         val ALT_TEXTURE_RESOURCE = Hexbound.id("textures/construct/robot_construct.png")
         val ALT_ANIMATION_RESOURCE = Hexbound.id("animations/robot_construct.animation.json")
         val ALT_LAYER_TEXTURE_RESOURCE = Hexbound.id("textures/construct/robot_construct_translucent.png")
+
+        val PETRA_TEXTURE_RESOURCE = Hexbound.id("textures/construct/petra_construct.png")
     }
 
     override fun getModelResource(obj: SpiderConstructEntity): Identifier {
@@ -53,7 +59,10 @@ class SpiderConstructModel : GeoModel<SpiderConstructEntity>() {
 
     override fun getTextureResource(obj: SpiderConstructEntity): Identifier {
         return if (obj.isAltModelEnabled || HexboundConfig.replaceSpiderConstruct)
-            ALT_TEXTURE_RESOURCE
+            if (obj.customName?.string == "petrak@")
+                PETRA_TEXTURE_RESOURCE
+            else
+                ALT_TEXTURE_RESOURCE
         else
             TEXTURE_RESOURCE
     }
