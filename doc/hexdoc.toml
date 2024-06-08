@@ -1,0 +1,44 @@
+modid = "hexbound"
+book = "hexcasting:thehexbook"
+default_lang = "en_us"
+default_branch = "1.19"
+
+resource_dirs = [  # top takes priority
+    "resources",
+    "{_common.src}/main/resources",
+    { path="{^_common.src}/generated/resources", required=false },
+    { modid="hexcasting" },
+    { modid="minecraft" },
+    { modid="hexdoc" },
+]
+export_dir = "src/hexdoc_hexbound/_export/generated"
+
+[template]
+icon = "icon.png"
+include = [
+    "hexbound",
+    "hexcasting",
+    "hexdoc",
+]
+
+[template.args]
+mod_name = "Hexbound"
+author = "object-Object"
+show_landing_text = false
+
+[extra.hexcasting]
+# regexes for parsing pattern registry files - try running copier update and picking a different regex if your patterns aren't loading
+# NOTE: "!Raw" means "don't apply variable interpolation to this value"
+_pattern_regex = { "!Raw"='HexPattern\.fromAngles\("(?P<signature>[qweasd]+)", HexDir\.(?P<startdir>\w+)\),\s*modLoc\("(?P<name>[^"]+)"\)[^;]+?(?:makeConstantOp|Op\w+|Widget\.\w+)(?:[^;]*(?P<is_per_world>true)\);)?' }
+_per_world_value = "true"
+
+[[extra.hexcasting.pattern_stubs]]
+path = "{^^^_common.package}/init/HexboundPatterns.kt"
+regex = "{^_pattern_regex}"
+per_world_value = "{^_per_world_value}"
+
+# platforms
+
+[_common]
+src = "../src"
+package = "{src}/main/kotlin/coffee/cypher/hexbound"
