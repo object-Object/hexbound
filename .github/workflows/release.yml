@@ -43,7 +43,7 @@ jobs:
       - name: Build JARs for publishing
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: prepareArtifacts
+          arguments: prepareArtifacts --stacktrace
         env:
           ORG_GRADLE_PROJECT_artifactDir: build/github/
       - name: Upload artifacts
