@@ -73,7 +73,7 @@ jobs:
 #   maven-publish:
 #     name: Publish to Maven Central
 #     runs-on: ubuntu-latest
-#     if: ${{ github.event.inputs.maven == 'true' }}
+#     if: inputs.maven
 #     needs: [build-artifacts, build-docs]
 #     steps:
 #       - uses: actions/setup-java@v3
@@ -100,7 +100,7 @@ jobs:
   curseforge-publish:
     name: Publish to CurseForge
     runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.curseforge == 'true' }}
+    if: inputs.curseforge
     needs: [build-artifacts, build-docs]
     env:
       CURSEFORGE_ID: ${{ fromJSON(needs.build-artifacts.outputs.mod).platforms.curseforge.id }}
@@ -122,7 +122,7 @@ jobs:
   modrinth-publish:
     name: Publish to Modrinth
     runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.modrinth == 'true' }}
+    if: inputs.modrinth
     needs: [build-artifacts, build-docs]
     env:
       MODRINTH_ID: ${{ fromJSON(needs.build-artifacts.outputs.mod).platforms.modrinth.id }}
@@ -145,7 +145,7 @@ jobs:
   github-publish:
     name: Publish to GitHub Releases
     runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.github == 'true' }}
+    if: inputs.github
     needs: [build-artifacts, build-docs]
     steps:
       - uses: actions/download-artifact@v3
