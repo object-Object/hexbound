@@ -34,7 +34,9 @@ key = "core.version"
 
 [tool.hatch.metadata.hooks.version-catalog]
 dependencies = [
+    "hexdoc>=1!0.1.0a18",
     { package="hexdoc-hexcasting", op="~=", py-version="1.0", key="hexcasting" },
+    { package="hexdoc-hexal", op="~=", py-version="1.0.dev", key="hexal-hexdoc" },
 ]
 
 [tool.hatch.metadata.hooks.version-catalog.optional-dependencies]

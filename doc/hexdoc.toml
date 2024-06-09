@@ -1,16 +1,27 @@
 modid = "hexbound"
 book = "hexbound:hexboundbook"
+extra_books = [
+    "hexal:hexalbook",
+]
 default_lang = "en_us"
 default_branch = "1.19"
 
 resource_dirs = [  # top takes priority
     "resources",
     "{$_paths.resources}",
+    { modid="hexal" },
     { modid="hexcasting" },
     { modid="minecraft" },
     { modid="hexdoc" },
 ]
 export_dir = "src/hexdoc_hexbound/_export/generated"
+
+[textures]
+missing = [
+    "minecraft:shield",
+    "minecraft:chest",
+    "hexal:*",
+]
 
 [template]
 icon = "{$_paths.resources}/assets/hexbound/icon.png"
