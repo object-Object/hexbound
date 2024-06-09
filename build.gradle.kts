@@ -50,7 +50,7 @@ repositories {
     maven("https://maven.terraformersmc.com/") {
         name = "TerraformersMC"
     }
-    maven("https://ladysnake.jfrog.io/artifactory/mods") {
+    maven("https://maven.ladysnake.org/releases") {
         name = "Ladysnake Libs"
     }
 
