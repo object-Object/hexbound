@@ -1,7 +1,7 @@
 [build-system]
 requires = [
     "hatchling",
-    "hatch-gradle-version>=0.8.0",
+    "hatch-gradle-version>=0.9.10",
 ]
 build-backend = "hatchling.build"
 
@@ -31,12 +31,21 @@ source = "json"
 py-path = "doc/src/hexdoc_hexbound/__version__.py"
 json-path = "mod.json"
 key = "core.version"
+# 0.1.4+1.19.2 -> 0.1.4.1.19.2
+# 0.1.4-alpha.1+1.19.2 -> 0.1.4.1.19.2-1
+gradle-version-regex = { regex='^(.+?)(?:(\-)[a-zA-Z]+\.(\d+))?\+(.+)$', repl='\1.\4\2\3' }
+
+# FIXME: remove when Hexal is published to PyPI
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [tool.hatch.metadata.hooks.version-catalog]
 dependencies = [
     "hexdoc>=1!0.1.0a18",
     { package="hexdoc-hexcasting", op="~=", py-version="1.0", key="hexcasting" },
-    { package="hexdoc-hexal", op="~=", py-version="1.0.dev", key="hexal-hexdoc" },
+    # { package="hexdoc-hexal", op="~=", py-version="1.0.dev", key="hexal-hexdoc" },
+    # FIXME: remove when Hexal is published to PyPI
+    "hexdoc-hexal @ {root:uri}/doc/libs/hexdoc_hexal-0.2.19.1.0.dev0-py3-none-any.whl",
 ]
 
 [tool.hatch.metadata.hooks.version-catalog.optional-dependencies]
