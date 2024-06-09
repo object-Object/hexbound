@@ -49,4 +49,4 @@ per_world_value = "{^_per_world_value}"
 [_paths]
 src = "../src"
 resources = "{src}/main/resources"
-kotlin_package = "{src}/main/kotlin/coffee/cypher/hexbound"
+kotlin_package = "{src}/main/kotlin/gay/object/hexbound"

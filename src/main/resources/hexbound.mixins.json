@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "coffee.cypher.hexbound.mixins",
+  "package": "gay.object.hexbound.mixins",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "BlockEntityStoredPlayerImpetusMixin",

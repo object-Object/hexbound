@@ -1,7 +1,7 @@
 {
     "schema_version": 1,
     "quilt_loader": {
-        "group": "coffee.cypher",
+        "group": "gay.object",
         "id": "hexbound",
         "version": "${version}",
         "metadata": {
@@ -20,19 +20,19 @@
         "intermediate_mappings": "net.fabricmc:intermediary",
         "entrypoints": {
             "init": {
-                "value": "coffee.cypher.hexbound.init.Hexbound",
+                "value": "gay.object.hexbound.init.Hexbound",
                 "adapter": "kotlin"
             },
             "client_init": {
-                "value": "coffee.cypher.hexbound.init.HexboundClient",
+                "value": "gay.object.hexbound.init.HexboundClient",
                 "adapter": "kotlin"
             },
             "cardinal-components": {
-                "value": "coffee.cypher.hexbound.init.HexboundComponents",
+                "value": "gay.object.hexbound.init.HexboundComponents",
                 "adapter": "kotlin"
             },
-            "dynamiclights" : {
-                "value": "coffee.cypher.hexbound.interop.dynlights.LambDynamicLightsInterop",
+            "dynamiclights": {
+                "value": "gay.object.hexbound.interop.dynlights.LambDynamicLightsInterop",
                 "adapter": "kotlin"
             }
         },
@@ -77,5 +77,5 @@
         "hexbound:construct_linkable"
     ],
     "mixin": "hexbound.mixins.json",
-	"access_widener": "hexbound.accesswidener"
+    "access_widener": "hexbound.accesswidener"
 }

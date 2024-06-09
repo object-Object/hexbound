@@ -15,7 +15,7 @@ plugins {
     alias(libs.plugins.dokka)
     alias(libs.plugins.nexus)
     alias(libs.plugins.serialization)
-    id("coffee.cypher.gradleutil.json5")
+    id("hexbound.json5")
 }
 
 base {
@@ -26,7 +26,7 @@ base {
 val modProps = JsonSlurper().parseText(File("mod.json").readText()) as Map<String, Any>
 
 version = (modProps.getValue("core") as Map<String, Any>).getValue("version")
-group = "coffee.cypher"
+group = "gay.object"
 
 //region dependencies
 
@@ -233,7 +233,7 @@ tasks {
 
         args(outFile)
 
-        mainClass.set("coffee.cypher.hexbound.docgen.Docgen")
+        mainClass.set("gay.object.hexbound.docgen.Docgen")
         classpath = sourceSets.main.get().runtimeClasspath
 
         doLast {
