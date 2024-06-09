@@ -8,12 +8,13 @@
             "name": "Hexbound",
             "description": "Addon for Hexcasting adding programmable Constructs and more",
             "contributors": {
-                "Cypher121": "Owner"
+                "Cypher121": "Owner",
+                "object-Object": "Maintainer"
             },
             "contact": {
-                "homepage": "https://github.com/Cypher121/hexbound",
-                "issues": "https://github.com/Cypher121/hexbound/issues",
-                "sources": "https://github.com/Cypher121/hexbound"
+                "homepage": "https://hexbound.hexxy.media/",
+                "issues": "https://github.com/object-Object/hexbound/issues",
+                "sources": "https://github.com/object-Object/hexbound"
             },
             "icon": "assets/hexbound/icon.png"
         },

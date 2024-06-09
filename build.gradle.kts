@@ -199,7 +199,7 @@ tasks {
                 sourceLink {
                     localDirectory.set(projectDir.resolve("src/main/kotlin"))
                     remoteLineSuffix.set("#L")
-                    remoteUrl.set(URL("https://github.com/Cypher121/hexbound/blob/master/src/main/kotlin"))
+                    remoteUrl.set(URL("https://github.com/object-Object/hexbound/blob/master/src/main/kotlin"))
                 }
 
                 jdkVersion.set(java.toolchain.languageVersion.get().asInt())
@@ -368,41 +368,41 @@ class Keystore(project: Project) {
 }
 
 publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = group.toString()
-            artifactId = project.name
-            version = version.toString()
-
-            from(components["java"])
-
-            pom {
-                name.set("Hexbound")
-                description.set("Addon for Hexcasting adding programmable Constructs and more")
-                url.set("https://www.modrinth.com/mod/hexbound")
-
-                scm {
-                    connection.set("scm:git:git://github.com/Cypher121/hexbound.git")
-                    developerConnection.set("scm:git:ssh://github.com/Cypher121/hexbound.git")
-                    url.set((modProps.getValue("core") as Map<String, Any>).getValue("version") as String)
-                }
-
-                licenses {
-                    license {
-                        name.set("The MIT License")
-                        url.set("https://opensource.org/licenses/MIT")
-                    }
-                }
-
-                developers {
-                    developer {
-                        id.set("cypher121")
-                        name.set("Cypher121")
-                    }
-                }
-            }
-        }
-    }
+//    publications {
+//        create<MavenPublication>("maven") {
+//            groupId = group.toString()
+//            artifactId = project.name
+//            version = version.toString()
+//
+//            from(components["java"])
+//
+//            pom {
+//                name.set("Hexbound")
+//                description.set("Addon for Hexcasting adding programmable Constructs and more")
+//                url.set("https://www.modrinth.com/mod/hexbound")
+//
+//                scm {
+//                    connection.set("scm:git:git://github.com/object-Object/hexbound.git")
+//                    developerConnection.set("scm:git:ssh://github.com/object-Object/hexbound.git")
+//                    url.set((modProps.getValue("core") as Map<String, Any>).getValue("version") as String)
+//                }
+//
+//                licenses {
+//                    license {
+//                        name.set("The MIT License")
+//                        url.set("https://opensource.org/licenses/MIT")
+//                    }
+//                }
+//
+//                developers {
+//                    developer {
+//                        id.set("cypher121")
+//                        name.set("Cypher121")
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     repositories {
         mavenLocal()
