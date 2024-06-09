@@ -15,7 +15,7 @@ hexcasting = "0.10.3"
 cca = "5.0.2"
 
 hexal = "9RtpOzVO"
-hexal-hexdoc = "0.2.18"
+hexal-hexdoc = "0.2.19"
 dynlights = "2.2.0+1.19.2"
 
 fake-player = "0.5.0"
