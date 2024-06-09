@@ -4,6 +4,12 @@
 
 Addon for Hex Casting adding programmable Constructs and more.
 
+Features:
+
+* Constructs: machines you can order around with Hexes!
+* Item and inventory management with spell patterns
+* Drawing impossible patterns (don't tell anyone)
+
 ## Project status
 
 This repository is a fork of [Cypher121](https://github.com/Cypher121)'s [Hexbound](https://github.com/Cypher121/hexbound). It is currently maintained by [object-Object](https://github.com/object-Object) (me!) with permission from Cypher.

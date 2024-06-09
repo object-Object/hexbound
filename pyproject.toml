@@ -13,6 +13,8 @@ description = "Python web book docgen and hexdoc plugin for Hexbound."
 readme = "doc/README.md"
 authors = [
     { name="Cypher121" },
+]
+maintainers = [
     { name="object-Object" },
 ]
 keywords = ["hexdoc"]
