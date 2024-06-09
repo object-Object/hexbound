@@ -1,23 +1,32 @@
 name: Release
+
 on:
   workflow_dispatch:
     inputs:
       modrinth:
         type: boolean
         description: Publish on Modrinth
-        required: true
+        default: false
       curseforge:
         type: boolean
         description: Publish on CurseForge
-        required: true
+        default: false
       github:
         type: boolean
         description: Publish on GitHub Releases
-        required: true
-      maven:
+        default: false
+#   maven:
+#     type: boolean
+#     description: Publish on Maven Central
+#     default: false
+      pypi:
         type: boolean
-        description: Publish on Maven Central
-        required: true
+        description: Publish on PyPI
+        default: false
+
+env:
+  PYPI_PACKAGE: hexdoc-hexdebug
+
 jobs:
   build-artifacts:
     name: Build Artifacts
@@ -47,74 +56,102 @@ jobs:
         run: |
           metadata=`cat ./mod.json | tr '\n' ' '`
           echo "::set-output name=value::$metadata"
-  maven-publish:
-    name: Publish to Maven Central
-    runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.maven == 'true' }}
-    needs: [build-artifacts]
-    steps:
-      - uses: actions/setup-java@v3
-        with:
-          distribution: "temurin"
-          java-version: "17"
-      - uses: actions/checkout@v3
-      - run: chmod +x ./gradlew
-      - uses: gradle/gradle-build-action@v2
-      - uses: actions/download-artifact@v3
-        with:
-          name: release-artifacts
-          path: ./build/libs/
-      - name: Publish to Maven Central
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: publishToSonatype closeAndReleaseSonatypeStagingRepository -PpublishOnly=true
-        env:
-          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.OSS_USERNAME }}
-          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.OSS_PASSWORD }}
-          ORG_GRADLE_PROJECT_pgpKey: ${{ secrets.PGP_KEY }}
-          ORG_GRADLE_PROJECT_pgpPassword: ${{ secrets.PGP_PASSWORD }}
+
+  build-docs:
+    name: Build Web Book
+    uses: hexdoc-dev/hexdoc/.github/workflows/hexdoc.yml@v1!0.1.dev
+    permissions:
+      contents: write
+      pages: read
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      python-version: 3.11
+      deploy-pages: ${{ inputs.pypi }}
+      release: true
+
+#   maven-publish:
+#     name: Publish to Maven Central
+#     runs-on: ubuntu-latest
+#     if: ${{ github.event.inputs.maven == 'true' }}
+#     needs: [build-artifacts, build-docs]
+#     steps:
+#       - uses: actions/setup-java@v3
+#         with:
+#           distribution: "temurin"
+#           java-version: "17"
+#       - uses: actions/checkout@v3
+#       - run: chmod +x ./gradlew
+#       - uses: gradle/gradle-build-action@v2
+#       - uses: actions/download-artifact@v3
+#         with:
+#           name: release-artifacts
+#           path: ./build/libs/
+#       - name: Publish to Maven Central
+#         uses: gradle/gradle-build-action@v2
+#         with:
+#           arguments: publishToSonatype closeAndReleaseSonatypeStagingRepository -PpublishOnly=true
+#         env:
+#           ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.OSS_USERNAME }}
+#           ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.OSS_PASSWORD }}
+#           ORG_GRADLE_PROJECT_pgpKey: ${{ secrets.PGP_KEY }}
+#           ORG_GRADLE_PROJECT_pgpPassword: ${{ secrets.PGP_PASSWORD }}
+
   curseforge-publish:
     name: Publish to CurseForge
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.curseforge == 'true' }}
-    needs: [ build-artifacts ]
+    needs: [build-artifacts, build-docs]
+    env:
+      CURSEFORGE_ID: ${{ fromJSON(needs.build-artifacts.outputs.mod).platforms.curseforge.id }}
+    environment:
+      name: curseforge
     steps:
       - uses: actions/download-artifact@v3
         with:
           name: release-artifacts
-      - uses: Kir-Antipov/mc-publish@v3.1
+      - uses: Kir-Antipov/mc-publish@v3
         with:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-          curseforge-id: ${{ fromJSON(needs.build-artifacts.outputs.mod).platforms.curseforge.id }}
-          files-primary: ./!(*-@(dev|sources)).jar
-          files-secondary: ./*-@(dev|sources).jar
+          curseforge-id: ${{ env.CURSEFORGE_ID }}
+          files: |
+            ./!(*-@(dev|sources)).jar
+            ./*-@(dev|sources).jar
           name: ""
+
   modrinth-publish:
     name: Publish to Modrinth
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.modrinth == 'true' }}
-    needs: [ build-artifacts ]
+    needs: [build-artifacts, build-docs]
+    env:
+      MODRINTH_ID: ${{ fromJSON(needs.build-artifacts.outputs.mod).platforms.modrinth.id }}
+    environment:
+      name: modrinth
+      url: https://modrinth.com/mod/${{ env.MODRINTH_ID }}
     steps:
       - uses: actions/download-artifact@v3
         with:
           name: release-artifacts
-      - uses: Kir-Antipov/mc-publish@v3.1
+      - uses: Kir-Antipov/mc-publish@v3
         with:
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-          modrinth-id: ${{ fromJSON(needs.build-artifacts.outputs.mod).platforms.modrinth.id }}
-          files-primary: ./!(*-@(dev|sources)).jar
-          files-secondary: ./*-@(dev|sources).jar
+          modrinth-id: ${{ env.MODRINTH_ID }}
+          files: |
+            ./!(*-@(dev|sources)).jar
+            ./*-@(dev|sources).jar
           name: ""
+
   github-publish:
     name: Publish to GitHub Releases
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.github == 'true' }}
-    needs: [ build-artifacts ]
+    needs: [build-artifacts, build-docs]
     steps:
       - uses: actions/download-artifact@v3
         with:
           name: release-artifacts
-      - name: Publish GitHubRelease
+      - name: Publish GitHub Release
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ format('v{0}', fromJSON(needs.build-artifacts.outputs.mod).core.version) }}
@@ -122,3 +159,21 @@ jobs:
           name: Release ${{ fromJSON(needs.build-artifacts.outputs.mod).core.version }}
           prerelease: ${{ contains(fromJSON(needs.build-artifacts.outputs.mod).core.version, 'alpha') || contains(fromJSON(needs.build-artifacts.outputs.mod).core.version, 'beta') }}
           artifacts: ./*.jar
+
+  pypi-publish:
+    name: Publish to PyPI
+    runs-on: ubuntu-latest
+    if: inputs.pypi
+    environment:
+      name: pypi
+      url: https://pypi.org/p/${{ env.PYPI_PACKAGE }}
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: hexdoc-build
+          path: dist
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
