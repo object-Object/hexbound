@@ -2,7 +2,7 @@
     "name": "hexbound.book.patterns.pattern_editing.title",
     "category": "hexcasting:patterns",
     "icon": "minecraft:nautilus_shell",
-    "sortnum": 8.5,
+    "sortnum": 8,
     "advancement": "hexcasting:root",
     "read_by_default": true,
     "pages": [

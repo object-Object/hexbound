@@ -184,7 +184,7 @@
                 title: "Figments",
                 "1": "All my study shows that the act of casting a _Hex inevitably requires a living Caster exist $(o)somewhere$(). \
 |                     Perhaps an obvious and pointless detail: I am the one casting the _Hex, so the requirement is met, but \
-|                     should I discover $(l:hexcasting:greatwork/spellcircle)some means of independent casting$() (or even rig a dispenser to flail a trinket around), \
+|                     should I discover $(l:hexcasting:greatwork/spellcircles)some means of independent casting$() (or even rig a dispenser to flail a trinket around), \
 |                     it would lose the link and cease to function the moment I cross the portal to the Nether or elsewhere.",
                 "2": "However, I believe a specially designed web of _media could ''trick'' the _Hex into latching onto it long enough to resolve. \
 |                     These Figments as I've begun calling them, would either be severely limited in their abilities, as Constructs are, or would require \
@@ -234,7 +234,7 @@
         },
         "greatwork.impetus_figment": {
             title: "Impetus Figments",
-            "1": "Now that I possess the means to contain a mind, I have revisited my notes on $(l:hexbound:patterns/great_spells/impetus_fake_player)Bind Figment$() and confirmed that a $(l:hexcasting:greatwork/impetuses)Cleric Impetus$() would be the perfect vessel for it. \
+            "1": "Now that I possess the means to contain a mind, I have revisited my notes on $(l:hexbound:patterns/great_spells/impetus_fake_player)Bind Figment$() and confirmed that a $(l:hexcasting:greatwork/impetus)Cleric Impetus$() would be the perfect vessel for it. \
 |                 The Impetus must be bound to a $(hex)Hexcaster$() as $(o)enlightened$() as I am; no other mind would allow a piece of itself to be unraveled like this.$(br2)Not yet. THEY WILL. In time.",
             "2": "Furthermore, if the Impetus can connect to its bound caster, that connection will take priority over the Figment.$(br2)\
 |                 A thought with no mind bound to a lattice every thought wrapped and screaming it is not itself it always made sense it will never make sense $(k)hello penguin$()$(br2)\
@@ -370,7 +370,7 @@
             },
             selecting_constructs: {
                 title: "Selecting Constructs",
-                single: "Transform the position on the stack into the Construct at that location (or $(l:hexbound:casting/influences)$(thing)Null$() if there isn't one).",
+                single: "Transform the position on the stack into the Construct at that location (or $(l:hexcasting:casting/influences)$(thing)Null$() if there isn't one).",
                 zone: "Take a position and maximum distance on the stack, and combine them into a list of Constructs near the position.",
                 zone_negate: "Take a position and maximum distance on the stack, and combine them into a list of non-Construct entities near the position."
             },

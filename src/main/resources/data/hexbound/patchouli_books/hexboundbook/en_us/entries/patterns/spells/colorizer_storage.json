@@ -2,7 +2,7 @@
     "name": "hexbound.book.patterns.spells.colorizer_storage.title",
     "category": "hexcasting:patterns/spells",
     "icon": "hexcasting:pride_colorizer_plural",
-    "sortnum": 5.5,
+    "sortnum": 5,
     "advancement": "hexcasting:root",
     "read_by_default": true,
     "pages": [

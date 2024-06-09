@@ -2,7 +2,7 @@
     "name": "hexbound.book.patterns.spells.shield.title",
     "category": "hexcasting:patterns/spells",
     "icon": "minecraft:shield",
-    "sortnum": 5.6,
+    "sortnum": 5,
     "advancement": "hexcasting:root",
     "read_by_default": true,
     "pages": [
@@ -17,7 +17,7 @@
         {
             "type": "hexcasting:pattern",
             "op_id": "hexbound:create_shield/normal",
-            "anchor": "hexbound:colorizer/normal",
+            "anchor": "hexbound:create_shield/normal",
             "input": "vec, vec, num",
             "output": "",
             "text": "hexbound.book.patterns.spells.shield.normal"

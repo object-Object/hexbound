@@ -2,7 +2,7 @@
     "name": "hexbound.book.patterns.item_patterns.title",
     "category": "hexcasting:patterns",
     "icon": "minecraft:barrel",
-    "sortnum": 6.5,
+    "sortnum": 6,
     "advancement": "hexcasting:root",
     "read_by_default": true,
     "pages": [

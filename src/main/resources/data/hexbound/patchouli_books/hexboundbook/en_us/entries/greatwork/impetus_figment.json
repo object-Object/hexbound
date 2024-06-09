@@ -4,7 +4,7 @@
     "icon": "hexcasting:impetus_storedplayer",
     "advancement": "hexcasting:enlightenment",
     "entry_color": "54398a",
-    "sortnum": 2.5,
+    "sortnum": 2,
     "pages": [
         {
             "type": "patchouli:text",
