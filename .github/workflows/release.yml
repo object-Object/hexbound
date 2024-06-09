@@ -31,6 +31,7 @@ jobs:
   build-artifacts:
     name: Build Artifacts
     runs-on: ubuntu-latest
+    if: inputs.modrinth || inputs.curseforge || inputs.github
     outputs:
       mod: ${{ steps.metadata.outputs.value }}
     steps:
@@ -59,7 +60,6 @@ jobs:
 
   build-docs:
     name: Build Docs
-    needs: build-artifacts  # this workflow deploys the release to Pages, so wait until we know the mod built properly
     uses: hexdoc-dev/hexdoc/.github/workflows/hexdoc.yml@v1!0.1.dev
     permissions:
       contents: write
@@ -166,7 +166,7 @@ jobs:
     name: Publish to PyPI
     runs-on: ubuntu-latest
     if: inputs.pypi
-    needs: [build-artifacts, build-docs]
+    needs: build-docs
     environment:
       name: pypi
       url: https://pypi.org/p/${{ env.PYPI_PACKAGE }}
