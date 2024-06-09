@@ -2,7 +2,9 @@
 
 [![powered by hexdoc](https://img.shields.io/endpoint?url=https://hexxy.media/api/v0/badge/hexdoc?label=1)](https://hexbound.hexxy.media)
 
-Addon for Hex Casting adding programmable Constructs and more.
+[CurseForge](https://curseforge.com/minecraft/mc-mods/hexbound-fork) | [Modrinth](https://modrinth.com/mod/hexbound-fork)
+
+Addon for [Hex Casting](https://github.com/FallingColors/HexMod) adding programmable Constructs and more.
 
 Features:
 
