@@ -1,6 +1,5 @@
 @file:Suppress("UnstableApiUsage", "UNCHECKED_CAST")
 
-import coffee.cypher.gradleutil.filters.*
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import org.jetbrains.dokka.gradle.DokkaTask
@@ -16,6 +15,7 @@ plugins {
     alias(libs.plugins.dokka)
     alias(libs.plugins.nexus)
     alias(libs.plugins.serialization)
+    id("coffee.cypher.gradleutil.json5")
 }
 
 base {
@@ -150,11 +150,6 @@ tasks {
 
         filesMatching("quilt.mod.json") {
             expand(mapOf("version" to version))
-        }
-
-        filesMatching("**/*.flatten.json5") {
-            filter(FlatteningJsonFilter::class.java)
-            path = path.replace("\\.flatten\\.json5$".toRegex(), ".json")
         }
     }
 

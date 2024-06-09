@@ -1,11 +1,13 @@
 plugins {
-    kotlin("jvm") version "1.7.10"
+    `kotlin-dsl`
 }
 
 repositories {
     mavenCentral()
+    gradlePluginPortal()
+    maven { url = uri("https://maven.blamejared.com/") }
 }
 
 dependencies {
-    implementation("blue.endless:jankson:1.2.1")
+    implementation(libs.pkpcpbp)
 }
