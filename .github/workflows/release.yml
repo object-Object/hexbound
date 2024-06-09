@@ -58,7 +58,7 @@ jobs:
           echo "::set-output name=value::$metadata"
 
   build-docs:
-    name: Build Web Book
+    name: Build Docs
     uses: hexdoc-dev/hexdoc/.github/workflows/hexdoc.yml@v1!0.1.dev
     permissions:
       contents: write
@@ -164,6 +164,7 @@ jobs:
     name: Publish to PyPI
     runs-on: ubuntu-latest
     if: inputs.pypi
+    needs: [build-artifacts, build-docs]
     environment:
       name: pypi
       url: https://pypi.org/p/${{ env.PYPI_PACKAGE }}
