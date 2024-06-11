@@ -3,7 +3,7 @@
 minecraft = "1.19.2"
 
 quilt_mappings = "1.19.2+build.21"
-quilt_loader = "0.18.3"
+quilt_loader = "0.19.2"
 qsl = "3.0.0-beta.29+1.19.2"
 quilt-fapi = "4.0.0-beta.30+0.76.0-1.19.2"
 qkl = "1.0.0+kt.1.7.20+flk.1.8.5"
