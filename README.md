@@ -24,7 +24,7 @@ My main priority is to get Hexbound back on CurseForge/Modrinth, set up a [hexdo
 
 If you're having issues with the version of Quilt Kotlin Libraries / Fabric Language Kotlin on 1.19.2, try installing *both* of the following:
 
-* [QKL 4.0.2](https://modrinth.com/mod/qkl/version/1.0.2+kt.1.8.0+flk.1.9.0)
+* [QKL 1.0.2](https://modrinth.com/mod/qkl/version/1.0.2+kt.1.8.0+flk.1.9.0)
 * [QKL Core 4.0.0](https://modrinth.com/mod/qkl/version/4.0.0+kt.1.9.23+flk.1.10.19) or higher (the file starting with `quilt-kotlin-libraries-core`)
 
 QKL targets a specific version of Minecraft, while QKL Core is what replaces FLK and can be used with any Minecraft version.
