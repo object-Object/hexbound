@@ -19,7 +19,7 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     with:
       python-version: 3.11
-      pip-extras: "[libs]"  # FIXME: remove when Hexal is published to PyPI
+      pip-extras: " --find-links ./doc/libs"  # FIXME: remove when Hexal is published to PyPI
       release: false
       deploy-pages: |-
         ${{

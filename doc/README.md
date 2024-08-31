@@ -25,7 +25,7 @@ python3.11 -m venv venv
 source venv/bin/activate  # everything else
 
 # run from the repo root, not doc/
-pip install -e .[dev]
+pip install -e .[dev] --find-links ./doc/libs
 ```
 
 ## Usage
