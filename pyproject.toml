@@ -49,10 +49,6 @@ dependencies = [
 ]
 
 [tool.hatch.metadata.hooks.version-catalog.optional-dependencies]
-libs = [
-    # FIXME: remove when Hexal is published to PyPI
-    "hexdoc-hexal @ {root:uri}/doc/libs/hexdoc_hexal-0.2.19.1.0.dev0-py3-none-any.whl",
-]
 dev = [
     "ruff~=0.1.4",
 ]
