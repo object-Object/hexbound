@@ -25,7 +25,7 @@ on:
         default: false
 
 env:
-  PYPI_PACKAGE: hexdoc-hexdebug
+  PYPI_PACKAGE: hexdoc-hexbound
 
 jobs:
   build-artifacts:
