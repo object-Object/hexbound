@@ -39,7 +39,7 @@ jobs:
         with:
           distribution: "temurin"
           java-version: "17"
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: chmod +x ./gradlew
       - name: Build JARs for publishing
         uses: gradle/gradle-build-action@v2
@@ -48,7 +48,7 @@ jobs:
         env:
           ORG_GRADLE_PROJECT_artifactDir: build/github/
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: release-artifacts
           path: ./build/github/
@@ -60,7 +60,7 @@ jobs:
 
   build-docs:
     name: Build Docs
-    uses: hexdoc-dev/hexdoc/.github/workflows/hexdoc.yml@v1!0.1.dev
+    uses: hexdoc-dev/actions/.github/workflows/hexdoc.yml@v1
     permissions:
       contents: write
       pages: read
@@ -85,7 +85,7 @@ jobs:
 #       - uses: actions/checkout@v3
 #       - run: chmod +x ./gradlew
 #       - uses: gradle/gradle-build-action@v2
-#       - uses: actions/download-artifact@v3
+#       - uses: actions/download-artifact@v4
 #         with:
 #           name: release-artifacts
 #           path: ./build/libs/
@@ -109,7 +109,7 @@ jobs:
     environment:
       name: curseforge
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: release-artifacts
       - uses: Kir-Antipov/mc-publish@v3
@@ -132,7 +132,7 @@ jobs:
       name: modrinth
       url: https://modrinth.com/mod/${{ env.MODRINTH_ID }}
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: release-artifacts
       - uses: Kir-Antipov/mc-publish@v3
@@ -150,7 +150,7 @@ jobs:
     if: inputs.github
     needs: [build-artifacts, build-docs]
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: release-artifacts
       - name: Publish GitHub Release
@@ -173,7 +173,7 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: hexdoc-build
           path: dist
